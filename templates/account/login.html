@@ -4,23 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In – CanDo</title>
+    <title>Sign In - CanDo</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body>
     <div class="logo-container">
         <img src="{% static 'images/logo.png' %}" alt="CanDo Logo">
     </div>
+    <div class="header-container">
+        <h2>CanDo helps you stay organized and efficient with your tasks.</h2>
+        <h2>Here's what you can do:</h2>
+    </div>
     <div class="features-section">
         <div class="feature-column">
-            <p>Create and manage your tasks efficiently</p>
-            <p>Organize your projects and collaborate with others</p>
-            <p>Track your progress with our Kanban board</p>
+            <ul>
+                <li>Create and manage your tasks efficiently</li>
+                <li>Organize your projects and collaborate</li>
+                <li>Track your progress with our Kanban board</li>
+            </ul>
         </div>
         <div class="feature-column">
-            <p>Set reminders and due dates</p>
-            <p>Receive notifications on task updates</p>
-            <p>Share tasks and projects with team members</p>
+            <ul>
+                <li>Set reminders and due dates</li>
+                <li>Receive notifications on task updates</li>
+                <li>Share tasks and projects with team members</li>
+            </ul>
         </div>
     </div>
     <div class="container">
@@ -50,6 +58,8 @@
     </div>
 </body>
 </html>
+
+
 
 
 
