@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>{% block title %}My App{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'kanban:index' %}">Kanban</a>
+        <a href="{% url 'notes:index' %}">Notes</a>
+        <a href="{% url 'calendar_app:index' %}">Calendar</a>
+        <a href="{% url 'account_logout' %}">Logout</a>
+    </div>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

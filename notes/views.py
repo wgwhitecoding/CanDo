@@ -1,4 +1,5 @@
 from django.shortcuts import render
 
-def notes_view(request):
+def index(request):
     return render(request, 'notes/notes.html')
+
