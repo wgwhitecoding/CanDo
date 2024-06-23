@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - CanDo</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="logo-container">
-        <img src="{% static 'images/logo.png' %}" alt="CanDo Logo">
+        <img src="{% static 'logo/candologo.png' %}" alt="CanDo Logo">
     </div>
     <div class="header-container">
         <h2>CanDo helps you stay organized and efficient with your tasks.</h2>
@@ -52,7 +53,7 @@
             </form>
             <div class="auth-links">
                 <a href="{% url 'account_reset_password' %}">Forgot your password?</a><br>
-                <a href="{% url 'account_signup' %}">Sign Up</a>
+                <a href="{% url 'account_signup' %}" class="sign-up-link">Sign Up</a>
             </div>
         </div>
     </div>

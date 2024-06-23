@@ -1,6 +1,6 @@
 body {
     font-family: 'Lato', sans-serif;
-    background: url('/static/images/background.jpg') no-repeat center center fixed;
+    background: url("/static/images/background.58eea8983bc2.jpg") no-repeat center center fixed;
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -8,7 +8,7 @@ body {
     margin: 0;
     padding: 20px;
     min-height: 80vh;
-    
+    overflow: hidden;
 }
 
 .logo-container {
@@ -155,6 +155,9 @@ body {
     margin-top: 10px;
     display: block;
 }
+
+
+
 
 
 
