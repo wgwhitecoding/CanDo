@@ -1,6 +1,6 @@
 body {
     font-family: 'Lato', sans-serif;
-    background: url('/static/images/background.jpg') no-repeat center center fixed;
+    background: url("/static/images/background.dfdfb26a51e3.jpg") no-repeat center center fixed;
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -160,7 +160,7 @@ body {
 /* Media Queries */
 @media (max-width: 1024px) and (min-width: 768px) {
     body {
-        background: url('/static/images/background2.jpg') no-repeat center center fixed;
+        background: url("/static/images/background2.1686e58a0a54.jpg") no-repeat center center fixed;
         background-size: cover;
     }
 
@@ -228,7 +228,7 @@ body {
     }
 
     body {
-        background: url('/static/images/background1.jpg') no-repeat center center fixed;
+        background: url("/static/images/background1.8d372fd09ec0.jpg") no-repeat center center fixed;
         background-size: cover;
     }
 }
@@ -277,7 +277,7 @@ body {
     }
 
     body {
-        background: url('/static/images/background1.jpg') no-repeat center center fixed;
+        background: url("/static/images/background1.8d372fd09ec0.jpg") no-repeat center center fixed;
         background-size: cover;
     }
 }

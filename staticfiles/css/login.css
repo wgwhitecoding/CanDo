@@ -8,7 +8,7 @@ body {
     margin: 0;
     padding: 20px;
     min-height: 80vh;
-    overflow: hidden;
+    
 }
 
 .logo-container {
@@ -157,7 +157,130 @@ body {
 }
 
 
+/* Media Queries */
+@media (max-width: 1024px) and (min-width: 768px) {
+    body {
+        background: url('/static/images/background2.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
 
+    .logo-container {
+        margin-top: 80px; 
+        margin-bottom: 40px; 
+    }
+
+    .header-container {
+        margin-top: 40px; 
+        margin-bottom: 30px;
+    }
+
+    .features-section {
+        margin-top: 30px; 
+        margin-bottom: 20px; 
+    }
+
+    .container {
+        margin-top: 40px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .logo-container {
+        margin-top: 20px;
+        margin-bottom: 40px;
+    }
+
+    .logo-container img {
+        width: 300px;
+    }
+
+    .header-container {
+        margin-bottom: 20px;
+    }
+
+    .features-section {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .feature-column {
+        width: 80%;
+        margin-bottom: 0;
+    }
+
+    .feature-column ul {
+        padding-left: 0;
+    }
+
+    .feature-column li {
+        margin-bottom: 5px;
+    }
+
+    .feature-column + .feature-column {
+        margin-top: 0;
+    }
+
+    .container {
+        margin-top: 10px;
+    }
+
+    body {
+        background: url('/static/images/background1.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-container {
+        margin-top: 10px;
+        margin-bottom: 30px;
+    }
+
+    .logo-container img {
+        width: 200px;
+    }
+
+    .header-container {
+        margin-bottom: 15px;
+
+    }
+
+    .features-section {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+
+    .feature-column {
+        width: 90%;
+        margin-bottom: 0;
+    }
+
+    .feature-column ul {
+        padding-left: 0;
+    }
+
+    .feature-column li {
+        margin-bottom: 5px;
+    }
+
+    .feature-column + .feature-column {
+        margin-top: 0;
+    }
+
+    .container {
+        margin-top: 10px;
+    }
+
+    body {
+        background: url('/static/images/background1.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
+}
 
 
 
