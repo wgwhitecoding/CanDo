@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-4f@q*&zgve*6!@i@33i&@$pz=d
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['8000-wgwhitecodi-candocifina-xzzzccwzy0s.ws-eu114.gitpod.io','.herokuapp.com']
+ALLOWED_HOSTS = ['8000-wgwhitecodi-candocifina-lxp4adrvjeq.ws-eu114.gitpod.io','.herokuapp.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -38,8 +38,8 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-LOGIN_REDIRECT_URL = 'kanban:index' 
-LOGOUT_REDIRECT_URL = 'account_login' 
+LOGIN_REDIRECT_URL = 'kanban:index'
+LOGOUT_REDIRECT_URL = 'account_login'
 
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 ACCOUNT_EMAIL_REQUIRED = True
@@ -80,20 +80,11 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'cando_ci.wsgi.application'
 
-if os.getenv('DATABASE_URL'):
-    DATABASES = {
-        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -126,11 +117,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 CSRF_TRUSTED_ORIGINS = [
     'https://*.gitpod.io',
-
 ]
+
 
 
 
