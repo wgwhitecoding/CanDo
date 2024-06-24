@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-4f@q*&zgve*6!@i@33i&@$pz=d
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['8000-wgwhitecodi-candocifina-h9zm2j9hafi.ws-eu114.gitpod.io','.herokuapp.com']
+ALLOWED_HOSTS = ['8000-wgwhitecodi-candocifina-xzzzccwzy0s.ws-eu114.gitpod.io','.herokuapp.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
