@@ -21,7 +21,7 @@
                     <button class="kanban-column-header">{{ column.name }}</button>
                     <div class="kanban-column-body">
                         {% for task in tasks %}
-                            {% if task.column.name == column.name %}
+                            {% if task.column.id == column.id %}
                                 <div class="kanban-task" data-task-id="{{ task.id }}">
                                     <div class="kanban-task-title">{{ task.title }}</div>
                                     <div class="kanban-task-due">{{ task.due_date }}</div>
