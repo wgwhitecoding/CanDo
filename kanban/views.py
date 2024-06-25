@@ -30,6 +30,9 @@ def create_column(request):
             column.user = request.user
             column.save()
             return JsonResponse({'status': 'success', 'column_id': column.id, 'name': column.name})
+        else:
+            print("Form is not valid:", form.errors)
+    print("Request method is not POST or form is not valid")
     return JsonResponse({'status': 'error'})
 
 @login_required
@@ -40,13 +43,16 @@ def edit_column(request, column_id):
         column.name = new_name
         column.save()
         return JsonResponse({'status': 'success', 'name': new_name})
+    print("Request method is not POST")
     return JsonResponse({'status': 'error'})
+
 
 @login_required
 def delete_column(request, column_id):
     column = get_object_or_404(Column, id=column_id, user=request.user)
     column.delete()
     return JsonResponse({'status': 'success'})
+
 
 
 

@@ -63,11 +63,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 columnForm.reset();
                 attachHeaderClickEvent();
             } else {
+                console.error('Error creating column');
                 alert('Error creating column');
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Fetch error:', error);
             alert('Error creating column');
         });
     });
@@ -107,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 columnHeader.textContent = newName;
                 editColumnModal.style.display = 'none';
             } else {
+                console.error('Error editing column');
                 alert('Error editing column');
             }
         });
@@ -126,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 column.remove();
                 editColumnModal.style.display = 'none';
             } else {
+                console.error('Error deleting column');
                 alert('Error deleting column');
             }
         });
@@ -137,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
 
 
 
