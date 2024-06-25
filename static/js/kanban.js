@@ -36,10 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: formData,
         })
-        .then(response => {
-            console.log("Response: ", response);
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             console.log("Data: ", data);
             if (data.status === 'success') {
@@ -47,24 +44,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 const newColumn = document.createElement('div');
                 newColumn.classList.add('kanban-column');
                 newColumn.setAttribute('data-column-id', data.column_id);
-
+    
                 const columnHeader = document.createElement('button');
                 columnHeader.classList.add('kanban-column-header');
                 columnHeader.textContent = data.name;
                 newColumn.appendChild(columnHeader);
-
+    
                 const columnBody = document.createElement('div');
                 columnBody.classList.add('kanban-column-body');
                 newColumn.appendChild(columnBody);
-
+    
                 columnBoard.appendChild(newColumn);
-
+    
                 columnModal.style.display = 'none';
                 columnForm.reset();
                 attachHeaderClickEvent();
             } else {
-                console.error('Error creating column');
-                alert('Error creating column');
+                console.error('Error creating column:', data.errors || data.message);
+                alert(`Error creating column: ${data.errors || data.message}`);
             }
         })
         .catch(error => {
@@ -72,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Error creating column');
         });
     });
-
+    
     function attachHeaderClickEvent() {
         document.querySelectorAll('.kanban-column-header').forEach(columnHeader => {
             columnHeader.removeEventListener('click', openEditColumnModal);
