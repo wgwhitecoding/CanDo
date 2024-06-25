@@ -1,97 +1,75 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
 {% block title %}Kanban Board{% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/kanban.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1 class="text-center">Kanban Board</h1>
-<div class="d-flex justify-content-between mb-3">
-    <button id="create-task-btn" class="btn btn-primary">Create Task</button>
-    <button id="create-column-btn" class="btn btn-secondary">Create Column</button>
-</div>
-<div id="board" class="d-flex justify-content-between">
-    {% for column in columns %}
-        <div class="column card" id="{{ column }}">
-            <div class="card-body">
-                <h2 class="card-title">{{ column }}</h2>
-                <div class="tasks" id="tasks-{{ column }}">
-                    {% for task in tasks %}
-                        {% if task.stage == column %}
-                            <div class="task card mb-3" draggable="true" id="task-{{ task.id }}">
-                                <div class="card-body">
-                                    <h3 class="card-title">{{ task.title }}</h3>
-                                    <p class="card-text">{{ task.due_date }}</p>
+<div class="kanban-container">
+    <div class="button-container">
+        <button id="create-task-btn" class="btn btn-primary">Create Task</button>
+        <button id="create-column-btn" class="btn btn-secondary">Create Column</button>
+    </div>
+    <div class="kanban-board-wrapper">
+        <button id="scroll-left" class="scroll-button">&lt;</button>
+        <div class="kanban-board">
+            {% for column in columns %}
+                <div class="kanban-column" data-column-id="{{ column.id }}">
+                    <div class="kanban-column-header">{{ column }}</div>
+                    <div class="kanban-column-body">
+                        {% for task in tasks %}
+                            {% if task.column.name == column %}
+                                <div class="kanban-task" data-task-id="{{ task.id }}">
+                                    <div class="kanban-task-title">{{ task.title }}</div>
+                                    <div class="kanban-task-due">{{ task.due_date }}</div>
                                 </div>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
-
-<!-- Create Task Modal -->
-<div class="modal fade" id="create-task-modal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="createTaskModalLabel">Create Task</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="create-task-form">
-          {% csrf_token %}
-          <div class="mb-3">
-            <label for="task-title" class="form-label">Title</label>
-            <input type="text" class="form-control" id="task-title" name="title" required>
-          </div>
-          <div class="mb-3">
-            <label for="task-description" class="form-label">Description</label>
-            <textarea class="form-control" id="task-description" name="description" required></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="task-due-date" class="form-label">Due Date</label>
-            <input type="datetime-local" class="form-control" id="task-due-date" name="due_date">
-          </div>
-          <div class="mb-3">
-            <label for="task-priority" class="form-label">Priority</label>
-            <input type="text" class="form-control" id="task-priority" name="priority">
-          </div>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </form>
-      </div>
+        <button id="scroll-right" class="scroll-button">&gt;</button>
     </div>
-  </div>
 </div>
 
-<!-- Create Column Modal -->
-<div class="modal fade" id="create-column-modal" tabindex="-1" aria-labelledby="createColumnModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<div id="task-modal" class="modal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="createColumnModalLabel">Create Column</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="create-column-form">
-          {% csrf_token %}
-          <div class="mb-3">
-            <label for="column-name" class="form-label">Column Name</label>
-            <input type="text" class="form-control" id="column-name" name="name" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Save</button>
+        <span class="close-btn">&times;</span>
+        <form id="task-form">
+            <input type="hidden" name="task_id" id="task-id">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+            <label for="due_date">Due Date:</label>
+            <input type="date" id="due_date" name="due_date">
+            <button type="submit" class="btn btn-primary">Save</button>
         </form>
-      </div>
     </div>
-  </div>
 </div>
 
+<div id="column-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <form id="column-form">
+            <label for="column-name">Column Name:</label>
+            <input type="text" id="column-name" name="column-name" required>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/kanban.js' %}"></script>
 {% endblock %}
+
+
+
 
 
 
