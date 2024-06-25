@@ -1,3 +1,7 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
 .kanban-container {
     display: flex;
     flex-direction: column;
@@ -42,6 +46,9 @@
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border: none; /* Remove border */
+    width: 100%;
+    cursor: pointer;
 }
 
 .kanban-column-body {
@@ -103,6 +110,7 @@
     color: #888;
     margin: 0 10px;
 }
+
 
 
 
