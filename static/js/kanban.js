@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let editingColumnID = null;
 
     createTaskBtn.addEventListener('click', function() {
-        taskModal.style.display = 'block';
+        taskModal.style.display = 'flex';
         taskForm.reset();
     });
 
     createColumnBtn.addEventListener('click', function() {
-        columnModal.style.display = 'block';
+        columnModal.style.display = 'flex';
         columnForm.reset();
     });
 
@@ -144,8 +144,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 taskForm.description.value = data.description;
                 taskForm.due_date.value = data.due_date;
                 taskForm.priority.value = data.priority;
-                taskForm.column.value = data.column;
-                taskModal.style.display = 'block';
+                // You can remove taskForm.column.value = data.column;
+                taskModal.style.display = 'flex';
             });
         });
     });
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 editColumnForm['edit-column-name'].value = data.name;
-                editColumnModal.style.display = 'block';
+                editColumnModal.style.display = 'flex';
             });
         });
     });

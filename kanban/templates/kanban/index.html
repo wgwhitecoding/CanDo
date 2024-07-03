@@ -4,7 +4,7 @@
 {% block title %}Kanban Board{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/kanban.css' %}">
+<link rel="stylesheet" href="{% static 'css/kanban.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,6 @@
                     {% for task in tasks %}
                     {% if task.column.id == column.id %}
                     <div class="kanban-task" data-task-id="{{ task.id }}">
-                        <div class="kanban-task-priority {{ task.priority|lower }}"></div>
                         <div class="kanban-task-title">{{ task.title }}</div>
                         <div class="kanban-task-due">{{ task.due_date }}</div>
                     </div>
@@ -49,12 +48,11 @@
             <label for="due_date">Due Date:</label>
             <input type="date" id="due_date" name="due_date">
             <label for="priority">Priority:</label>
-            <select id="priority" name="priority" required>
+            <select id="priority" name="priority">
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
             </select>
-            <input type="hidden" id="column" name="column" value="1"> <!-- Default column id -->
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
