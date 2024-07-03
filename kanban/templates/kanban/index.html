@@ -24,8 +24,17 @@
                     {% for task in tasks %}
                     {% if task.column.id == column.id %}
                     <div class="kanban-task" data-task-id="{{ task.id }}">
-                        <div class="kanban-task-title">{{ task.title }}</div>
+                        <div class="kanban-task-title">
+                            <span class="priority-indicator {% if task.priority == 'Low' %}priority-low{% elif task.priority == 'Medium' %}priority-medium{% elif task.priority == 'High' %}priority-high{% endif %}"></span>
+                            {{ task.title }}
+                        </div>
                         <div class="kanban-task-due">{{ task.due_date }}</div>
+                        <div class="kanban-task-details" style="display: none;">
+                            <p>{{ task.description }}</p>
+                            <button class="btn btn-primary edit-task-btn">Edit</button>
+                            <button class="btn btn-danger delete-task-btn">Delete</button>
+                            <button class="btn btn-secondary close-task-btn">Close</button>
+                        </div>
                     </div>
                     {% endif %}
                     {% endfor %}
@@ -37,6 +46,7 @@
     </div>
 </div>
 
+<!-- Task Modal -->
 <div id="task-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
@@ -48,6 +58,7 @@
     </div>
 </div>
 
+<!-- Column Modal -->
 <div id="column-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
@@ -59,6 +70,7 @@
     </div>
 </div>
 
+<!-- Edit Column Modal -->
 <div id="edit-column-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
@@ -78,7 +90,15 @@
 
 {% block extra_js %}
 <script src="{% static 'js/kanban.js' %}"></script>
+
 {% endblock %}
+
+
+
+
+
+
+
 
 
 

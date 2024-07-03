@@ -11,38 +11,34 @@ document.addEventListener('DOMContentLoaded', function() {
     let editingTaskID = null;
     let editingColumnID = null;
 
-    function hideModals() {
-        taskModal.style.display = 'none';
-        columnModal.style.display = 'none';
-        editColumnModal.style.display = 'none';
-    }
-
-    hideModals(); // Ensure modals are hidden on page load
-
     createTaskBtn.addEventListener('click', function() {
         taskModal.style.display = 'flex';
         taskForm.reset();
-        editingTaskID = null;
+        editingTaskID = null; // Reset editing task ID
     });
 
     createColumnBtn.addEventListener('click', function() {
         columnModal.style.display = 'flex';
         columnForm.reset();
+        editingColumnID = null; // Reset editing column ID
     });
 
     closeBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
-            hideModals();
+            taskModal.style.display = 'none';
+            columnModal.style.display = 'none';
+            editColumnModal.style.display = 'none';
         });
     });
 
     taskForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const data = {
-            title: taskForm.title.value,
-            description: taskForm.description.value,
-            due_date: taskForm.due_date.value,
-            priority: taskForm.priority.value
+            title: taskForm.querySelector('[name="title"]').value,
+            description: taskForm.querySelector('[name="description"]').value,
+            due_date: taskForm.querySelector('[name="due_date"]').value,
+            priority: taskForm.querySelector('[name="priority"]').value,
+            column: taskForm.querySelector('[name="column"]').value // Adjust this if column is not a field
         };
         fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
             method: 'POST',
@@ -57,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 location.reload();
             } else {
-                console.error('Error:', data.errors);
                 alert('Error creating/editing task');
             }
         });
@@ -66,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
     columnForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const data = {
-            name: columnForm['column-name'].value
+            name: columnForm.querySelector('[name="column-name"]').value
         };
         fetch('/kanban/create_column/', {
             method: 'POST',
@@ -81,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 location.reload();
             } else {
-                console.error('Error:', data.errors);
                 alert('Error creating column');
             }
         });
@@ -90,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     editColumnForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const data = {
-            name: editColumnForm['edit-column-name'].value
+            name: editColumnForm.querySelector('[name="edit-column-name"]').value
         };
         fetch(`/kanban/edit_column/${editingColumnID}/`, {
             method: 'POST',
@@ -105,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 location.reload();
             } else {
-                console.error('Error:', data.errors);
                 alert('Error editing column');
             }
         });
@@ -123,7 +116,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 location.reload();
             } else {
-                console.error('Error:', data.errors);
                 alert('Error deleting column');
             }
         });
@@ -150,10 +142,10 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`/kanban/get_task/${editingTaskID}/`)
             .then(response => response.json())
             .then(data => {
-                taskForm.title.value = data.title;
-                taskForm.description.value = data.description;
-                taskForm.due_date.value = data.due_date;
-                taskForm.priority.value = data.priority;
+                taskForm.querySelector('[name="title"]').value = data.title;
+                taskForm.querySelector('[name="description"]').value = data.description;
+                taskForm.querySelector('[name="due_date"]').value = data.due_date;
+                taskForm.querySelector('[name="priority"]').value = data.priority;
                 taskModal.style.display = 'flex';
             });
         });
@@ -165,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch(`/kanban/get_column/${editingColumnID}/`)
             .then(response => response.json())
             .then(data => {
-                editColumnForm['edit-column-name'].value = data.name;
+                editColumnForm.querySelector('[name="edit-column-name"]').value = data.name;
                 editColumnModal.style.display = 'flex';
             });
         });
@@ -203,7 +195,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     location.reload();
                 } else {
-                    console.error('Error:', data.errors);
                     alert('Error moving task');
                 }
             });

@@ -15,6 +15,7 @@ urlpatterns = [
     path('move_task/<int:task_id>/', views.move_task, name='move_task'),
     path('get_task/<int:task_id>/', views.get_task, name='get_task'),
     path('get_column/<int:column_id>/', views.get_column, name='get_column'),
+    path('search/', views.search_tasks, name='search'),
 ]
 
 

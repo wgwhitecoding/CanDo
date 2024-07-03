@@ -11,6 +11,12 @@ def index(request):
     return redirect('kanban:board')
 
 @login_required
+def search_tasks(request):
+    query = request.GET.get('q')
+    tasks = KanbanTask.objects.filter(title__icontains=query, created_by=request.user)
+    return render(request, 'kanban/search_results.html', {'tasks': tasks})
+
+@login_required
 def kanban_board(request):
     predefined_columns = ['New', 'To Do', 'In Progress', 'Done']
     board, created = Board.objects.get_or_create(owner=request.user, name='Default Board')
@@ -20,9 +26,13 @@ def kanban_board(request):
             Column.objects.create(name=col_name, board=board, default=True)
     columns = Column.objects.filter(board=board)
     tasks = KanbanTask.objects.filter(created_by=request.user)
+    task_form = KanbanTaskForm()
+    column_form = ColumnForm()
     context = {
         'tasks': tasks,
         'columns': columns,
+        'task_form': task_form,
+        'column_form': column_form,
     }
     return render(request, 'kanban/index.html', context)
 
@@ -131,6 +141,7 @@ def get_task(request, task_id):
 def get_column(request, column_id):
     column = get_object_or_404(Column, id=column_id, board__owner=request.user)
     return JsonResponse({'name': column.name})
+
 
 
 
