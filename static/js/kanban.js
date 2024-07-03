@@ -1,142 +1,214 @@
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
 document.addEventListener('DOMContentLoaded', function() {
+    const createTaskBtn = document.getElementById('create-task-btn');
     const createColumnBtn = document.getElementById('create-column-btn');
+    const taskModal = document.getElementById('task-modal');
     const columnModal = document.getElementById('column-modal');
-    const columnForm = document.getElementById('column-form');
     const editColumnModal = document.getElementById('edit-column-modal');
+    const taskForm = document.getElementById('task-form');
+    const columnForm = document.getElementById('column-form');
     const editColumnForm = document.getElementById('edit-column-form');
-    let editingColumnId = null;
+    const closeBtns = document.querySelectorAll('.close-btn');
+    let editingTaskID = null;
+    let editingColumnID = null;
+
+    createTaskBtn.addEventListener('click', function() {
+        taskModal.style.display = 'block';
+        taskForm.reset();
+    });
 
     createColumnBtn.addEventListener('click', function() {
         columnModal.style.display = 'block';
+        columnForm.reset();
     });
 
-    columnForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const formData = new FormData(columnForm);
-        console.log("Form Data: ", formData);
+    closeBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            taskModal.style.display = 'none';
+            columnModal.style.display = 'none';
+            editColumnModal.style.display = 'none';
+        });
+    });
+
+    taskForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            title: taskForm.title.value,
+            description: taskForm.description.value,
+            due_date: taskForm.due_date.value,
+            priority: taskForm.priority.value,
+            column: taskForm.column.value
+        };
+        fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                alert('Error creating/editing task');
+            }
+        });
+    });
+
+    columnForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            name: columnForm['column-name'].value
+        };
         fetch('/kanban/create_column/', {
             method: 'POST',
             headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
             },
-            body: formData,
+            body: JSON.stringify(data)
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Data: ", data);
             if (data.status === 'success') {
-                const columnBoard = document.querySelector('.kanban-board');
-                const newColumn = document.createElement('div');
-                newColumn.classList.add('kanban-column');
-                newColumn.setAttribute('data-column-id', data.column_id);
-    
-                const columnHeader = document.createElement('button');
-                columnHeader.classList.add('kanban-column-header');
-                columnHeader.textContent = data.name;
-                newColumn.appendChild(columnHeader);
-    
-                const columnBody = document.createElement('div');
-                columnBody.classList.add('kanban-column-body');
-                newColumn.appendChild(columnBody);
-    
-                columnBoard.appendChild(newColumn);
-    
-                columnModal.style.display = 'none';
-                columnForm.reset();
-                attachHeaderClickEvent();
+                location.reload();
             } else {
-                console.error('Error creating column:', data.errors || data.message);
-                alert(`Error creating column: ${data.errors || data.message}`);
+                alert('Error creating column');
             }
-        })
-        .catch(error => {
-            console.error('Fetch error:', error);
-            alert('Error creating column');
         });
     });
-    
-    function attachHeaderClickEvent() {
-        document.querySelectorAll('.kanban-column-header').forEach(columnHeader => {
-            columnHeader.removeEventListener('click', openEditColumnModal);
-            columnHeader.addEventListener('click', openEditColumnModal);
-        });
-    }
 
-    function openEditColumnModal() {
-        const columnId = this.closest('.kanban-column').getAttribute('data-column-id');
-        const columnName = this.textContent;
-        editingColumnId = columnId;
-        document.getElementById('edit-column-name').value = columnName;
-        editColumnModal.style.display = 'block';
-    }
-
-    attachHeaderClickEvent();
-
-    editColumnForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const newName = document.getElementById('edit-column-name').value;
-        fetch(`/kanban/edit_column/${editingColumnId}/`, {
+    editColumnForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = {
+            name: editColumnForm['edit-column-name'].value
+        };
+        fetch(`/kanban/edit_column/${editingColumnID}/`, {
             method: 'POST',
             headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
             },
-            body: `name=${encodeURIComponent(newName)}`,
+            body: JSON.stringify(data)
         })
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                const columnHeader = document.querySelector(`.kanban-column[data-column-id="${editingColumnId}"] .kanban-column-header`);
-                columnHeader.textContent = newName;
-                editColumnModal.style.display = 'none';
+                location.reload();
             } else {
-                console.error('Error editing column');
                 alert('Error editing column');
             }
         });
     });
 
     document.getElementById('delete-column-btn').addEventListener('click', function() {
-        fetch(`/kanban/delete_column/${editingColumnId}/`, {
+        fetch(`/kanban/delete_column/${editingColumnID}/`, {
             method: 'POST',
             headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
+                'X-CSRFToken': getCookie('csrftoken')
+            }
         })
         .then(response => response.json())
         .then(data => {
             if (data.status === 'success') {
-                const column = document.querySelector(`.kanban-column[data-column-id="${editingColumnId}"]`);
-                column.remove();
-                editColumnModal.style.display = 'none';
+                location.reload();
             } else {
-                console.error('Error deleting column');
                 alert('Error deleting column');
             }
         });
     });
 
-    document.querySelectorAll('.close-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.closest('.modal').style.display = 'none';
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.querySelectorAll('.kanban-task').forEach(task => {
+        task.addEventListener('click', function() {
+            editingTaskID = this.dataset.taskId;
+            fetch(`/kanban/get_task/${editingTaskID}/`)
+            .then(response => response.json())
+            .then(data => {
+                taskForm.title.value = data.title;
+                taskForm.description.value = data.description;
+                taskForm.due_date.value = data.due_date;
+                taskForm.priority.value = data.priority;
+                taskForm.column.value = data.column;
+                taskModal.style.display = 'block';
+            });
+        });
+    });
+
+    document.querySelectorAll('.kanban-column-header').forEach(header => {
+        header.addEventListener('click', function() {
+            editingColumnID = this.parentElement.dataset.columnId;
+            fetch(`/kanban/get_column/${editingColumnID}/`)
+            .then(response => response.json())
+            .then(data => {
+                editColumnForm['edit-column-name'].value = data.name;
+                editColumnModal.style.display = 'block';
+            });
+        });
+    });
+
+    // Drag and drop functionality
+    document.querySelectorAll('.kanban-task').forEach(task => {
+        task.setAttribute('draggable', true);
+
+        task.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('text/plain', this.dataset.taskId);
+        });
+    });
+
+    document.querySelectorAll('.kanban-column-body').forEach(column => {
+        column.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        column.addEventListener('drop', function(e) {
+            e.preventDefault();
+            const taskId = e.dataTransfer.getData('text/plain');
+            const newColumnId = this.parentElement.dataset.columnId;
+
+            fetch(`/kanban/move_task/${taskId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ column_id: newColumnId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    location.reload();
+                } else {
+                    alert('Error moving task');
+                }
+            });
         });
     });
 });
+
+
+
+
+
+
+
+
+
 
 
 
