@@ -11,9 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
     let editingTaskID = null;
     let editingColumnID = null;
 
+    function hideModals() {
+        taskModal.style.display = 'none';
+        columnModal.style.display = 'none';
+        editColumnModal.style.display = 'none';
+    }
+
+    hideModals(); // Ensure modals are hidden on page load
+
     createTaskBtn.addEventListener('click', function() {
         taskModal.style.display = 'flex';
         taskForm.reset();
+        editingTaskID = null;
     });
 
     createColumnBtn.addEventListener('click', function() {
@@ -23,9 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     closeBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
-            taskModal.style.display = 'none';
-            columnModal.style.display = 'none';
-            editColumnModal.style.display = 'none';
+            hideModals();
         });
     });
 
@@ -35,8 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title: taskForm.title.value,
             description: taskForm.description.value,
             due_date: taskForm.due_date.value,
-            priority: taskForm.priority.value,
-            column: taskForm.column.value
+            priority: taskForm.priority.value
         };
         fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
             method: 'POST',
@@ -51,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 location.reload();
             } else {
+                console.error('Error:', data.errors);
                 alert('Error creating/editing task');
             }
         });
@@ -74,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 location.reload();
             } else {
+                console.error('Error:', data.errors);
                 alert('Error creating column');
             }
         });
@@ -97,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 location.reload();
             } else {
+                console.error('Error:', data.errors);
                 alert('Error editing column');
             }
         });
@@ -114,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 location.reload();
             } else {
+                console.error('Error:', data.errors);
                 alert('Error deleting column');
             }
         });
@@ -144,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 taskForm.description.value = data.description;
                 taskForm.due_date.value = data.due_date;
                 taskForm.priority.value = data.priority;
-                // You can remove taskForm.column.value = data.column;
                 taskModal.style.display = 'flex';
             });
         });
@@ -194,12 +203,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     location.reload();
                 } else {
+                    console.error('Error:', data.errors);
                     alert('Error moving task');
                 }
             });
         });
     });
 });
+
+
 
 
 
