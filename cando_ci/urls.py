@@ -15,21 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-# cando_ci/urls.py
-
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
-from django.contrib.auth.views import LoginView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/accounts/login/')),
-    path('kanban/', include('kanban.urls', namespace='kanban')),
+    path('kanban/', include('kanban.urls')),
     path('notes/', include('notes.urls')),
     path('calendar/', include('calendar_app.urls')),
     path('accounts/', include('allauth.urls')),
 ]
+
 
 
 

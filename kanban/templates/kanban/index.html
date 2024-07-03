@@ -4,7 +4,7 @@
 {% block title %}Kanban Board{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/kanban.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/kanban.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -17,20 +17,20 @@
         <button id="scroll-left" class="scroll-button">&lt;</button>
         <div class="kanban-board">
             {% for column in columns %}
-                <div class="kanban-column" data-column-id="{{ column.id }}">
-                    <button class="kanban-column-header">{{ column.name }}</button>
-                    <div class="kanban-column-body">
-                        {% for task in tasks %}
-                            {% if task.column.id == column.id %}
-                                <div class="kanban-task" data-task-id="{{ task.id }}">
-                                    <div class="kanban-task-title">{{ task.title }}</div>
-                                    <div class="kanban-task-due">{{ task.due_date }}</div>
-                                    <div class="kanban-task-priority {{ task.priority|lower }}"></div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+            <div class="kanban-column" data-column-id="{{ column.id }}">
+                <button class="kanban-column-header">{{ column.name }}</button>
+                <div class="kanban-column-body">
+                    {% for task in tasks %}
+                    {% if task.column.id == column.id %}
+                    <div class="kanban-task" data-task-id="{{ task.id }}">
+                        <div class="kanban-task-priority {{ task.priority|lower }}"></div>
+                        <div class="kanban-task-title">{{ task.title }}</div>
+                        <div class="kanban-task-due">{{ task.due_date }}</div>
                     </div>
+                    {% endif %}
+                    {% endfor %}
                 </div>
+            </div>
             {% endfor %}
         </div>
         <button id="scroll-right" class="scroll-button">&gt;</button>
@@ -49,11 +49,12 @@
             <label for="due_date">Due Date:</label>
             <input type="date" id="due_date" name="due_date">
             <label for="priority">Priority:</label>
-            <select id="priority" name="priority">
+            <select id="priority" name="priority" required>
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
             </select>
+            <input type="hidden" id="column" name="column" value="1"> <!-- Default column id -->
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
@@ -82,12 +83,12 @@
         </form>
     </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/kanban.js' %}"></script>
 {% endblock %}
+
 
 
 

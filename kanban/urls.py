@@ -1,12 +1,10 @@
-# kanban/urls.py
-
 from django.urls import path
 from . import views
 
 app_name = 'kanban'
 
 urlpatterns = [
-    path('', views.index, name='index'),  # Ensure this is included
+    path('', views.index, name='index'),
     path('board/', views.kanban_board, name='board'),
     path('create_task/', views.create_task, name='create_task'),
     path('edit_task/<int:task_id>/', views.edit_task, name='edit_task'),
@@ -18,6 +16,7 @@ urlpatterns = [
     path('get_task/<int:task_id>/', views.get_task, name='get_task'),
     path('get_column/<int:column_id>/', views.get_column, name='get_column'),
 ]
+
 
 
 
