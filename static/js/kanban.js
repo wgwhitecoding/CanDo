@@ -12,12 +12,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let editingColumnID = null;
 
     createTaskBtn.addEventListener('click', function() {
+        console.log('Create Task Button Clicked');
         taskModal.style.display = 'flex';
         taskForm.reset();
         editingTaskID = null; // Reset editing task ID
     });
 
     createColumnBtn.addEventListener('click', function() {
+        console.log('Create Column Button Clicked');
         columnModal.style.display = 'flex';
         columnForm.reset();
         editingColumnID = null; // Reset editing column ID
@@ -25,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     closeBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
+            console.log('Close Button Clicked');
             taskModal.style.display = 'none';
             columnModal.style.display = 'none';
             editColumnModal.style.display = 'none';
@@ -33,78 +36,122 @@ document.addEventListener('DOMContentLoaded', function() {
 
     taskForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const data = {
-            title: taskForm.querySelector('[name="title"]').value,
-            description: taskForm.querySelector('[name="description"]').value,
-            due_date: taskForm.querySelector('[name="due_date"]').value,
-            priority: taskForm.querySelector('[name="priority"]').value,
-            column: taskForm.querySelector('[name="column"]').value // Adjust this if column is not a field
-        };
-        fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                location.reload();
-            } else {
-                alert('Error creating/editing task');
-            }
+        const titleField = taskForm.querySelector('[name="title"]');
+        const descriptionField = taskForm.querySelector('[name="description"]');
+        const dueDateField = taskForm.querySelector('[name="due_date"]');
+        const priorityField = taskForm.querySelector('[name="priority"]');
+        console.log('Task Form Submitted:', {
+            titleField, descriptionField, dueDateField, priorityField
         });
+
+        if (titleField && descriptionField && dueDateField && priorityField) {
+            const data = {
+                title: titleField.value,
+                description: descriptionField.value,
+                due_date: dueDateField.value,
+                priority: priorityField.value,
+                column: 'New'  // Assigning the task to the "New" column by default
+            };
+            console.log('Submitting task data:', data);
+
+            fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+                if (data.status === 'success') {
+                    location.reload();
+                } else {
+                    console.error('Error creating/editing task:', data);
+                    alert('Error creating/editing task');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            console.error('One or more form fields are missing');
+        }
     });
 
     columnForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const data = {
-            name: columnForm.querySelector('[name="column-name"]').value
-        };
-        fetch('/kanban/create_column/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                location.reload();
-            } else {
-                alert('Error creating column');
-            }
-        });
+        const columnNameField = columnForm.querySelector('[name="column-name"]');
+        console.log('Column Form Submitted:', { columnNameField });
+
+        if (columnNameField) {
+            const data = { name: columnNameField.value };
+            console.log('Submitting column data:', data);
+
+            fetch('/kanban/create_column/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+                if (data.status === 'success') {
+                    location.reload();
+                } else {
+                    console.error('Error creating column:', data);
+                    alert('Error creating column');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            console.error('Column name field is missing');
+        }
     });
 
     editColumnForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const data = {
-            name: editColumnForm.querySelector('[name="edit-column-name"]').value
-        };
-        fetch(`/kanban/edit_column/${editingColumnID}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                location.reload();
-            } else {
-                alert('Error editing column');
-            }
-        });
+        const editColumnNameField = editColumnForm.querySelector('[name="edit-column-name"]');
+        console.log('Edit Column Form Submitted:', { editColumnNameField });
+
+        if (editColumnNameField) {
+            const data = { name: editColumnNameField.value };
+            console.log('Submitting edit column data:', data);
+
+            fetch(`/kanban/edit_column/${editingColumnID}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+                if (data.status === 'success') {
+                    location.reload();
+                } else {
+                    console.error('Error editing column:', data);
+                    alert('Error editing column');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            console.error('Edit column name field is missing');
+        }
     });
 
     document.getElementById('delete-column-btn').addEventListener('click', function() {
+        console.log('Deleting column with ID:', editingColumnID);
         fetch(`/kanban/delete_column/${editingColumnID}/`, {
             method: 'POST',
             headers: {
@@ -113,11 +160,16 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Response from server:', data);
             if (data.status === 'success') {
                 location.reload();
             } else {
+                console.error('Error deleting column:', data);
                 alert('Error deleting column');
             }
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
     });
 
@@ -182,6 +234,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const taskId = e.dataTransfer.getData('text/plain');
             const newColumnId = this.parentElement.dataset.columnId;
 
+            console.log('Moving task ID:', taskId, 'to column ID:', newColumnId);
+
             fetch(`/kanban/move_task/${taskId}/`, {
                 method: 'POST',
                 headers: {
@@ -192,15 +246,24 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Response from server:', data);
                 if (data.status === 'success') {
                     location.reload();
                 } else {
+                    console.error('Error moving task:', data);
                     alert('Error moving task');
                 }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
         });
     });
 });
+
+
+
+
 
 
 

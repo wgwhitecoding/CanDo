@@ -5,15 +5,15 @@ import importlib.util
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load env.py if it exists
+
 if importlib.util.find_spec('env'):
     import env
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-4f@q*&zgve*6!@i@33i&@$pz=dix4u0qokbuj1!!ro)lwcxy67')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['8000-wgwhitecodi-candocifina-pzhwvlbx0qx.ws-eu114.gitpod.io','.herokuapp.com']
+ALLOWED_HOSTS = ['8000-wgwhitecodi-candocifina-ltunc25qaju.ws.codeinstitute-ide.net','.herokuapp.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -121,6 +121,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = [
     'https://*.gitpod.io',
+    'https://8000-wgwhitecodi-candocifina-ltunc25qaju.ws.codeinstitute-ide.net',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

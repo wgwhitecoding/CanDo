@@ -45,6 +45,7 @@ def create_task(request):
         if form.is_valid():
             task = form.save(commit=False)
             task.created_by = request.user
+            task.column = Column.objects.get(name='New', board__owner=request.user)
             task.save()
             return JsonResponse({'status': 'success'})
         else:
@@ -141,6 +142,7 @@ def get_task(request, task_id):
 def get_column(request, column_id):
     column = get_object_or_404(Column, id=column_id, board__owner=request.user)
     return JsonResponse({'name': column.name})
+
 
 
 
