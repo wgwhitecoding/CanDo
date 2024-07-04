@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const columnModal = document.getElementById('column-modal');
     const editColumnModal = document.getElementById('edit-column-modal');
     const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
+    const deleteColumnConfirmationModal = document.getElementById('delete-column-confirmation-modal');
+    const moveDeleteTaskModal = document.getElementById('move-delete-task-modal');
     const taskForm = document.getElementById('task-form');
     const columnForm = document.getElementById('column-form');
     const editColumnForm = document.getElementById('edit-column-form');
@@ -12,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let editingTaskID = null;
     let editingColumnID = null;
     let deletingTaskID = null;
+    let deletingColumnID = null;
 
     createTaskBtn.addEventListener('click', function() {
         console.log('Create Task Button Clicked');
@@ -34,6 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
             columnModal.style.display = 'none';
             editColumnModal.style.display = 'none';
             deleteConfirmationModal.style.display = 'none';
+            deleteColumnConfirmationModal.style.display = 'none';
+            moveDeleteTaskModal.style.display = 'none';
         });
     });
 
@@ -155,8 +160,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.getElementById('delete-column-btn').addEventListener('click', function() {
-        console.log('Deleting column with ID:', editingColumnID);
-        fetch(`/kanban/delete_column/${editingColumnID}/`, {
+        console.log('Attempting to delete column with ID:', editingColumnID);
+        deletingColumnID = editingColumnID;
+
+        fetch(`/kanban/get_column/${editingColumnID}/`)
+            .then(response => response.json())
+            .then(columnData => {
+                fetch(`/kanban/get_tasks_in_column/${editingColumnID}/`)
+                    .then(response => response.json())
+                    .then(tasks => {
+                        if (tasks.length > 0) {
+                            moveDeleteTaskModal.style.display = 'flex';
+                        } else {
+                            const confirmationText = `Are you sure you want to delete the column: "${columnData.name}"?`;
+                            document.getElementById('delete-column-confirmation-text').innerText = confirmationText;
+                            deleteColumnConfirmationModal.style.display = 'flex';
+                        }
+                    });
+            });
+    });
+
+    document.getElementById('confirm-delete-column-btn').addEventListener('click', function() {
+        fetch(`/kanban/delete_column/${deletingColumnID}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCookie('csrftoken')
@@ -175,6 +200,10 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Error:', error);
         });
+    });
+
+    document.getElementById('close-move-delete-task-modal-btn').addEventListener('click', function() {
+        moveDeleteTaskModal.style.display = 'none';
     });
 
     function getCookie(name) {
@@ -199,7 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
             taskDetails.style.display = 'block';
             taskButtons.forEach(button => button.style.display = 'inline-block');
 
-            // Attach the event listener for the close button
             const closeButton = this.querySelector('.close-task-btn');
             closeButton.addEventListener('click', function(e) {
                 e.stopPropagation(); // Prevent the click event from bubbling up to the task element
@@ -208,7 +236,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 taskButtons.forEach(button => button.style.display = 'none');
             });
 
-            // Attach the event listener for the edit button
             this.querySelector('.edit-task-btn').addEventListener('click', function() {
                 editingTaskID = task.dataset.taskId;
                 fetch(`/kanban/get_task/${editingTaskID}/`)
@@ -222,7 +249,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
-            // Attach the event listener for the delete button
             this.querySelector('.delete-task-btn').addEventListener('click', function() {
                 deletingTaskID = task.dataset.taskId;
                 deleteConfirmationModal.style.display = 'flex';
@@ -309,6 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
 
 
 

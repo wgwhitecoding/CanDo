@@ -143,6 +143,11 @@ def get_column(request, column_id):
     column = get_object_or_404(Column, id=column_id, board__owner=request.user)
     return JsonResponse({'name': column.name})
 
+def get_tasks_in_column(request, column_id):
+    column = get_object_or_404(Column, id=column_id, board__owner=request.user)
+    tasks = KanbanTask.objects.filter(column=column)
+    tasks_data = list(tasks.values('id', 'title', 'description', 'due_date', 'priority'))
+    return JsonResponse(tasks_data, safe=False)
 
 
 
