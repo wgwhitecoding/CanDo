@@ -4,12 +4,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const taskModal = document.getElementById('task-modal');
     const columnModal = document.getElementById('column-modal');
     const editColumnModal = document.getElementById('edit-column-modal');
+    const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
     const taskForm = document.getElementById('task-form');
     const columnForm = document.getElementById('column-form');
     const editColumnForm = document.getElementById('edit-column-form');
     const closeBtns = document.querySelectorAll('.close-btn');
     let editingTaskID = null;
     let editingColumnID = null;
+    let deletingTaskID = null;
 
     createTaskBtn.addEventListener('click', function() {
         console.log('Create Task Button Clicked');
@@ -31,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
             taskModal.style.display = 'none';
             columnModal.style.display = 'none';
             editColumnModal.style.display = 'none';
+            deleteConfirmationModal.style.display = 'none';
         });
     });
 
@@ -83,7 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
     columnForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const columnNameField = columnForm.querySelector('[name="column-name"]');
-        console.log('Column Form Submitted:', { columnNameField });
+        console.log('Column Form:', columnForm);
+        console.log('Column Name Field:', columnNameField);
 
         if (columnNameField) {
             const data = { name: columnNameField.value };
@@ -190,16 +194,54 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.kanban-task').forEach(task => {
         task.addEventListener('click', function() {
-            editingTaskID = this.dataset.taskId;
-            fetch(`/kanban/get_task/${editingTaskID}/`)
-            .then(response => response.json())
-            .then(data => {
-                taskForm.querySelector('[name="title"]').value = data.title;
-                taskForm.querySelector('[name="description"]').value = data.description;
-                taskForm.querySelector('[name="due_date"]').value = data.due_date;
-                taskForm.querySelector('[name="priority"]').value = data.priority;
-                taskModal.style.display = 'flex';
+            const taskDetails = this.querySelector('.kanban-task-details');
+            const taskButtons = this.querySelectorAll('.kanban-task-details button');
+            taskDetails.style.display = 'block';
+            taskButtons.forEach(button => button.style.display = 'inline-block');
+
+            this.querySelector('.close-task-btn').addEventListener('click', function() {
+                taskDetails.style.display = 'none';
             });
+
+            this.querySelector('.edit-task-btn').addEventListener('click', function() {
+                editingTaskID = task.dataset.taskId;
+                fetch(`/kanban/get_task/${editingTaskID}/`)
+                .then(response => response.json())
+                .then(data => {
+                    taskForm.querySelector('[name="title"]').value = data.title;
+                    taskForm.querySelector('[name="description"]').value = data.description;
+                    taskForm.querySelector('[name="due_date"]').value = data.due_date;
+                    taskForm.querySelector('[name="priority"]').value = data.priority;
+                    taskModal.style.display = 'flex';
+                });
+            });
+
+            this.querySelector('.delete-task-btn').addEventListener('click', function() {
+                deletingTaskID = task.dataset.taskId;
+                deleteConfirmationModal.style.display = 'flex';
+            });
+        });
+    });
+
+    document.getElementById('confirm-delete-btn').addEventListener('click', function() {
+        fetch(`/kanban/delete_task/${deletingTaskID}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Response from server:', data);
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                console.error('Error deleting task:', data);
+                alert('Error deleting task');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
     });
 
@@ -260,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
 
 
 

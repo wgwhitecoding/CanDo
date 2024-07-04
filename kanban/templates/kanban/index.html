@@ -91,11 +91,22 @@
         </form>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-confirmation-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <p>Are you sure you want to delete this task?</p>
+        <button id="confirm-delete-btn" class="btn btn-danger">Delete</button>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/kanban.js' %}"></script>
 {% endblock %}
+
 
                
 
