@@ -59,16 +59,21 @@
 </div>
 
 <!-- Column Modal -->
+<!-- Column Modal -->
 <div id="column-modal" class="modal">
     <div class="modal-content">
         <span class="close-btn">&times;</span>
         <form id="column-form" method="post" action="{% url 'kanban:create_column' %}">
             {% csrf_token %}
-            {{ column_form|crispy }}
+            <div class="form-group">
+                <label for="column-name">Column Name:</label>
+                <input type="text" id="column-name" name="column-name" class="form-control" required>
+            </div>
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
 </div>
+
 
 <!-- Edit Column Modal -->
 <div id="edit-column-modal" class="modal">
@@ -91,6 +96,9 @@
 {% block extra_js %}
 <script src="{% static 'js/kanban.js' %}"></script>
 {% endblock %}
+
+               
+
 
 
 
