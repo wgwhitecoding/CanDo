@@ -93,6 +93,14 @@ body {
     background-color: #dc3545;
 }
 
+.priority-done {
+    background: url("/static/images/apple-touch-icon.png") no-repeat center center;
+    background-size: contain;
+    width: 20px;
+    height: 20px; 
+    display: inline-block;
+}
+
 .kanban-task-due {
     font-size: 0.8em;
     color: #888;
@@ -153,6 +161,7 @@ body {
 .ml-auto {
     margin-left: auto;
 }
+
 .search-header,
 .search-history-header {
     display: flex;
@@ -167,29 +176,22 @@ body {
     font-weight: bold;
 }
 
-.ml-auto {
-    margin-left: auto;
+.priority-indicators {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
 }
 
-
-.priority-low {
-    background-color: green;
+.priority-indicators p {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
 }
 
-.priority-medium {
-    background-color: orange;
+.priority-indicators .priority-indicator {
+    margin-right: 5px;
 }
 
-.priority-high {
-    background-color: red;
-}
-.priority-done {
-    background: url("{% static 'images/apple-touch-icon.png' %}") no-repeat center center;
-    background-size: contain;
-    width: 20px; 
-    height: 20px; 
-    display: inline-block;
-}
 
 
 

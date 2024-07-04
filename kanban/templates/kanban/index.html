@@ -53,6 +53,12 @@
         <form id="task-form" method="post" action="{% url 'kanban:create_task' %}">
             {% csrf_token %}
             {{ task_form|crispy }}
+            <div class="priority-indicators">
+                <p><span class="priority-indicator priority-low"></span> Low</p>
+                <p><span class="priority-indicator priority-medium"></span> Medium</p>
+                <p><span class="priority-indicator priority-high"></span> High</p>
+                <p><span class="priority-indicator priority-done"></span> Done</p>
+            </div>
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
@@ -121,6 +127,7 @@
 {% block extra_js %}
 <script src="{% static 'js/kanban.js' %}"></script>
 {% endblock %}
+
 
 
 
