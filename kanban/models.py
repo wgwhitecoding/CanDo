@@ -17,10 +17,17 @@ class Column(models.Model):
         return self.name
 
 class KanbanTask(models.Model):
+    PRIORITY_CHOICES = [
+        ('Low', 'Low'),
+        ('Medium', 'Medium'),
+        ('High', 'High'),
+        ('Done', 'Done'),
+    ]
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     due_date = models.DateField(null=True, blank=True)
-    priority = models.CharField(max_length=20, choices=[('Low', 'Low'), ('Medium', 'Medium'), ('High', 'High')], default='Medium')
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Medium')
     column = models.ForeignKey(Column, related_name='tasks', on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 

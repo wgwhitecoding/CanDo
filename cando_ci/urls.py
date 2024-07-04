@@ -24,7 +24,6 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/accounts/login/')),
     path('kanban/', include('kanban.urls')),
     path('accounts/', include('allauth.urls')),
-    path('user_profile/', include('user_profile/'))
 ]
 
 

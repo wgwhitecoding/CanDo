@@ -25,7 +25,7 @@
                     {% if task.column.id == column.id %}
                     <div class="kanban-task" data-task-id="{{ task.id }}">
                         <div class="kanban-task-title">
-                            <span class="priority-indicator {% if task.priority == 'Low' %}priority-low{% elif task.priority == 'Medium' %}priority-medium{% elif task.priority == 'High' %}priority-high{% endif %}"></span>
+                            <span class="priority-indicator {% if task.priority == 'Low' %}priority-low{% elif task.priority == 'Medium' %}priority-medium{% elif task.priority == 'High' %}priority-high{% elif task.priority == 'Done' %}priority-done{% endif %}"></span>
                             {{ task.title }}
                         </div>
                         <div class="kanban-task-due">{{ task.due_date }}</div>
@@ -73,7 +73,6 @@
     </div>
 </div>
 
-
 <!-- Edit Column Modal -->
 <div id="edit-column-modal" class="modal">
     <div class="modal-content">
@@ -117,12 +116,12 @@
     </div>
 </div>
 
-
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/kanban.js' %}"></script>
 {% endblock %}
+
 
 
                

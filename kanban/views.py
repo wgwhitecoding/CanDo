@@ -16,8 +16,9 @@ def search_tasks(request):
     tasks = KanbanTask.objects.filter(title__icontains=query, created_by=request.user) if query else KanbanTask.objects.none()
     
     if query:
-        if not SearchHistory.objects.filter(user=request.user, query=query).exists():
-            SearchHistory.objects.create(user=request.user, query=query)
+        for task in tasks:
+            if not SearchHistory.objects.filter(user=request.user, task=task).exists():
+                SearchHistory.objects.create(user=request.user, task=task)
     
     search_history = SearchHistory.objects.filter(user=request.user).order_by('-timestamp')[:10]
 
@@ -26,6 +27,16 @@ def search_tasks(request):
         'task_form': KanbanTaskForm(),
         'search_history': search_history
     })
+
+
+@login_required
+@csrf_exempt
+def clear_search_history(request):
+    if request.method == 'POST':
+        SearchHistory.objects.filter(user=request.user).delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 
 @login_required
 def kanban_board(request):

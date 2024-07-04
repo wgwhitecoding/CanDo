@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'kanban',
-    'user_profile'
     'django.contrib.sites',
     'allauth',
     'allauth.account',

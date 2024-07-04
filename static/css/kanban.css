@@ -135,7 +135,61 @@ body {
     margin: 0 10px;
 }
 
+.list-group-item {
+    border: none !important;
+}
 
+.kanban-task {
+    border: none !important;
+}
+
+.search-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+.search-header,
+.search-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.search-header .delete-note {
+    font-size: 0.9em;
+    color: red;
+    font-weight: bold;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+
+.priority-low {
+    background-color: green;
+}
+
+.priority-medium {
+    background-color: orange;
+}
+
+.priority-high {
+    background-color: red;
+}
+.priority-done {
+    background: url("{% static 'images/apple-touch-icon.png' %}") no-repeat center center;
+    background-size: contain;
+    width: 20px; 
+    height: 20px; 
+    display: inline-block;
+}
 
 
 
