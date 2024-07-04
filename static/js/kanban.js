@@ -199,10 +199,16 @@ document.addEventListener('DOMContentLoaded', function() {
             taskDetails.style.display = 'block';
             taskButtons.forEach(button => button.style.display = 'inline-block');
 
-            this.querySelector('.close-task-btn').addEventListener('click', function() {
+            // Attach the event listener for the close button
+            const closeButton = this.querySelector('.close-task-btn');
+            closeButton.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent the click event from bubbling up to the task element
+                console.log('Close Button Clicked');
                 taskDetails.style.display = 'none';
+                taskButtons.forEach(button => button.style.display = 'none');
             });
 
+            // Attach the event listener for the edit button
             this.querySelector('.edit-task-btn').addEventListener('click', function() {
                 editingTaskID = task.dataset.taskId;
                 fetch(`/kanban/get_task/${editingTaskID}/`)
@@ -216,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
+            // Attach the event listener for the delete button
             this.querySelector('.delete-task-btn').addEventListener('click', function() {
                 deletingTaskID = task.dataset.taskId;
                 deleteConfirmationModal.style.display = 'flex';
@@ -302,6 +309,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
 
 
 
