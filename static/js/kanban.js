@@ -1,3 +1,9 @@
+
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const createTaskBtn = document.getElementById('create-task-btn');
     const createColumnBtn = document.getElementById('create-column-btn');
@@ -20,14 +26,14 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Create Task Button Clicked');
         taskModal.style.display = 'flex';
         taskForm.reset();
-        editingTaskID = null; // Reset editing task ID
+        editingTaskID = null; 
     });
 
     createColumnBtn.addEventListener('click', function() {
         console.log('Create Column Button Clicked');
         columnModal.style.display = 'flex';
         columnForm.reset();
-        editingColumnID = null; // Reset editing column ID
+        editingColumnID = null; 
     });
 
     closeBtns.forEach(function(btn) {
@@ -58,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 description: descriptionField.value,
                 due_date: dueDateField.value,
                 priority: priorityField.value,
-                column: 'New'  // Assigning the task to the "New" column by default
+                column: 'New'  
             };
             console.log('Submitting task data:', data);
 
@@ -230,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const closeButton = this.querySelector('.close-task-btn');
             closeButton.addEventListener('click', function(e) {
-                e.stopPropagation(); // Prevent the click event from bubbling up to the task element
+                e.stopPropagation();
                 console.log('Close Button Clicked');
                 taskDetails.style.display = 'none';
                 taskButtons.forEach(button => button.style.display = 'none');
@@ -335,12 +341,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
-
-
-
-
-
 
 
 

@@ -39,6 +39,19 @@
     <p>No tasks found matching your query.</p>
 {% endif %}
 
+<h3>Search History</h3>
+{% if search_history %}
+    <ul class="list-group">
+        {% for history in search_history %}
+            <li class="list-group-item">
+                <a href="{% url 'search_tasks' %}?q={{ history.query }}">{{ history.query }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No search history available.</p>
+{% endif %}
+
 <!-- Task Modal -->
 <div id="task-modal" class="modal">
     <div class="modal-content">
@@ -50,11 +63,22 @@
         </form>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-confirmation-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <p>Are you sure you want to delete this task?</p>
+        <button id="confirm-delete-btn" class="btn btn-danger">Delete</button>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/search.js' %}"></script>
 {% endblock %}
+
 
 
 

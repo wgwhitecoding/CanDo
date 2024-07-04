@@ -17,6 +17,7 @@ urlpatterns = [
     path('get_column/<int:column_id>/', views.get_column, name='get_column'),
     path('search/', views.search_tasks, name='search'),
     path('get_tasks_in_column/<int:column_id>/', views.get_tasks_in_column, name='get_tasks_in_column'),
+    path('search/', views.search_tasks, name='search_tasks'),
 ]
 
 

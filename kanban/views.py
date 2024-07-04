@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .models import KanbanTask, Column, Board
+from .models import KanbanTask, Column, Board, SearchHistory
 from .forms import KanbanTaskForm, ColumnForm
 import json
 
@@ -14,7 +14,19 @@ def index(request):
 def search_tasks(request):
     query = request.GET.get('q')
     tasks = KanbanTask.objects.filter(title__icontains=query, created_by=request.user)
-    return render(request, 'kanban/search_results.html', {'tasks': tasks})
+    
+    # Save the search query to history
+    if query:
+        SearchHistory.objects.create(user=request.user, query=query)
+    
+    # Retrieve the search history
+    search_history = SearchHistory.objects.filter(user=request.user).order_by('-timestamp')[:10]
+
+    return render(request, 'kanban/search_results.html', {
+        'tasks': tasks,
+        'task_form': KanbanTaskForm(),
+        'search_history': search_history
+    })
 
 @login_required
 def kanban_board(request):
@@ -108,6 +120,9 @@ def edit_column(request, column_id):
 @csrf_exempt
 def delete_column(request, column_id):
     column = get_object_or_404(Column, id=column_id, board__owner=request.user, default=False)
+    tasks = KanbanTask.objects.filter(column=column)
+    if tasks.exists():
+        return JsonResponse({'status': 'error', 'message': 'Please move or delete tasks in the column first.'})
     if request.method == 'POST':
         column.delete()
         return JsonResponse({'status': 'success'})
@@ -143,6 +158,7 @@ def get_column(request, column_id):
     column = get_object_or_404(Column, id=column_id, board__owner=request.user)
     return JsonResponse({'name': column.name})
 
+@login_required
 def get_tasks_in_column(request, column_id):
     column = get_object_or_404(Column, id=column_id, board__owner=request.user)
     tasks = KanbanTask.objects.filter(column=column)
