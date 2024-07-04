@@ -44,7 +44,24 @@
     <ul class="list-group">
         {% for history in search_history %}
             <li class="list-group-item">
-                <a href="{% url 'search_tasks' %}?q={{ history.query }}">{{ history.query }}</a>
+                <div class="kanban-task" data-task-id="{{ history.task.id }}">
+                    <div class="kanban-task-title">
+                        <span class="priority-indicator 
+                            {% if history.task.priority == 'Low' %}priority-low
+                            {% elif history.task.priority == 'Medium' %}priority-medium
+                            {% elif history.task.priority == 'High' %}priority-high
+                            {% endif %}
+                        "></span>
+                        {{ history.task.title }}
+                    </div>
+                    <div class="kanban-task-due">{{ history.task.due_date }}</div>
+                    <div class="kanban-task-details" style="display: none;">
+                        <p>{{ history.task.description }}</p>
+                        <button class="btn btn-primary edit-task-btn">Edit</button>
+                        <button class="btn btn-danger delete-task-btn">Delete</button>
+                        <button class="btn btn-secondary close-task-btn">Close</button>
+                    </div>
+                </div>
             </li>
         {% endfor %}
     </ul>
@@ -78,6 +95,7 @@
 {% block extra_js %}
 <script src="{% static 'js/search.js' %}"></script>
 {% endblock %}
+
 
 
 

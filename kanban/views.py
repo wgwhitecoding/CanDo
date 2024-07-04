@@ -13,13 +13,12 @@ def index(request):
 @login_required
 def search_tasks(request):
     query = request.GET.get('q')
-    tasks = KanbanTask.objects.filter(title__icontains=query, created_by=request.user)
+    tasks = KanbanTask.objects.filter(title__icontains=query, created_by=request.user) if query else KanbanTask.objects.none()
     
-    # Save the search query to history
     if query:
-        SearchHistory.objects.create(user=request.user, query=query)
+        if not SearchHistory.objects.filter(user=request.user, query=query).exists():
+            SearchHistory.objects.create(user=request.user, query=query)
     
-    # Retrieve the search history
     search_history = SearchHistory.objects.filter(user=request.user).order_by('-timestamp')[:10]
 
     return render(request, 'kanban/search_results.html', {
@@ -164,6 +163,8 @@ def get_tasks_in_column(request, column_id):
     tasks = KanbanTask.objects.filter(column=column)
     tasks_data = list(tasks.values('id', 'title', 'description', 'due_date', 'priority'))
     return JsonResponse(tasks_data, safe=False)
+
+
 
 
 

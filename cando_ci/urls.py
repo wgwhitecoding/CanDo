@@ -23,9 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', RedirectView.as_view(url='/accounts/login/')),
     path('kanban/', include('kanban.urls')),
-    path('notes/', include('notes.urls')),
-    path('calendar/', include('calendar_app.urls')),
     path('accounts/', include('allauth.urls')),
+    path('user_profile/', include('user_profile/'))
 ]
 
 

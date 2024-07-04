@@ -23,8 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'kanban',
-    'calendar_app',
-    'notes',
+    'user_profile'
     'django.contrib.sites',
     'allauth',
     'allauth.account',

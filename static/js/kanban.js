@@ -1,9 +1,3 @@
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', function() {
     const createTaskBtn = document.getElementById('create-task-btn');
     const createColumnBtn = document.getElementById('create-column-btn');
