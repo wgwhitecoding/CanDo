@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import KanbanTask, Column, Board, SearchHistory
 from .forms import KanbanTaskForm, ColumnForm
 import json
@@ -28,7 +29,6 @@ def search_tasks(request):
         'search_history': search_history
     })
 
-
 @login_required
 @csrf_exempt
 def clear_search_history(request):
@@ -36,7 +36,6 @@ def clear_search_history(request):
         SearchHistory.objects.filter(user=request.user).delete()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
 
 @login_required
 def kanban_board(request):
@@ -69,6 +68,7 @@ def create_task(request):
             task.created_by = request.user
             task.column = Column.objects.get(name='New', board__owner=request.user)
             task.save()
+            messages.success(request, 'Task created successfully.')
             return JsonResponse({'status': 'success'})
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
@@ -83,6 +83,7 @@ def edit_task(request, task_id):
         form = KanbanTaskForm(data, instance=task)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Task edited successfully.')
             return JsonResponse({'status': 'success'})
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
@@ -94,6 +95,7 @@ def delete_task(request, task_id):
     task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
     if request.method == 'POST':
         task.delete()
+        messages.success(request, 'Task deleted successfully.')
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
@@ -107,6 +109,7 @@ def create_column(request):
             column = form.save(commit=False)
             column.board = Board.objects.get(owner=request.user, name='Default Board')
             column.save()
+            messages.success(request, 'Column created successfully.')
             return JsonResponse({'status': 'success', 'column_id': column.id, 'name': column.name})
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
@@ -121,6 +124,7 @@ def edit_column(request, column_id):
         form = ColumnForm(data, instance=column)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Column edited successfully.')
             return JsonResponse({'status': 'success', 'name': column.name})
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
@@ -135,6 +139,7 @@ def delete_column(request, column_id):
         return JsonResponse({'status': 'error', 'message': 'Please move or delete tasks in the column first.'})
     if request.method == 'POST':
         column.delete()
+        messages.success(request, 'Column deleted successfully.')
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
@@ -147,6 +152,7 @@ def move_task(request, task_id):
         new_column = get_object_or_404(Column, id=data['column_id'], board__owner=request.user)
         task.column = new_column
         task.save()
+        messages.success(request, 'Task moved successfully.')
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
@@ -174,6 +180,7 @@ def get_tasks_in_column(request, column_id):
     tasks = KanbanTask.objects.filter(column=column)
     tasks_data = list(tasks.values('id', 'title', 'description', 'due_date', 'priority'))
     return JsonResponse(tasks_data, safe=False)
+
 
 
 

@@ -5,7 +5,6 @@ import importlib.util
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 if importlib.util.find_spec('env'):
     import env
 
@@ -29,6 +28,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'crispy_forms',
     'crispy_bootstrap5',
+    'tempus_dominus',
 ]
 
 SITE_ID = 1
@@ -124,6 +124,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 
 
 
