@@ -83,6 +83,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeAllModals();
                 if (data.status === 'success') {
                     showNotification('Task saved successfully', 'success');
+                    if (!editingTaskID) {
+                        addTaskToColumn(data.task); // Assuming the server returns the new task data
+                    }
                     setTimeout(() => location.reload(), 1000);
                 } else {
                     showNotification('Error creating/editing task', 'error');
@@ -320,7 +323,8 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const taskId = e.dataTransfer.getData('text/plain');
             const newColumnId = this.parentElement.dataset.columnId;
-
+            const taskElement = document.querySelector(`.kanban-task[data-task-id="${taskId}"]`);
+            
             fetch(`/kanban/move_task/${taskId}/`, {
                 method: 'POST',
                 headers: {
@@ -331,22 +335,85 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                closeAllModals();
                 if (data.status === 'success') {
                     showNotification('Task moved successfully', 'success');
-                    setTimeout(() => location.reload(), 1000);
+                    this.prepend(taskElement); // Move task instantly in the DOM
                 } else {
                     showNotification('Error moving task', 'error');
                 }
             })
             .catch(error => {
-                closeAllModals();
                 showNotification('Error moving task', 'error');
             });
         });
     });
 
+    function addTaskToColumn(task) {
+        const newColumn = document.querySelector('.kanban-column[data-column-name="New"] .kanban-column-body');
+        if (newColumn) {
+            const taskElement = document.createElement('div');
+            taskElement.className = 'kanban-task';
+            taskElement.dataset.taskId = task.id;
+            taskElement.innerHTML = `
+                <div class="kanban-task-details">
+                    <h3>${task.title}</h3>
+                    <p>${task.description}</p>
+                    <p>Due: ${task.due_date}</p>
+                    <p>Priority: ${task.priority}</p>
+                    <button class="edit-task-btn">Edit</button>
+                    <button class="delete-task-btn">Delete</button>
+                    <button class="close-task-btn">Close</button>
+                </div>
+            `;
+            newColumn.prepend(taskElement); // Add task to the top of the column
+            setupTaskEvents(taskElement); // Set up event listeners for the new task element
+        }
+    }
+
+    function setupTaskEvents(task) {
+        task.addEventListener('click', function() {
+            const taskDetails = this.querySelector('.kanban-task-details');
+            const taskButtons = this.querySelectorAll('.kanban-task-details button');
+            taskDetails.style.display = 'block';
+            taskButtons.forEach(button => button.style.display = 'inline-block');
+
+            const closeButton = this.querySelector('.close-task-btn');
+            closeButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                taskDetails.style.display = 'none';
+                taskButtons.forEach(button => button.style.display = 'none');
+            });
+
+            this.querySelector('.edit-task-btn').addEventListener('click', function() {
+                editingTaskID = task.dataset.taskId;
+                fetch(`/kanban/get_task/${editingTaskID}/`)
+                .then(response => response.json())
+                .then(data => {
+                    taskForm.querySelector('[name="title"]').value = data.title;
+                    taskForm.querySelector('[name="description"]').value = data.description;
+                    taskForm.querySelector('[name="due_date"]').value = data.due_date;
+                    taskForm.querySelector('[name="priority"]').value = data.priority;
+                    taskModal.style.display = 'flex';
+                });
+            });
+
+            this.querySelector('.delete-task-btn').addEventListener('click', function() {
+                deletingTaskID = task.dataset.taskId;
+                deleteConfirmationModal.style.display = 'flex';
+            });
+        });
+
+        task.setAttribute('draggable', true);
+
+        task.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('text/plain', this.dataset.taskId);
+        });
+    }
+
+    document.querySelectorAll('.kanban-task').forEach(setupTaskEvents);
+
 });
+
 
 
 
