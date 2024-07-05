@@ -197,7 +197,10 @@ document.addEventListener('DOMContentLoaded', function() {
             closeAllModals();
             if (data.status === 'success') {
                 showNotification('Column deleted successfully', 'success');
-                setTimeout(() => location.reload(), 1000);
+                const columnElement = document.querySelector(`.kanban-column[data-column-id="${deletingColumnID}"]`);
+                if (columnElement) {
+                    columnElement.remove(); // Remove the column element from the DOM
+                }
             } else {
                 showNotification('Error deleting column', 'error');
             }
@@ -273,7 +276,10 @@ document.addEventListener('DOMContentLoaded', function() {
             closeAllModals();
             if (data.status === 'success') {
                 showNotification('Task deleted successfully', 'success');
-                setTimeout(() => location.reload(), 1000);
+                const taskElement = document.querySelector(`.kanban-task[data-task-id="${deletingTaskID}"]`);
+                if (taskElement) {
+                    taskElement.remove(); // Remove the task element from the DOM
+                }
             } else {
                 showNotification('Error deleting task', 'error');
             }
@@ -314,33 +320,29 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const taskId = e.dataTransfer.getData('text/plain');
             const newColumnId = this.parentElement.dataset.columnId;
-            const taskElement = document.querySelector(`.kanban-task[data-task-id='${taskId}']`);
 
-            if (taskElement) {
-                this.appendChild(taskElement); 
-
-                fetch(`/kanban/move_task/${taskId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify({ column_id: newColumnId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        showNotification('Task moved successfully', 'success');
-                    } else {
-                        showNotification('Error moving task', 'error');
-                        location.reload(); 
-                    }
-                })
-                .catch(error => {
+            fetch(`/kanban/move_task/${taskId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ column_id: newColumnId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                closeAllModals();
+                if (data.status === 'success') {
+                    showNotification('Task moved successfully', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                } else {
                     showNotification('Error moving task', 'error');
-                    location.reload(); 
-                });
-            }
+                }
+            })
+            .catch(error => {
+                closeAllModals();
+                showNotification('Error moving task', 'error');
+            });
         });
     });
 
