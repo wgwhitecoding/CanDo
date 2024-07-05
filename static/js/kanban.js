@@ -317,6 +317,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.kanban-column-body').forEach(column => {
         column.addEventListener('dragover', function(e) {
             e.preventDefault();
+            const afterElement = getDragAfterElement(column, e.clientY);
+            const draggable = document.querySelector('.dragging');
+            if (afterElement == null) {
+                column.appendChild(draggable);
+            } else {
+                column.insertBefore(draggable, afterElement);
+            }
         });
 
         column.addEventListener('drop', function(e) {
@@ -324,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const taskId = e.dataTransfer.getData('text/plain');
             const newColumnId = this.parentElement.dataset.columnId;
             const taskElement = document.querySelector(`.kanban-task[data-task-id="${taskId}"]`);
-            
+
             fetch(`/kanban/move_task/${taskId}/`, {
                 method: 'POST',
                 headers: {
@@ -348,6 +355,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    function getDragAfterElement(column, y) {
+        const draggableElements = [...column.querySelectorAll('.kanban-task:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
     function addTaskToColumn(task) {
         const newColumn = document.querySelector('.kanban-column[data-column-name="New"] .kanban-column-body');
         if (newColumn) {
@@ -365,6 +386,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="close-task-btn">Close</button>
                 </div>
             `;
+            taskElement.setAttribute('draggable', true);
+            taskElement.addEventListener('dragstart', function(e) {
+                taskElement.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', task.id);
+            });
+            taskElement.addEventListener('dragend', function() {
+                taskElement.classList.remove('dragging');
+            });
             newColumn.prepend(taskElement); // Add task to the top of the column
             setupTaskEvents(taskElement); // Set up event listeners for the new task element
         }
@@ -406,7 +435,12 @@ document.addEventListener('DOMContentLoaded', function() {
         task.setAttribute('draggable', true);
 
         task.addEventListener('dragstart', function(e) {
-            e.dataTransfer.setData('text/plain', this.dataset.taskId);
+            task.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', task.dataset.taskId);
+        });
+
+        task.addEventListener('dragend', function() {
+            task.classList.remove('dragging');
         });
     }
 
