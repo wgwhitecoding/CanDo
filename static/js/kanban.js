@@ -16,40 +16,34 @@ document.addEventListener('DOMContentLoaded', function() {
     let deletingTaskID = null;
     let deletingColumnID = null;
 
-    // Function to show notifications
+    // Function to display notifications
     function showNotification(message, type = 'success') {
-        const notificationContainer = document.getElementById('notification-container');
-        const alertType = type === 'success' ? 'alert-success' : 'alert-danger';
-        const notification = `
-            <div class="alert ${alertType} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        `;
-        notificationContainer.innerHTML = notification;
-
-        // Automatically close the notification after 5 seconds
-        setTimeout(function() {
-            notificationContainer.innerHTML = '';
-        }, 5000);
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.remove();
+        }, 3000); // Remove notification after 3 seconds
     }
 
-    // Event listeners for opening modals
     createTaskBtn.addEventListener('click', function() {
+        console.log('Create Task Button Clicked');
         taskModal.style.display = 'flex';
         taskForm.reset();
         editingTaskID = null;
     });
 
     createColumnBtn.addEventListener('click', function() {
+        console.log('Create Column Button Clicked');
         columnModal.style.display = 'flex';
         columnForm.reset();
         editingColumnID = null;
     });
 
-    // Event listener for closing modals
     closeBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
+            console.log('Close Button Clicked');
             taskModal.style.display = 'none';
             columnModal.style.display = 'none';
             editColumnModal.style.display = 'none';
@@ -59,98 +53,188 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Event listener for task form submission
     taskForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const formData = new FormData(taskForm);
-
-        fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                showNotification('Task saved successfully', 'success');
-                location.reload(); // Refresh the page after successful task operation
-            } else {
-                showNotification('Error saving task. Please try again.', 'error');
-                console.error('Error saving task:', data);
-            }
-        })
-        .catch(error => {
-            showNotification('Error saving task. Please try again.', 'error');
-            console.error('Error saving task:', error);
+        const titleField = taskForm.querySelector('[name="title"]');
+        const descriptionField = taskForm.querySelector('[name="description"]');
+        const dueDateField = taskForm.querySelector('[name="due_date"]');
+        const priorityField = taskForm.querySelector('[name="priority"]');
+        console.log('Task Form Submitted:', {
+            titleField, descriptionField, dueDateField, priorityField
         });
+
+        if (titleField && descriptionField && dueDateField && priorityField) {
+            const data = {
+                title: titleField.value,
+                description: descriptionField.value,
+                due_date: dueDateField.value,
+                priority: priorityField.value,
+                column: 'New'
+            };
+            console.log('Submitting task data:', data);
+
+            fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+                if (data.status === 'success') {
+                    showNotification('Task saved successfully', 'success');
+                    location.reload();
+                } else {
+                    console.error('Error creating/editing task:', data);
+                    showNotification('Error creating/editing task', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error creating/editing task', 'error');
+            });
+        } else {
+            console.error('One or more form fields are missing');
+            showNotification('Please fill out all fields', 'error');
+        }
     });
 
-    // Event listener for column form submission
     columnForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const formData = new FormData(columnForm);
+        const columnNameField = columnForm.querySelector('[name="column-name"]');
+        console.log('Column Form:', columnForm);
+        console.log('Column Name Field:', columnNameField);
 
-        fetch('/kanban/create_column/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                showNotification('Column created successfully', 'success');
-                location.reload(); // Refresh the page after successful column creation
-            } else {
-                showNotification('Error creating column. Please try again.', 'error');
-                console.error('Error creating column:', data);
-            }
-        })
-        .catch(error => {
-            showNotification('Error creating column. Please try again.', 'error');
-            console.error('Error creating column:', error);
-        });
+        if (columnNameField) {
+            const data = { name: columnNameField.value };
+            console.log('Submitting column data:', data);
+
+            fetch('/kanban/create_column/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+                if (data.status === 'success') {
+                    showNotification('Column created successfully', 'success');
+                    location.reload();
+                } else {
+                    console.error('Error creating column:', data);
+                    showNotification('Error creating column', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error creating column', 'error');
+            });
+        } else {
+            console.error('Column name field is missing');
+            showNotification('Please enter a column name', 'error');
+        }
     });
 
-    // Event listener for edit column form submission
     editColumnForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const formData = new FormData(editColumnForm);
+        const editColumnNameField = editColumnForm.querySelector('[name="edit-column-name"]');
+        console.log('Edit Column Form Submitted:', { editColumnNameField });
 
-        fetch(`/kanban/edit_column/${editingColumnID}/`, {
+        if (editColumnNameField) {
+            const data = { name: editColumnNameField.value };
+            console.log('Submitting edit column data:', data);
+
+            fetch(`/kanban/edit_column/${editingColumnID}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+                if (data.status === 'success') {
+                    showNotification('Column updated successfully', 'success');
+                    location.reload();
+                } else {
+                    console.error('Error editing column:', data);
+                    showNotification('Error editing column', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error editing column', 'error');
+            });
+        } else {
+            console.error('Edit column name field is missing');
+            showNotification('Please enter a column name', 'error');
+        }
+    });
+
+    document.getElementById('delete-column-btn').addEventListener('click', function() {
+        console.log('Attempting to delete column with ID:', editingColumnID);
+        deletingColumnID = editingColumnID;
+
+        fetch(`/kanban/get_column/${editingColumnID}/`)
+            .then(response => response.json())
+            .then(columnData => {
+                fetch(`/kanban/get_tasks_in_column/${editingColumnID}/`)
+                    .then(response => response.json())
+                    .then(tasks => {
+                        if (tasks.length > 0) {
+                            moveDeleteTaskModal.style.display = 'flex';
+                        } else {
+                            const confirmationText = `Are you sure you want to delete the column: "${columnData.name}"?`;
+                            document.getElementById('delete-column-confirmation-text').innerText = confirmationText;
+                            deleteColumnConfirmationModal.style.display = 'flex';
+                        }
+                    });
+            });
+    });
+
+    document.getElementById('confirm-delete-column-btn').addEventListener('click', function() {
+        fetch(`/kanban/delete_column/${deletingColumnID}/`, {
             method: 'POST',
-            body: formData,
             headers: {
                 'X-CSRFToken': getCookie('csrftoken')
             }
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Response from server:', data);
             if (data.status === 'success') {
-                showNotification('Column updated successfully', 'success');
-                location.reload(); // Refresh the page after successful column update
+                showNotification('Column deleted successfully', 'success');
+                location.reload();
             } else {
-                showNotification('Error updating column. Please try again.', 'error');
-                console.error('Error updating column:', data);
+                console.error('Error deleting column:', data);
+                showNotification('Error deleting column', 'error');
             }
         })
         .catch(error => {
-            showNotification('Error updating column. Please try again.', 'error');
-            console.error('Error updating column:', error);
+            console.error('Error:', error);
+            showNotification('Error deleting column', 'error');
         });
     });
 
-    // Function to get CSRF token from cookies
+    document.getElementById('close-move-delete-task-modal-btn').addEventListener('click', function() {
+        moveDeleteTaskModal.style.display = 'none';
+    });
+
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
                 const cookie = cookies[i].trim();
-                if (cookie.startsWith(name + '=')) {
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                     break;
                 }
@@ -158,7 +242,127 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return cookieValue;
     }
+
+    document.querySelectorAll('.kanban-task').forEach(task => {
+        task.addEventListener('click', function() {
+            const taskDetails = this.querySelector('.kanban-task-details');
+            const taskButtons = this.querySelectorAll('.kanban-task-details button');
+            taskDetails.style.display = 'block';
+            taskButtons.forEach(button => button.style.display = 'inline-block');
+
+            const closeButton = this.querySelector('.close-task-btn');
+            closeButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                console.log('Close Button Clicked');
+                taskDetails.style.display = 'none';
+                taskButtons.forEach(button => button.style.display = 'none');
+            });
+
+            this.querySelector('.edit-task-btn').addEventListener('click', function() {
+                editingTaskID = task.dataset.taskId;
+                fetch(`/kanban/get_task/${editingTaskID}/`)
+                .then(response => response.json())
+                .then(data => {
+                    taskForm.querySelector('[name="title"]').value = data.title;
+                    taskForm.querySelector('[name="description"]').value = data.description;
+                    taskForm.querySelector('[name="due_date"]').value = data.due_date;
+                    taskForm.querySelector('[name="priority"]').value = data.priority;
+                    taskModal.style.display = 'flex';
+                });
+            });
+
+            this.querySelector('.delete-task-btn').addEventListener('click', function() {
+                deletingTaskID = task.dataset.taskId;
+                deleteConfirmationModal.style.display = 'flex';
+            });
+        });
+    });
+
+    document.getElementById('confirm-delete-btn').addEventListener('click', function() {
+        fetch(`/kanban/delete_task/${deletingTaskID}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Response from server:', data);
+            if (data.status === 'success') {
+                showNotification('Task deleted successfully', 'success');
+                location.reload();
+            } else {
+                console.error('Error deleting task:', data);
+                showNotification('Error deleting task', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error deleting task', 'error');
+        });
+    });
+
+    document.querySelectorAll('.kanban-column-header').forEach(header => {
+        header.addEventListener('click', function() {
+            editingColumnID = this.parentElement.dataset.columnId;
+            fetch(`/kanban/get_column/${editingColumnID}/`)
+            .then(response => response.json())
+            .then(data => {
+                editColumnForm.querySelector('[name="edit-column-name"]').value = data.name;
+                editColumnModal.style.display = 'flex';
+            });
+        });
+    });
+
+    // Drag and drop functionality
+    document.querySelectorAll('.kanban-task').forEach(task => {
+        task.setAttribute('draggable', true);
+
+        task.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('text/plain', this.dataset.taskId);
+        });
+    });
+
+    document.querySelectorAll('.kanban-column-body').forEach(column => {
+        column.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        column.addEventListener('drop', function(e) {
+            e.preventDefault();
+            const taskId = e.dataTransfer.getData('text/plain');
+            const newColumnId = this.parentElement.dataset.columnId;
+
+            console.log('Moving task ID:', taskId, 'to column ID:', newColumnId);
+
+            fetch(`/kanban/move_task/${taskId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ column_id: newColumnId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+                if (data.status === 'success') {
+                    showNotification('Task moved successfully', 'success');
+                    location.reload();
+                } else {
+                    console.error('Error moving task:', data);
+                    showNotification('Error moving task', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error moving task', 'error');
+            });
+        });
+    });
+
 });
+
 
 
 
