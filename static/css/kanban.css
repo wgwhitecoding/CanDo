@@ -210,7 +210,11 @@ body {
     background-color: #f44336; /* Red */
 }
 
-
+.unclickable {
+    pointer-events: none;
+    cursor: default;
+    background-color: #3b1272;
+}
 
 
 

@@ -39,13 +39,18 @@ def clear_search_history(request):
 
 @login_required
 def kanban_board(request):
-    predefined_columns = ['New', 'To Do', 'In Progress', 'Done']
+    predefined_columns = ['New', 'To Do']  # Only New and To Do columns
     board, created = Board.objects.get_or_create(owner=request.user, name='Default Board')
     columns = Column.objects.filter(board=board)
+
+    # Remove 'In Progress' and 'Done' columns if they exist
+    columns.filter(name__in=['In Progress', 'Done']).delete()
+
     for col_name in predefined_columns:
         if not columns.filter(name=col_name).exists():
             Column.objects.create(name=col_name, board=board, default=True)
-    columns = Column.objects.filter(board=board)
+
+    columns = Column.objects.filter(board=board).order_by('id')  # Order by ID to keep positions
     tasks = KanbanTask.objects.filter(created_by=request.user)
     task_form = KanbanTaskForm()
     column_form = ColumnForm()
