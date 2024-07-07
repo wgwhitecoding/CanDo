@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(notification);
         setTimeout(() => {
             notification.remove();
-        }, 3000); // Remove notification after 3 seconds
+        }, 3000); 
     }
 
     createTaskBtn.addEventListener('click', function() {
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     showNotification('Task saved successfully', 'success');
                     if (!editingTaskID) {
-                        addTaskToColumn(data.task); // Assuming the server returns the new task data
+                        addTaskToColumn(data.task); 
                     }
                     setTimeout(() => location.reload(), 1000);
                 } else {
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification('Column deleted successfully', 'success');
                 const columnElement = document.querySelector(`.kanban-column[data-column-id="${deletingColumnID}"]`);
                 if (columnElement) {
-                    columnElement.remove(); // Remove the column element from the DOM
+                    columnElement.remove(); 
                 }
             } else {
                 showNotification('Error deleting column', 'error');
@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification('Task deleted successfully', 'success');
                 const taskElement = document.querySelector(`.kanban-task[data-task-id="${deletingTaskID}"]`);
                 if (taskElement) {
-                    taskElement.remove(); // Remove the task element from the DOM
+                    taskElement.remove(); 
                 }
             } else {
                 showNotification('Error deleting task', 'error');
@@ -311,6 +311,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         task.addEventListener('dragstart', function(e) {
             e.dataTransfer.setData('text/plain', this.dataset.taskId);
+            setTimeout(() => task.classList.add('dragging'), 0);
+        });
+
+        task.addEventListener('dragend', function() {
+            task.classList.remove('dragging');
         });
     });
 
@@ -331,6 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const taskId = e.dataTransfer.getData('text/plain');
             const newColumnId = this.parentElement.dataset.columnId;
             const taskElement = document.querySelector(`.kanban-task[data-task-id="${taskId}"]`);
+            const newPosition = Array.from(this.children).indexOf(taskElement) + 1;
 
             fetch(`/kanban/move_task/${taskId}/`, {
                 method: 'POST',
@@ -338,13 +344,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
                 },
-                body: JSON.stringify({ column_id: newColumnId })
+                body: JSON.stringify({ column_id: newColumnId, position: newPosition })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
                     showNotification('Task moved successfully', 'success');
-                    this.prepend(taskElement); // Move task instantly in the DOM
+                    this.insertBefore(taskElement, this.children[newPosition - 1]); 
                 } else {
                     showNotification('Error moving task', 'error');
                 }
@@ -394,8 +400,8 @@ document.addEventListener('DOMContentLoaded', function() {
             taskElement.addEventListener('dragend', function() {
                 taskElement.classList.remove('dragging');
             });
-            newColumn.prepend(taskElement); // Add task to the top of the column
-            setupTaskEvents(taskElement); // Set up event listeners for the new task element
+            newColumn.prepend(taskElement); 
+            setupTaskEvents(taskElement);
         }
     }
 
@@ -447,32 +453,3 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.kanban-task').forEach(setupTaskEvents);
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

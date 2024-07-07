@@ -30,9 +30,13 @@ class KanbanTask(models.Model):
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Medium')
     column = models.ForeignKey(Column, related_name='tasks', on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    position = models.PositiveIntegerField(default=0) 
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['position']  
 
 class SearchHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

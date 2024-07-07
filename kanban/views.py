@@ -51,7 +51,7 @@ def kanban_board(request):
             Column.objects.create(name=col_name, board=board, default=True)
 
     columns = Column.objects.filter(board=board).order_by('id')  # Order by ID to keep positions
-    tasks = KanbanTask.objects.filter(created_by=request.user)
+    tasks = KanbanTask.objects.filter(created_by=request.user).order_by('position')
     task_form = KanbanTaskForm()
     column_form = ColumnForm()
     context = {
@@ -72,6 +72,7 @@ def create_task(request):
             task = form.save(commit=False)
             task.created_by = request.user
             task.column = Column.objects.get(name='New', board__owner=request.user)
+            task.position = KanbanTask.objects.filter(column=task.column).count() + 1
             task.save()
             messages.success(request, 'Task created successfully.')
             return JsonResponse({'status': 'success'})
@@ -155,8 +156,28 @@ def move_task(request, task_id):
         task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
         data = json.loads(request.body)
         new_column = get_object_or_404(Column, id=data['column_id'], board__owner=request.user)
+        new_position = data['position']
+
+        # Reorder tasks in the old column
+        old_column = task.column
+        if old_column != new_column:
+            old_tasks = KanbanTask.objects.filter(column=old_column).exclude(id=task.id).order_by('position')
+            for i, t in enumerate(old_tasks):
+                t.position = i + 1
+                t.save()
+
+        # Insert task into the new column at the new position
+        new_tasks = list(KanbanTask.objects.filter(column=new_column).exclude(id=task.id).order_by('position'))
+        new_tasks.insert(new_position - 1, task)
+
+        for i, t in enumerate(new_tasks):
+            t.position = i + 1
+            t.save()
+
         task.column = new_column
+        task.position = new_position
         task.save()
+        
         messages.success(request, 'Task moved successfully.')
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
@@ -182,9 +203,10 @@ def get_column(request, column_id):
 @login_required
 def get_tasks_in_column(request, column_id):
     column = get_object_or_404(Column, id=column_id, board__owner=request.user)
-    tasks = KanbanTask.objects.filter(column=column)
-    tasks_data = list(tasks.values('id', 'title', 'description', 'due_date', 'priority'))
+    tasks = KanbanTask.objects.filter(column=column).order_by('position')
+    tasks_data = list(tasks.values('id', 'title', 'description', 'due_date', 'priority', 'position'))
     return JsonResponse(tasks_data, safe=False)
+
 
 
 
