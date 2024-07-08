@@ -12,10 +12,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function enableDarkMode() {
         darkModeCss.disabled = false;
+        document.body.classList.add('dark-mode');
     }
 
     function disableDarkMode() {
         darkModeCss.disabled = true;
+        document.body.classList.remove('dark-mode');
     }
 
     // Check local storage for dark mode setting

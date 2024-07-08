@@ -30,11 +30,12 @@
                         <a class="nav-link" href="{% url 'kanban:index' %}">Kanban</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+                    </li>
+                    
                 </ul>
                 <form class="d-flex" method="get" action="{% url 'kanban:search_tasks' %}">
                     <input class="form-control me-2" type="search" name="q" placeholder="Search tasks" aria-label="Search" required>
@@ -75,6 +76,8 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+
+
 
 
 

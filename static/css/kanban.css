@@ -35,7 +35,7 @@ body {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     min-width: 350px;
     max-width: 350px;
-    height: 80vh;
+    height: 75vh;
     display: flex;
     flex-direction: column;
 }
