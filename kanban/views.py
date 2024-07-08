@@ -73,7 +73,7 @@ def kanban_board(request):
 @csrf_exempt
 def create_task(request):
     if request.method == 'POST':
-        form = KanbanTaskForm(request.POST)
+        form = KanbanTaskForm(request.POST, request.FILES)
         if form.is_valid():
             task = form.save(commit=False)
             task.created_by = request.user
@@ -82,11 +82,12 @@ def create_task(request):
             task.save()
 
             # Handle file attachments
-            for file in request.FILES.getlist('file'):
+            files = request.FILES.getlist('attachments')
+            for file in files:
                 Attachment.objects.create(task=task, file=file)
 
             messages.success(request, 'Task created successfully.')
-            return JsonResponse({'status': 'success'})
+            return JsonResponse({'status': 'success', 'task': {'id': task.id, 'title': task.title, 'description': task.description, 'due_date': str(task.due_date), 'priority': task.priority}})
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
@@ -96,12 +97,13 @@ def create_task(request):
 def edit_task(request, task_id):
     task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
     if request.method == 'POST':
-        form = KanbanTaskForm(request.POST, instance=task)
+        form = KanbanTaskForm(request.POST, request.FILES, instance=task)
         if form.is_valid():
             form.save()
 
             # Handle file attachments
-            for file in request.FILES.getlist('file'):
+            files = request.FILES.getlist('attachments')
+            for file in files:
                 Attachment.objects.create(task=task, file=file)
 
             messages.success(request, 'Task edited successfully.')

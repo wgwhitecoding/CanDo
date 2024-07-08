@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     createTaskBtn.addEventListener('click', function() {
         taskModal.style.display = 'flex';
         taskForm.reset();
+        clearFileThumbnails(); // Clear previews on opening modal
         editingTaskID = null;
     });
 
@@ -56,48 +57,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     taskForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const titleField = taskForm.querySelector('[name="title"]');
-        const descriptionField = taskForm.querySelector('[name="description"]');
-        const dueDateField = taskForm.querySelector('[name="due_date"]');
-        const priorityField = taskForm.querySelector('[name="priority"]');
+        const formData = new FormData(taskForm);
+        const url = editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/';
 
-        if (titleField && descriptionField && dueDateField && priorityField) {
-            const data = {
-                title: titleField.value,
-                description: descriptionField.value,
-                due_date: dueDateField.value,
-                priority: priorityField.value,
-                column: 'New'
-            };
-
-            fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                closeAllModals();
-                if (data.status === 'success') {
-                    showNotification('Task saved successfully', 'success');
-                    if (!editingTaskID) {
-                        addTaskToColumn(data.task); // Assuming the server returns the new task data
-                    }
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    showNotification('Error creating/editing task', 'error');
-                }
-            })
-            .catch(error => {
-                closeAllModals();
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            closeAllModals();
+            if (data.status === 'success') {
+                showNotification('Task saved successfully', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } else {
                 showNotification('Error creating/editing task', 'error');
-            });
-        } else {
-            showNotification('Please fill out all fields', 'error');
-        }
+            }
+        })
+        .catch(error => {
+            closeAllModals();
+            showNotification('Error creating/editing task', 'error');
+        });
     });
 
     columnForm.addEventListener('submit', function(e) {
@@ -257,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     taskForm.querySelector('[name="due_date"]').value = data.due_date;
                     taskForm.querySelector('[name="priority"]').value = data.priority;
                     taskModal.style.display = 'flex';
+                    displayExistingAttachments(data.attachments);
                 });
             });
 
@@ -430,6 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     taskForm.querySelector('[name="due_date"]').value = data.due_date;
                     taskForm.querySelector('[name="priority"]').value = data.priority;
                     taskModal.style.display = 'flex';
+                    displayExistingAttachments(data.attachments);
                 });
             });
 
@@ -453,5 +438,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.kanban-task').forEach(setupTaskEvents);
 
+    // File preview functionality
+    document.getElementById('attachments').addEventListener('change', function() {
+        const files = this.files;
+        const previewContainer = document.getElementById('file-preview');
+        previewContainer.innerHTML = '';
+
+        for (const file of files) {
+            const fileReader = new FileReader();
+            fileReader.onload = function(e) {
+                const previewElement = document.createElement('div');
+                previewElement.className = 'file-preview';
+
+                if (file.type.startsWith('image/')) {
+                    previewElement.innerHTML = `<img src="${e.target.result}" alt="${file.name}" class="preview-thumbnail">`;
+                } else {
+                    previewElement.innerHTML = `<span class="preview-filename">${file.name}</span>`;
+                }
+
+                previewContainer.appendChild(previewElement);
+            };
+
+            fileReader.readAsDataURL(file);
+        }
+    });
+
+    function displayExistingAttachments(attachments) {
+        const previewContainer = document.getElementById('existing-file-preview');
+        previewContainer.innerHTML = '';
+
+        for (const attachment of attachments) {
+            const previewElement = document.createElement('div');
+            previewElement.className = 'file-preview';
+
+            if (attachment.name.endsWith('.pdf')) {
+                previewElement.innerHTML = `<a href="${attachment.url}" target="_blank">${attachment.name}</a>`;
+            } else {
+                previewElement.innerHTML = `<a href="${attachment.url}" target="_blank"><img src="${attachment.url}" alt="${attachment.name}" class="preview-thumbnail"></a>`;
+            }
+
+            previewContainer.appendChild(previewElement);
+        }
+    }
+
+    function clearFileThumbnails() {
+        document.getElementById('file-preview').innerHTML = '';
+        document.getElementById('existing-file-preview').innerHTML = '';
+    }
 });
 
