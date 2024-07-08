@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const columnModal = document.getElementById('column-modal');
     const editColumnModal = document.getElementById('edit-column-modal');
     const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
+    const deleteAttachmentConfirmationModal = document.getElementById('delete-attachment-confirmation-modal');
     const deleteColumnConfirmationModal = document.getElementById('delete-column-confirmation-modal');
     const moveDeleteTaskModal = document.getElementById('move-delete-task-modal');
     const taskForm = document.getElementById('task-form');
@@ -15,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let editingColumnID = null;
     let deletingTaskID = null;
     let deletingColumnID = null;
+    let deletingAttachmentID = null;
+    let attachmentDivToDelete = null;
 
     // Function to display notifications
     function showNotification(message, type = 'success') {
@@ -52,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         columnModal.style.display = 'none';
         editColumnModal.style.display = 'none';
         deleteConfirmationModal.style.display = 'none';
+        deleteAttachmentConfirmationModal.style.display = 'none';
         deleteColumnConfirmationModal.style.display = 'none';
         moveDeleteTaskModal.style.display = 'none';
     }
@@ -209,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
-            for (let i = 0; cookies.length > i; i++) {
+            for (let i = 0; i < cookies.length; i++) {
                 const cookie = cookies[i].trim();
                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -255,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (attachment.url.toLowerCase().endsWith('.pdf')) {
                             attachmentDiv.innerHTML = `
                                 <a href="${attachment.url}" target="_blank">
-                                    <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
+                                    <img src="${STATIC_URL}images/pdf-icon.png" alt="PDF" class="attachment-thumbnail">
                                     ${attachment.name}
                                 </a>
                                 <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
@@ -271,27 +275,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Attach remove event
                         attachmentDiv.querySelector('.remove-attachment-btn').addEventListener('click', function(e) {
                             e.preventDefault();
-                            const attachmentId = this.dataset.attachmentId;
-                            if (confirm('Are you sure you want to delete this attachment?')) {
-                                fetch(`/kanban/remove_attachment/${attachmentId}/`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-CSRFToken': getCookie('csrftoken')
-                                    }
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.status === 'success') {
-                                        showNotification('Attachment removed successfully', 'success');
-                                        document.getElementById(`attachment-${attachmentId}`).remove(); // Remove attachment element from the DOM
-                                    } else {
-                                        showNotification('Error removing attachment', 'error');
-                                    }
-                                })
-                                .catch(error => {
-                                    showNotification('Error removing attachment', 'error');
-                                });
-                            }
+                            deletingAttachmentID = this.dataset.attachmentId;
+                            attachmentDivToDelete = document.getElementById(`attachment-${deletingAttachmentID}`);
+                            deleteAttachmentConfirmationModal.style.display = 'flex';
                         });
                     });
                 });
@@ -327,6 +313,33 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             closeAllModals();
             showNotification('Error deleting task', 'error');
+        });
+    });
+
+    document.getElementById('cancel-delete-attachment-btn').addEventListener('click', function() {
+        deleteAttachmentConfirmationModal.style.display = 'none';
+    });
+
+    document.getElementById('confirm-delete-attachment-btn').addEventListener('click', function() {
+        fetch(`/kanban/remove_attachment/${deletingAttachmentID}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            deleteAttachmentConfirmationModal.style.display = 'none';
+            if (data.status === 'success') {
+                showNotification('Attachment removed successfully', 'success');
+                attachmentDivToDelete.remove(); // Remove attachment element from the DOM
+            } else {
+                showNotification('Error removing attachment', 'error');
+            }
+        })
+        .catch(error => {
+            deleteAttachmentConfirmationModal.style.display = 'none';
+            showNotification('Error removing attachment', 'error');
         });
     });
 
@@ -475,10 +488,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         const attachmentDiv = document.createElement('div');
                         attachmentDiv.className = 'attachment';
                         attachmentDiv.id = `attachment-${attachment.id}`;
-                        if (attachment.url.toLowerCase().endsWith('.pdf')) {
+                        if (attachment.url.toLowerCase().endswith('.pdf')) {
                             attachmentDiv.innerHTML = `
                                 <a href="${attachment.url}" target="_blank">
-                                    <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
+                                    <img src="${STATIC_URL}images/pdf-icon.png" alt="PDF" class="attachment-thumbnail">
                                     ${attachment.name}
                                 </a>
                                 <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
@@ -494,27 +507,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Attach remove event
                         attachmentDiv.querySelector('.remove-attachment-btn').addEventListener('click', function(e) {
                             e.preventDefault();
-                            const attachmentId = this.dataset.attachmentId;
-                            if (confirm('Are you sure you want to delete this attachment?')) {
-                                fetch(`/kanban/remove_attachment/${attachmentId}/`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'X-CSRFToken': getCookie('csrftoken')
-                                    }
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data.status === 'success') {
-                                        showNotification('Attachment removed successfully', 'success');
-                                        document.getElementById(`attachment-${attachmentId}`).remove(); // Remove attachment element from the DOM
-                                    } else {
-                                        showNotification('Error removing attachment', 'error');
-                                    }
-                                })
-                                .catch(error => {
-                                    showNotification('Error removing attachment', 'error');
-                                });
-                            }
+                            deletingAttachmentID = this.dataset.attachmentId;
+                            attachmentDivToDelete = document.getElementById(`attachment-${deletingAttachmentID}`);
+                            deleteAttachmentConfirmationModal.style.display = 'flex';
                         });
                     });
                 });
@@ -560,7 +555,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (file.type === 'application/pdf') {
                     div.innerHTML = `
                         <a href="${e.target.result}" target="_blank">
-                            <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
+                            <img src="${STATIC_URL}images/pdf-icon.png" alt="PDF" class="attachment-thumbnail">
                             ${file.name}
                         </a>
                     `;
@@ -594,5 +589,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
 
 
