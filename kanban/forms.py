@@ -1,5 +1,5 @@
 from django import forms
-from .models import KanbanTask, Column
+from .models import KanbanTask, Column, Attachment
 
 class KanbanTaskForm(forms.ModelForm):
     class Meta:
@@ -13,6 +13,16 @@ class ColumnForm(forms.ModelForm):
     class Meta:
         model = Column
         fields = ['name']
+
+class AttachmentForm(forms.ModelForm):
+    class Meta:
+        model = Attachment
+        fields = ['file']
+        widgets = {
+            'file': forms.FileInput(attrs={'multiple': False})
+        }
+
+
 
 
 

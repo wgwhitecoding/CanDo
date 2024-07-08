@@ -30,13 +30,20 @@ class KanbanTask(models.Model):
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Medium')
     column = models.ForeignKey(Column, related_name='tasks', on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    position = models.PositiveIntegerField(default=0) 
+    position = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
 
     class Meta:
-        ordering = ['position']  
+        ordering = ['position']
+
+class Attachment(models.Model):
+    task = models.ForeignKey(KanbanTask, related_name='attachments', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='attachments/')
+
+    def __str__(self):
+        return self.file.name
 
 class SearchHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -46,6 +53,7 @@ class SearchHistory(models.Model):
 
     def __str__(self):
         return self.query
+
 
 
 

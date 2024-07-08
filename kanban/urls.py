@@ -18,7 +18,9 @@ urlpatterns = [
     path('search/', views.search_tasks, name='search_tasks'),
     path('get_tasks_in_column/<int:column_id>/', views.get_tasks_in_column, name='get_tasks_in_column'),
     path('clear_search_history/', views.clear_search_history, name='clear_search_history'),
+    path('remove_attachment/<int:attachment_id>/', views.remove_attachment, name='remove_attachment'),
 ]
+
 
 
 

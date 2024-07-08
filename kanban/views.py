@@ -3,8 +3,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import KanbanTask, Column, Board, SearchHistory
-from .forms import KanbanTaskForm, ColumnForm
+from .models import KanbanTask, Column, Board, SearchHistory, Attachment
+from .forms import KanbanTaskForm, ColumnForm, AttachmentForm
 import json
 
 @login_required
@@ -14,13 +14,13 @@ def index(request):
 @login_required
 def search_tasks(request):
     query = request.GET.get('q')
-    tasks = KanbanTask.objects.filter(title__icontains=query, created_by=request.user) if query else KanbanTask.objects.none()
-    
+    tasks = KanbanTask.objects.filter(title__icontains(query), created_by=request.user) if query else KanbanTask.objects.none()
+
     if query:
         for task in tasks:
             if not SearchHistory.objects.filter(user=request.user, task=task).exists():
                 SearchHistory.objects.create(user=request.user, task=task)
-    
+
     search_history = SearchHistory.objects.filter(user=request.user).order_by('-timestamp')[:10]
 
     return render(request, 'kanban/search_results.html', {
@@ -52,6 +52,12 @@ def kanban_board(request):
 
     columns = Column.objects.filter(board=board).order_by('id')  # Order by ID to keep positions
     tasks = KanbanTask.objects.filter(created_by=request.user).order_by('position')
+    for task in tasks:
+        task.attachments_with_type = []
+        for attachment in task.attachments.all():
+            attachment.is_pdf = attachment.file.name.lower().endswith('.pdf')
+            task.attachments_with_type.append(attachment)
+
     task_form = KanbanTaskForm()
     column_form = ColumnForm()
     context = {
@@ -62,18 +68,23 @@ def kanban_board(request):
     }
     return render(request, 'kanban/index.html', context)
 
+
 @login_required
 @csrf_exempt
 def create_task(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        form = KanbanTaskForm(data)
+        form = KanbanTaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
             task.created_by = request.user
             task.column = Column.objects.get(name='New', board__owner=request.user)
             task.position = KanbanTask.objects.filter(column=task.column).count() + 1
             task.save()
+
+            # Handle file attachments
+            for file in request.FILES.getlist('file'):
+                Attachment.objects.create(task=task, file=file)
+
             messages.success(request, 'Task created successfully.')
             return JsonResponse({'status': 'success'})
         else:
@@ -85,10 +96,14 @@ def create_task(request):
 def edit_task(request, task_id):
     task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
     if request.method == 'POST':
-        data = json.loads(request.body)
-        form = KanbanTaskForm(data, instance=task)
+        form = KanbanTaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
+
+            # Handle file attachments
+            for file in request.FILES.getlist('file'):
+                Attachment.objects.create(task=task, file=file)
+
             messages.success(request, 'Task edited successfully.')
             return JsonResponse({'status': 'success'})
         else:
@@ -186,12 +201,14 @@ def move_task(request, task_id):
 @csrf_exempt
 def get_task(request, task_id):
     task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
+    attachments = [{'id': attachment.id, 'url': attachment.file.url, 'name': attachment.file.name} for attachment in task.attachments.all()]
     return JsonResponse({
         'title': task.title,
         'description': task.description,
         'due_date': task.due_date,
         'priority': task.priority,
-        'column': task.column.id
+        'column': task.column.id,
+        'attachments': attachments
     })
 
 @login_required
@@ -206,6 +223,25 @@ def get_tasks_in_column(request, column_id):
     tasks = KanbanTask.objects.filter(column=column).order_by('position')
     tasks_data = list(tasks.values('id', 'title', 'description', 'due_date', 'priority', 'position'))
     return JsonResponse(tasks_data, safe=False)
+
+@login_required
+@csrf_exempt
+def remove_attachment(request, attachment_id):
+    if request.method == 'POST':
+        try:
+            attachment = Attachment.objects.get(id=attachment_id)
+            attachment.delete()
+            return JsonResponse({'status': 'success'})
+        except Attachment.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Attachment not found'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+
+
+
+
+
 
 
 
