@@ -32,7 +32,7 @@
                         <div class="kanban-task-details" style="display: none;">
                             <p>{{ task.description }}</p>
                             <div class="attachments">
-                                {% for attachment in task.attachments_with_type %}
+                                {% for attachment in task.attachments.all %}
                                 <div class="attachment">
                                     {% if attachment.is_pdf %}
                                     <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.file.name }}</a>
