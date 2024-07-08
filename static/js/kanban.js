@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     createTaskBtn.addEventListener('click', function() {
         taskModal.style.display = 'flex';
         taskForm.reset();
-        clearFileThumbnails(); // Clear previews on opening modal
+        document.getElementById('existing-file-preview').innerHTML = ''; // Clear existing file previews
         editingTaskID = null;
     });
 
@@ -58,9 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
     taskForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(taskForm);
-        const url = editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/';
+        formData.append('column', 'New');
 
-        fetch(url, {
+        fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCookie('csrftoken')
@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', function() {
             closeAllModals();
             if (data.status === 'success') {
                 showNotification('Task saved successfully', 'success');
+                if (!editingTaskID) {
+                    addTaskToColumn(data.task); // Assuming the server returns the new task data
+                }
                 setTimeout(() => location.reload(), 1000);
             } else {
                 showNotification('Error creating/editing task', 'error');
@@ -240,7 +243,48 @@ document.addEventListener('DOMContentLoaded', function() {
                     taskForm.querySelector('[name="due_date"]').value = data.due_date;
                     taskForm.querySelector('[name="priority"]').value = data.priority;
                     taskModal.style.display = 'flex';
-                    displayExistingAttachments(data.attachments);
+
+                    // Show existing file previews in the edit modal
+                    const existingFilePreview = document.getElementById('existing-file-preview');
+                    existingFilePreview.innerHTML = '';
+                    data.attachments.forEach(attachment => {
+                        const attachmentDiv = document.createElement('div');
+                        attachmentDiv.className = 'attachment';
+                        if (attachment.is_pdf) {
+                            attachmentDiv.innerHTML = `<a href="${attachment.file.url}" target="_blank">${attachment.file.name}</a>
+                                <button class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
+                        } else {
+                            attachmentDiv.innerHTML = `<a href="${attachment.file.url}" target="_blank"><img src="${attachment.file.url}" alt="Attachment" class="attachment-thumbnail"></a>
+                                <button class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
+                        }
+                        existingFilePreview.appendChild(attachmentDiv);
+
+                        // Attach remove event
+                        attachmentDiv.querySelector('.remove-attachment-btn').addEventListener('click', function(e) {
+                            e.preventDefault();
+                            const attachmentId = this.dataset.attachmentId;
+                            if (confirm('Are you sure you want to delete this attachment?')) {
+                                fetch(`/kanban/remove_attachment/${attachmentId}/`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRFToken': getCookie('csrftoken')
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        showNotification('Attachment removed successfully', 'success');
+                                        attachmentDiv.remove(); // Remove attachment element from the DOM
+                                    } else {
+                                        showNotification('Error removing attachment', 'error');
+                                    }
+                                })
+                                .catch(error => {
+                                    showNotification('Error removing attachment', 'error');
+                                });
+                            }
+                        });
+                    });
                 });
             });
 
@@ -414,7 +458,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     taskForm.querySelector('[name="due_date"]').value = data.due_date;
                     taskForm.querySelector('[name="priority"]').value = data.priority;
                     taskModal.style.display = 'flex';
-                    displayExistingAttachments(data.attachments);
                 });
             });
 
@@ -438,52 +481,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.kanban-task').forEach(setupTaskEvents);
 
-    // File preview functionality
-    document.getElementById('attachments').addEventListener('change', function() {
-        const files = this.files;
-        const previewContainer = document.getElementById('file-preview');
-        previewContainer.innerHTML = '';
-
-        for (const file of files) {
-            const fileReader = new FileReader();
-            fileReader.onload = function(e) {
-                const previewElement = document.createElement('div');
-                previewElement.className = 'file-preview';
-
-                if (file.type.startsWith('image/')) {
-                    previewElement.innerHTML = `<img src="${e.target.result}" alt="${file.name}" class="preview-thumbnail">`;
-                } else {
-                    previewElement.innerHTML = `<span class="preview-filename">${file.name}</span>`;
-                }
-
-                previewContainer.appendChild(previewElement);
-            };
-
-            fileReader.readAsDataURL(file);
-        }
-    });
-
-    function displayExistingAttachments(attachments) {
-        const previewContainer = document.getElementById('existing-file-preview');
-        previewContainer.innerHTML = '';
-
-        for (const attachment of attachments) {
-            const previewElement = document.createElement('div');
-            previewElement.className = 'file-preview';
-
-            if (attachment.name.endsWith('.pdf')) {
-                previewElement.innerHTML = `<a href="${attachment.url}" target="_blank">${attachment.name}</a>`;
-            } else {
-                previewElement.innerHTML = `<a href="${attachment.url}" target="_blank"><img src="${attachment.url}" alt="${attachment.name}" class="preview-thumbnail"></a>`;
-            }
-
-            previewContainer.appendChild(previewElement);
-        }
-    }
-
-    function clearFileThumbnails() {
-        document.getElementById('file-preview').innerHTML = '';
-        document.getElementById('existing-file-preview').innerHTML = '';
-    }
 });
 

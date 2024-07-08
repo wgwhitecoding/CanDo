@@ -45,6 +45,10 @@ class Attachment(models.Model):
     def __str__(self):
         return self.file.name
 
+    @property
+    def is_pdf(self):
+        return self.file.name.lower().endswith('.pdf')
+
 class SearchHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     query = models.CharField(max_length=255)
@@ -53,7 +57,6 @@ class SearchHistory(models.Model):
 
     def __str__(self):
         return self.query
-
 
 
 

@@ -32,14 +32,13 @@
                         <div class="kanban-task-details" style="display: none;">
                             <p>{{ task.description }}</p>
                             <div class="attachments">
-                                {% for attachment in task.attachments.all %}
+                                {% for attachment in task.attachments_with_type %}
                                 <div class="attachment">
                                     {% if attachment.is_pdf %}
                                     <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.file.name }}</a>
                                     {% else %}
                                     <a href="{{ attachment.file.url }}" target="_blank"><img src="{{ attachment.file.url }}" alt="Attachment" class="attachment-thumbnail"></a>
                                     {% endif %}
-                                    <button class="btn btn-danger remove-attachment-btn" data-attachment-id="{{ attachment.id }}">Remove</button>
                                 </div>
                                 {% endfor %}
                             </div>
@@ -66,16 +65,27 @@
             {% csrf_token %}
             {{ task_form|crispy }}
             <div class="form-group">
+                <div class="priority-indicators">
+                    <p><span class="priority-indicator priority-low"></span> Low</p>
+                    <p><span class="priority-indicator priority-medium"></span> Medium</p>
+                    <p><span class="priority-indicator priority-high"></span> High</p>
+                    <p><span class="priority-indicator priority-done"></span> Done</p>
+                </div>
                 <label for="attachments">Attachments:</label>
                 <input type="file" id="attachments" name="attachments" class="form-control" multiple>
                 <div id="file-preview" class="file-preview-container"></div>
-                <div id="existing-file-preview" class="file-preview-container"></div>
-            </div>
-            <div class="priority-indicators">
-                <p><span class="priority-indicator priority-low"></span> Low</p>
-                <p><span class="priority-indicator priority-medium"></span> Medium</p>
-                <p><span class="priority-indicator priority-high"></span> High</p>
-                <p><span class="priority-indicator priority-done"></span> Done</p>
+                <div id="existing-file-preview" class="file-preview-container">
+                    {% for attachment in task.attachments_with_type %}
+                    <div class="attachment">
+                        {% if attachment.is_pdf %}
+                        <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.file.name }}</a>
+                        {% else %}
+                        <a href="{{ attachment.file.url }}" target="_blank"><img src="{{ attachment.file.url }}" alt="Attachment" class="attachment-thumbnail"></a>
+                        {% endif %}
+                        <button class="btn btn-danger remove-attachment-btn" data-attachment-id="{{ attachment.id }}">×</button>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Save</button>
         </form>

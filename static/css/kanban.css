@@ -191,6 +191,7 @@ body {
 .priority-indicators .priority-indicator {
     margin-right: 5px;
 }
+
 .notification {
     position: fixed;
     top: 20px;
@@ -215,6 +216,68 @@ body {
     cursor: default;
     background-color: #3b1272;
 }
+
+/* Thumbnails */
+.attachment-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Hide remove button initially */
+.attachment .remove-attachment-btn {
+    display: none;
+}
+
+/* Show remove button only when editing */
+.modal-content .attachment .remove-attachment-btn {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 0.8em;
+}
+
+.attachment .remove-attachment-btn {
+    display: none;
+}
+
+/* Delete confirmation */
+.modal-content .delete-confirmation {
+    display: none;
+}
+
+.attachment .delete-confirmation {
+    display: block;
+    margin-top: 10px;
+}
+
+.attachment .delete-confirmation button {
+    margin-top: 10px;
+    display: none;
+}
+
+/* Show delete confirmation on hover */
+.attachment:hover .delete-confirmation {
+    display: block;
+    margin-top: 10px;
+}
+
+.attachment:hover .delete-confirmation button {
+    display: inline-block;
+}
+
+.file-preview-container {
+    margin-top: 10px;
+}
+
+.file-preview-container img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
 
 
 
