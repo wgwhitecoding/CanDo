@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         taskModal.style.display = 'flex';
         taskForm.reset();
         document.getElementById('existing-file-preview').innerHTML = ''; // Clear existing file previews
+        document.getElementById('file-preview').innerHTML = ''; // Clear new file previews
         editingTaskID = null;
     });
 
@@ -208,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
+            for (let i = 0; cookies.length > i; i++) {
                 const cookie = cookies[i].trim();
                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -250,12 +251,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     data.attachments.forEach(attachment => {
                         const attachmentDiv = document.createElement('div');
                         attachmentDiv.className = 'attachment';
-                        if (attachment.is_pdf) {
-                            attachmentDiv.innerHTML = `<a href="${attachment.file.url}" target="_blank">${attachment.file.name}</a>
-                                <button class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
+                        attachmentDiv.id = `attachment-${attachment.id}`;
+                        if (attachment.url.toLowerCase().endsWith('.pdf')) {
+                            attachmentDiv.innerHTML = `
+                                <a href="${attachment.url}" target="_blank">
+                                    <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
+                                    ${attachment.name}
+                                </a>
+                                <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
                         } else {
-                            attachmentDiv.innerHTML = `<a href="${attachment.file.url}" target="_blank"><img src="${attachment.file.url}" alt="Attachment" class="attachment-thumbnail"></a>
-                                <button class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
+                            attachmentDiv.innerHTML = `
+                                <a href="${attachment.url}" target="_blank">
+                                    <img src="${attachment.url}" alt="Attachment" class="attachment-thumbnail">
+                                </a>
+                                <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
                         }
                         existingFilePreview.appendChild(attachmentDiv);
 
@@ -274,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 .then(data => {
                                     if (data.status === 'success') {
                                         showNotification('Attachment removed successfully', 'success');
-                                        attachmentDiv.remove(); // Remove attachment element from the DOM
+                                        document.getElementById(`attachment-${attachmentId}`).remove(); // Remove attachment element from the DOM
                                     } else {
                                         showNotification('Error removing attachment', 'error');
                                     }
@@ -458,6 +467,56 @@ document.addEventListener('DOMContentLoaded', function() {
                     taskForm.querySelector('[name="due_date"]').value = data.due_date;
                     taskForm.querySelector('[name="priority"]').value = data.priority;
                     taskModal.style.display = 'flex';
+
+                    // Show existing file previews in the edit modal
+                    const existingFilePreview = document.getElementById('existing-file-preview');
+                    existingFilePreview.innerHTML = '';
+                    data.attachments.forEach(attachment => {
+                        const attachmentDiv = document.createElement('div');
+                        attachmentDiv.className = 'attachment';
+                        attachmentDiv.id = `attachment-${attachment.id}`;
+                        if (attachment.url.toLowerCase().endsWith('.pdf')) {
+                            attachmentDiv.innerHTML = `
+                                <a href="${attachment.url}" target="_blank">
+                                    <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
+                                    ${attachment.name}
+                                </a>
+                                <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
+                        } else {
+                            attachmentDiv.innerHTML = `
+                                <a href="${attachment.url}" target="_blank">
+                                    <img src="${attachment.url}" alt="Attachment" class="attachment-thumbnail">
+                                </a>
+                                <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
+                        }
+                        existingFilePreview.appendChild(attachmentDiv);
+
+                        // Attach remove event
+                        attachmentDiv.querySelector('.remove-attachment-btn').addEventListener('click', function(e) {
+                            e.preventDefault();
+                            const attachmentId = this.dataset.attachmentId;
+                            if (confirm('Are you sure you want to delete this attachment?')) {
+                                fetch(`/kanban/remove_attachment/${attachmentId}/`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRFToken': getCookie('csrftoken')
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        showNotification('Attachment removed successfully', 'success');
+                                        document.getElementById(`attachment-${attachmentId}`).remove(); // Remove attachment element from the DOM
+                                    } else {
+                                        showNotification('Error removing attachment', 'error');
+                                    }
+                                })
+                                .catch(error => {
+                                    showNotification('Error removing attachment', 'error');
+                                });
+                            }
+                        });
+                    });
                 });
             });
 
@@ -481,5 +540,59 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.kanban-task').forEach(setupTaskEvents);
 
+    // Handle attachment removal
+    document.querySelectorAll('.remove-attachment-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            removeAttachment(this);
+        });
+    });
+
+    // Handle file previews for new attachments
+    const attachmentsInput = document.getElementById('attachments');
+    attachmentsInput.addEventListener('change', function() {
+        const previewContainer = document.getElementById('file-preview');
+        previewContainer.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const fileReader = new FileReader();
+            fileReader.onload = function(e) {
+                const div = document.createElement('div');
+                div.classList.add('attachment');
+                if (file.type === 'application/pdf') {
+                    div.innerHTML = `
+                        <a href="${e.target.result}" target="_blank">
+                            <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
+                            ${file.name}
+                        </a>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <a href="${e.target.result}" target="_blank">
+                            <img src="${e.target.result}" alt="Attachment" class="attachment-thumbnail">
+                        </a>
+                    `;
+                }
+                previewContainer.appendChild(div);
+            };
+            fileReader.readAsDataURL(file);
+        });
+    });
+
+    function removeAttachment(button) {
+        const attachmentId = button.getAttribute('data-attachment-id');
+        fetch(`/kanban/remove_attachment/${attachmentId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            }
+        }).then(response => response.json()).then(data => {
+            if (data.status === 'success') {
+                document.getElementById(`attachment-${attachmentId}`).remove();
+            } else {
+                alert('Error removing attachment');
+            }
+        });
+    }
 });
+
 
