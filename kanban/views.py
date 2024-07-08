@@ -39,24 +39,20 @@ def clear_search_history(request):
 
 @login_required
 def kanban_board(request):
-    predefined_columns = ['New', 'To Do']  # Only New and To Do columns
+    predefined_columns = ['New', 'To Do']
     board, created = Board.objects.get_or_create(owner=request.user, name='Default Board')
     columns = Column.objects.filter(board=board)
 
-    # Remove 'In Progress' and 'Done' columns if they exist
     columns.filter(name__in=['In Progress', 'Done']).delete()
 
     for col_name in predefined_columns:
         if not columns.filter(name=col_name).exists():
             Column.objects.create(name=col_name, board=board, default=True)
 
-    columns = Column.objects.filter(board=board).order_by('id')  # Order by ID to keep positions
+    columns = Column.objects.filter(board=board).order_by('id')
     tasks = KanbanTask.objects.filter(created_by=request.user).order_by('position')
     for task in tasks:
-        task.attachments_with_type = []
-        for attachment in task.attachments.all():
-            attachment.is_pdf = attachment.file.name.lower().endswith('.pdf')
-            task.attachments_with_type.append(attachment)
+        task.attachments_with_type = task.attachments.all()
 
     task_form = KanbanTaskForm()
     column_form = ColumnForm()
@@ -237,6 +233,7 @@ def remove_attachment(request, attachment_id):
         except Attachment.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Attachment not found'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 
 
 

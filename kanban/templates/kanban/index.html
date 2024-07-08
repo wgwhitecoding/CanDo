@@ -76,13 +76,18 @@
                 <div id="file-preview" class="file-preview-container"></div>
                 <div id="existing-file-preview" class="file-preview-container">
                     {% for attachment in task.attachments_with_type %}
-                    <div class="attachment">
+                    <div class="attachment" id="attachment-{{ attachment.id }}">
                         {% if attachment.is_pdf %}
-                        <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.file.name }}</a>
+                        <a href="{{ attachment.file.url }}" target="_blank">
+                            <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
+                            {{ attachment.file.name }}
+                        </a>
                         {% else %}
-                        <a href="{{ attachment.file.url }}" target="_blank"><img src="{{ attachment.file.url }}" alt="Attachment" class="attachment-thumbnail"></a>
+                        <a href="{{ attachment.file.url }}" target="_blank">
+                            <img src="{{ attachment.file.url }}" alt="Attachment" class="attachment-thumbnail">
+                        </a>
                         {% endif %}
-                        <button class="btn btn-danger remove-attachment-btn" data-attachment-id="{{ attachment.id }}">×</button>
+                        <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="{{ attachment.id }}">×</button>
                     </div>
                     {% endfor %}
                 </div>
@@ -91,6 +96,7 @@
         </form>
     </div>
 </div>
+
 
 <!-- Column Modal -->
 <div id="column-modal" class="modal">
@@ -154,9 +160,12 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/kanban.js' %}"></script>
 <script src="{% static 'js/kanban_custom.js' %}"></script>
 {% endblock %}
+
 
 
 
