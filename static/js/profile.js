@@ -52,5 +52,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    // Event listener for logging out
+    document.getElementById('confirmLogout').addEventListener('click', function () {
+        window.location.href = "{% url 'account_logout' %}"; // Replace with your logout URL
+    });
 });
+
 
