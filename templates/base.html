@@ -35,7 +35,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
                     </li>
-                    
                 </ul>
                 <form class="d-flex" method="get" action="{% url 'kanban:search_tasks' %}">
                     <input class="form-control me-2" type="search" name="q" placeholder="Search tasks" aria-label="Search" required>
@@ -70,12 +69,27 @@
         {% block content %}{% endblock %}
     </div>
 
+    <div id="messages" class="fixed-top container mt-3">
+        {% if messages %}
+            <div class="alert alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/dark-mode.js' %}"></script>
+    <script src="{% static 'js/notifications.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+
 
 
 

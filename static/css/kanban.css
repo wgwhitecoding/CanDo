@@ -277,6 +277,46 @@ body {
     border-radius: 5px;
     margin-right: 5px;
 }
+@media (max-width: 600px) {
+    .kanban-board-wrapper {
+        max-width: 100%;
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    .kanban-board {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        width: 100%;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .kanban-column {
+        flex: 0 0 100%;
+        max-width: 100%;
+        min-width: 100%;
+        margin-right: 0;
+    }
+
+    .scroll-button {
+        display: block;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #333;
+        border-radius: 50%;
+        z-index: 10;
+    }
+
+    #scroll-left {
+        left: 10px;
+    }
+
+    #scroll-right {
+        right: 10px;
+    }
+}
 
 
 

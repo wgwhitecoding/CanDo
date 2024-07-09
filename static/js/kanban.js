@@ -19,7 +19,31 @@ document.addEventListener('DOMContentLoaded', function() {
     let deletingTaskID = null;
     let deletingColumnID = null;
     let deletingAttachmentID = null;
+document.addEventListener('DOMContentLoaded', function() {
+    let currentColumn = 0;
+    const board = document.querySelector('.kanban-board');
+    const columns = document.querySelectorAll('.kanban-column');
+    const totalColumns = columns.length;
 
+    function updateTransform() {
+        const transformValue = -currentColumn * 100;
+        board.style.transform = `translateX(${transformValue}%)`;
+    }
+
+    document.getElementById('scroll-left').addEventListener('click', function() {
+        if (currentColumn > 0) {
+            currentColumn--;
+            updateTransform();
+        }
+    });
+
+    document.getElementById('scroll-right').addEventListener('click', function() {
+        if (currentColumn < totalColumns - 1) {
+            currentColumn++;
+            updateTransform();
+        }
+    });
+});
     // Function to display notifications
     function showNotification(message, type = 'success') {
         const notification = document.createElement('div');
