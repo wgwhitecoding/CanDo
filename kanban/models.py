@@ -83,3 +83,4 @@ class SearchHistory(models.Model):
 
 
 
+

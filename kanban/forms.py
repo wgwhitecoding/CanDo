@@ -9,7 +9,7 @@ class UserForm(forms.ModelForm):
 
 class ProfileForm(forms.ModelForm):
     bio = forms.CharField(widget=forms.Textarea, required=False)
-    
+
     class Meta:
         model = Profile
         fields = ['profile_image', 'bio']
@@ -34,6 +34,7 @@ class AttachmentForm(forms.ModelForm):
         widgets = {
             'file': forms.FileInput(attrs={'multiple': False})
         }
+
 
 
 

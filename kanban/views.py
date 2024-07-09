@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import KanbanTask, Column, Board, SearchHistory, Attachment, Profile
@@ -255,7 +256,7 @@ def edit_profile(request):
                 'user_bio': profile.bio
             })
         else:
-            errors = user_form.errors.as_json() + profile_form.errors.as_json()
+            errors = json.loads(user_form.errors.as_json()) + json.loads(profile_form.errors.as_json())
             return JsonResponse({'success': False, 'errors': errors})
 
     return render(request, 'kanban/edit_profile.html', {
@@ -286,17 +287,23 @@ def edit_profile_api(request):
         else:
             errors = user_form.errors.as_json() + profile_form.errors.as_json()
             return JsonResponse({'success': False, 'errors': errors})
-
+    
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 @login_required
 @csrf_exempt
 def delete_account(request):
     if request.method == 'POST':
-        user = request.user
-        user.delete()
-        return JsonResponse({'success': True})
+        try:
+            user = request.user
+            user.delete()
+            logout(request)
+            return JsonResponse({'success': True, 'redirect_url': '/accounts/login/'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+
 
 
 

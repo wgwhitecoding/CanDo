@@ -1,19 +1,29 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Get URLs from data attributes
+    const editProfileUrl = document.getElementById('editProfileModal').dataset.editProfileUrl;
+    const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
+    const logoutUrl = "{% url 'account_logout' %}";
+    const loginUrl = "{% url 'account_login' %}";
+
     // Event listener for deleting the account
-    document.getElementById('confirmDeleteAccount').addEventListener('click', function () {
+    document.getElementById('confirmDeleteAccountBtn').addEventListener('click', function () {
         // Make an AJAX request to delete the account
         $.ajax({
-            url: "{% url 'kanban:delete_account' %}",
+            url: deleteAccountUrl,
             type: "POST",
             data: {
                 csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
             },
             success: function (response) {
                 if (response.success) {
-                    window.location.href = "{% url 'account_logout' %}";
+                    window.location.href = loginUrl;
                 } else {
                     alert('Error deleting account');
                 }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the account.');
             }
         });
     });
@@ -24,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const formData = new FormData(this);
 
         $.ajax({
-            url: "{% url 'kanban:edit_profile_api' %}",
+            url: editProfileUrl,
             type: "POST",
             data: formData,
             processData: false,
@@ -42,16 +52,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     alert('Error updating profile');
                 }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('An error occurred while updating the profile.');
             }
         });
     });
 
     // Event listener for logging out
-    document.getElementById('confirmLogout').addEventListener('click', function () {
+    document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
         // Redirect to the logout URL
-        window.location.href = "{% url 'account_logout' %}";
+        window.location.href = logoutUrl;
     });
 });
+
+
+
+
+
+
 
 
 
