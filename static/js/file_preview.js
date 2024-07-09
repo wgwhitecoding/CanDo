@@ -1,60 +1,78 @@
-// Function to handle file previews
-function handleFilePreview() {
-    const fileInput = document.getElementById('attachments');
-    const filePreviewContainer = document.getElementById('file-preview');
+document.addEventListener('DOMContentLoaded', function () {
+    // Get URLs from data attributes
+    const editProfileUrl = document.getElementById('editProfileModal').dataset.editProfileUrl;
+    const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
+    const logoutUrl = "{% url 'account_logout' %}";
+    const loginUrl = "{% url 'account_login' %}";
 
-    fileInput.addEventListener('change', (event) => {
-        filePreviewContainer.innerHTML = ''; // Clear previous previews
+    // Get the loading spinner element
+    const loadingSpinner = document.getElementById('loadingSpinner');
 
-        Array.from(event.target.files).forEach(file => {
-            const fileDiv = document.createElement('div');
-            fileDiv.classList.add('attachment');
-
-            if (file.type === 'application/pdf') {
-                const pdfLink = document.createElement('a');
-                pdfLink.href = URL.createObjectURL(file);
-                pdfLink.target = '_blank';
-
-                const pdfImg = document.createElement('img');
-                pdfImg.src = '/static/images/pdf-icon.png'; // Ensure this path is correct
-                pdfImg.alt = 'PDF';
-                pdfImg.classList.add('attachment-thumbnail');
-
-                pdfLink.appendChild(pdfImg);
-
-                const fileNameSpan = document.createElement('span');
-                fileNameSpan.textContent = file.name.length > 20 ? file.name.slice(0, 17) + '...' : file.name;
-
-                fileDiv.appendChild(pdfLink);
-                fileDiv.appendChild(fileNameSpan);
-            } else {
-                const imgLink = document.createElement('a');
-                imgLink.href = URL.createObjectURL(file);
-                imgLink.target = '_blank';
-
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(file);
-                img.alt = 'Attachment';
-                img.classList.add('attachment-thumbnail');
-
-                imgLink.appendChild(img);
-                fileDiv.appendChild(imgLink);
+    // Event listener for deleting the account
+    document.getElementById('confirmDeleteAccountBtn').addEventListener('click', function () {
+        loadingSpinner.style.display = 'block'; // Show spinner
+        // Make an AJAX request to delete the account
+        $.ajax({
+            url: deleteAccountUrl,
+            type: "POST",
+            data: {
+                csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            success: function (response) {
+                loadingSpinner.style.display = 'none'; // Hide spinner
+                if (response.success) {
+                    window.location.href = loginUrl;
+                } else {
+                    alert('Error deleting account');
+                }
+            },
+            error: function (xhr, status, error) {
+                loadingSpinner.style.display = 'none'; // Hide spinner
+                console.error('Error:', error);
+                alert('An error occurred while deleting the account.');
             }
-
-            const removeBtn = document.createElement('button');
-            removeBtn.type = 'button';
-            removeBtn.classList.add('btn', 'btn-danger', 'remove-attachment-btn');
-            removeBtn.textContent = '×';
-            removeBtn.addEventListener('click', () => {
-                fileDiv.remove();
-            });
-
-            fileDiv.appendChild(removeBtn);
-            filePreviewContainer.appendChild(fileDiv);
         });
     });
-}
 
-document.addEventListener('DOMContentLoaded', handleFilePreview);
+    // Event listener for submitting the edit profile form
+    document.getElementById('editProfileForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        loadingSpinner.style.display = 'block'; // Show spinner
+        const formData = new FormData(this);
+
+        $.ajax({
+            url: editProfileUrl,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                loadingSpinner.style.display = 'none'; // Hide spinner
+                if (response.success) {
+                    // Update profile modal with new data
+                    document.querySelector('#profileModal img').src = response.profile_picture_url;
+                    document.querySelector('#profileDropdown img').src = response.profile_picture_url;
+                    document.querySelector('#profileModal h3').textContent = response.user_name;
+                    document.querySelector('#profileModal p.email').textContent = 'Email: ' + response.user_email;
+                    document.querySelector('#profileModal p.bio').textContent = 'Bio: ' + response.user_bio;
+                    $('#editProfileModal').modal('hide');
+                    alert('Profile updated successfully');
+                } else {
+                    alert('Error updating profile');
+                }
+            },
+            error: function (xhr, status, error) {
+                loadingSpinner.style.display = 'none'; // Hide spinner
+                console.error('Error:', error);
+                alert('An error occurred while updating the profile.');
+            }
+        });
+    });
+
+    // Event listener for logging out
+    document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
+        window.location.href = logoutUrl;
+    });
+});
 
 
