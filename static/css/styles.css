@@ -46,3 +46,29 @@ body {
 }
 
 
+/* static/css/styles.css */
+
+#messages {
+    position: fixed;
+    top: 70px; /* Adjust this value if your navbar height is different */
+    right: 10px;
+    width: auto;
+    z-index: 1060; /* Ensure this is higher than the navbar's z-index and other elements */
+}
+
+.alert {
+    margin-bottom: 10px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+
+
