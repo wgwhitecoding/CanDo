@@ -19,7 +19,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
-                <img src="{% static 'logo/candologo.png' %}" alt="Logo" style="height: 40px;">
+                <img src="{% static 'logo/candologo.png' %}" alt="Logo" class="navbar-avatar" style="height: 40px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -39,7 +39,7 @@
                 </form>
                 <div class="dropdown">
                     <a href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{% static 'images/default-profile.png' %}" alt="Profile" class="rounded-circle" style="height: 40px;">
+                        <img src="{% static 'images/default-profile.png' %}" alt="Profile" class="rounded-circle navbar-avatar" style="height: 40px;">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">Profile</a></li>
@@ -80,10 +80,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img src="{% static 'images/default-profile.png' %}" alt="Profile" class="rounded-circle" style="height: 100px;">
-                    <h3>John Doe</h3>
-                    <p class="email">Email: john.doe@example.com</p>
-                    <p class="bio">Bio: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <img src="{% static 'images/default-profile.png' %}" alt="Profile" class="rounded-circle profile-avatar" style="height: 100px;">
+                    <h3>{{ user.get_full_name }}</h3>
+                    <p class="email">Email: {{ user.email }}</p>
+                    <p class="bio">Bio: {{ user.profile.bio }}</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
@@ -102,22 +102,23 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editProfileForm">
+                    <form id="editProfileForm" enctype="multipart/form-data">
+                        {% csrf_token %}
                         <div class="mb-3">
                             <label for="profileImage" class="form-label">Profile Image</label>
                             <input class="form-control" type="file" id="profileImage" name="profile_image">
                         </div>
                         <div class="mb-3">
                             <label for="profileName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="profileName" name="profile_name" value="John Doe">
+                            <input type="text" class="form-control" id="profileName" name="first_name" value="{{ user.first_name }}">
                         </div>
                         <div class="mb-3">
                             <label for="profileEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="profileEmail" name="profile_email" value="john.doe@example.com">
+                            <input type="email" class="form-control" id="profileEmail" name="email" value="{{ user.email }}">
                         </div>
                         <div class="mb-3">
                             <label for="profileBio" class="form-label">Bio</label>
-                            <textarea class="form-control" id="profileBio" name="profile_bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</textarea>
+                            <textarea class="form-control" id="profileBio" name="bio">{{ user.profile.bio }}</textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </form>
@@ -170,12 +171,12 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'js/settings.js' %}"></script>
     <script src="{% static 'js/profile.js' %}"></script>
-    <script src="{% static 'js/dark-mode.js' %}"></script>
+    <script src="{% static 'js/dark_mode.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+
 
 
 

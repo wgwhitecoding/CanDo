@@ -1,5 +1,18 @@
 from django import forms
-from .models import KanbanTask, Column, Attachment
+from django.contrib.auth.models import User
+from .models import Profile, KanbanTask, Column, Attachment
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+class ProfileForm(forms.ModelForm):
+    bio = forms.CharField(widget=forms.Textarea, required=False)
+    
+    class Meta:
+        model = Profile
+        fields = ['profile_image', 'bio']
 
 class KanbanTaskForm(forms.ModelForm):
     class Meta:

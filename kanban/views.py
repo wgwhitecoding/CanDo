@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import KanbanTask, Column, Board, SearchHistory, Attachment
-from .forms import KanbanTaskForm, ColumnForm, AttachmentForm
+from .models import KanbanTask, Column, Board, SearchHistory, Attachment, Profile
+from .forms import KanbanTaskForm, ColumnForm, AttachmentForm, UserForm, ProfileForm
 import json
 
 @login_required
@@ -63,7 +64,6 @@ def kanban_board(request):
         'column_form': column_form,
     }
     return render(request, 'kanban/index.html', context)
-
 
 @login_required
 @csrf_exempt
@@ -233,6 +233,71 @@ def remove_attachment(request, attachment_id):
         except Attachment.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Attachment not found'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+@login_required
+def edit_profile(request):
+    user = request.user
+    profile, created = Profile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return JsonResponse({
+                'success': True,
+                'profile_picture_url': profile.profile_image.url,
+                'user_name': f'{user.first_name} {user.last_name}',
+                'user_email': user.email,
+                'user_bio': profile.bio
+            })
+        else:
+            errors = user_form.errors.as_json() + profile_form.errors.as_json()
+            return JsonResponse({'success': False, 'errors': errors})
+
+    return render(request, 'kanban/edit_profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
+
+@login_required
+@csrf_exempt
+def edit_profile_api(request):
+    if request.method == 'POST':
+        user = request.user
+        profile, created = Profile.objects.get_or_create(user=user)
+        
+        user_form = UserForm(request.POST, instance=user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return JsonResponse({
+                'success': True,
+                'profile_picture_url': profile.profile_image.url,
+                'user_name': f'{user.first_name} {user.last_name}',
+                'user_email': user.email,
+                'user_bio': profile.bio
+            })
+        else:
+            errors = user_form.errors.as_json() + profile_form.errors.as_json()
+            return JsonResponse({'success': False, 'errors': errors})
+
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+@login_required
+@csrf_exempt
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
 
 
 
