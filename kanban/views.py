@@ -266,10 +266,3 @@ def remove_attachment(request, attachment_id):
 
 
 
-
-
-
-
-
-
-

@@ -1,12 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Settings Modal Toggle
-    const settingsToggle = document.querySelector('[data-bs-target="#settingsModal"]');
-    if (settingsToggle) {
-        settingsToggle.addEventListener('click', function () {
-            $('#settingsModal').modal('show');
-        });
-    }
-
     // Event listener for deleting the account
     document.getElementById('confirmDeleteAccount').addEventListener('click', function () {
         // Make an AJAX request to delete the account
@@ -52,11 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
-
-    // Event listener for logging out
-    document.getElementById('confirmLogout').addEventListener('click', function () {
-        window.location.href = "{% url 'account_logout' %}"; // Replace with your logout URL
-    });
 });
+
+
 
 
