@@ -297,10 +297,18 @@ def delete_account(request):
         try:
             user = request.user
             user.delete()
-            logout(request)
             return JsonResponse({'success': True, 'redirect_url': '/accounts/login/'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+@login_required
+@csrf_exempt
+def logout_user(request):
+    from django.contrib.auth import logout
+    if request.method == 'POST':
+        logout(request)
+        return JsonResponse({'success': True, 'redirect_url': '/accounts/login/'})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 

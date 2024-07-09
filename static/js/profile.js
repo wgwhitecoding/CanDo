@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Get URLs from data attributes
     const editProfileUrl = document.getElementById('editProfileModal').dataset.editProfileUrl;
     const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
-    const logoutUrl = "{% url 'account_logout' %}";
-    const loginUrl = "{% url 'account_login' %}";
+    const logoutUrl = "/accounts/logout/"; // Use the correct URL for logout
+    const loginUrl = "/accounts/login/"; // Ensure this is the correct URL for the login page
 
     // Event listener for deleting the account
     document.getElementById('confirmDeleteAccountBtn').addEventListener('click', function () {
@@ -62,8 +62,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Event listener for logging out
     document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
-        // Redirect to the logout URL
-        window.location.href = logoutUrl;
+        // Make an AJAX request to log out
+        $.ajax({
+            url: logoutUrl,
+            type: "POST",
+            data: {
+                csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            success: function (response) {
+                window.location.href = loginUrl;
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('An error occurred while logging out.');
+            }
+        });
     });
 });
 
