@@ -35,7 +35,10 @@
                                 {% for attachment in task.attachments_with_type %}
                                 <div class="attachment">
                                     {% if attachment.is_pdf %}
-                                    <a href="{{ attachment.file.url }}" target="_blank">{{ attachment.file.name }}</a>
+                                    <a href="{{ attachment.file.url }}" target="_blank">
+                                        <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
+                                    </a>
+                                    <span>{{ attachment.file.name|slice:":20" }}</span>
                                     {% else %}
                                     <a href="{{ attachment.file.url }}" target="_blank"><img src="{{ attachment.file.url }}" alt="Attachment" class="attachment-thumbnail"></a>
                                     {% endif %}
@@ -80,8 +83,8 @@
                         {% if attachment.is_pdf %}
                         <a href="{{ attachment.file.url }}" target="_blank">
                             <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
-                            {{ attachment.file.name }}
                         </a>
+                        <span>{{ attachment.file.name|slice:":20" }}</span>
                         {% else %}
                         <a href="{{ attachment.file.url }}" target="_blank">
                             <img src="{{ attachment.file.url }}" alt="Attachment" class="attachment-thumbnail">
