@@ -16,7 +16,7 @@ def index(request):
 @login_required
 def search_tasks(request):
     query = request.GET.get('q')
-    tasks = KanbanTask.objects.filter(title__icontains(query, created_by=request.user)) if query else KanbanTask.objects.none()
+    tasks = KanbanTask.objects.filter(title__icontains=query, created_by=request.user) if query else KanbanTask.objects.none()
 
     if query:
         for task in tasks:
