@@ -19,7 +19,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
-                <img src="{% static 'logo/candologo.png' %}" alt="Logo" class="navbar-avatar" style="height: 40px;">
+                <img src="{% static 'logo/candologo.png' %}" alt="Logo">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -36,7 +36,7 @@
                 </form>
                 <div class="dropdown">
                     <a href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{% if user.is_authenticated and user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'profile_images/default.png' %}{% endif %}" alt="Profile" class="rounded-circle navbar-avatar" style="height: 40px;">
+                        <img src="{% if user.is_authenticated and user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'profile_images/default.png' %}{% endif %}" alt="Profile" class="rounded-circle navbar-avatar">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         {% if user.is_authenticated %}
@@ -82,7 +82,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img src="{% if user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'profile_images/default.png' %}{% endif %}" alt="Profile" class="rounded-circle profile-avatar" style="height: 100px;">
+                    <img src="{% if user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'profile_images/default.png' %}{% endif %}" alt="Profile" class="rounded-circle profile-avatar">
                     <h3>{{ user.get_full_name }}</h3>
                     <p class="email">Email: {{ user.email }}</p>
                     <p class="bio">Bio: {{ user.profile.bio }}</p>

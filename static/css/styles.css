@@ -1,3 +1,4 @@
+/* General styles */
 body {
     font-family: Arial, sans-serif;
 }
@@ -45,9 +46,24 @@ body {
     list-style-type: none;
 }
 
+/* Avatar and profile images */
+.navbar-avatar, .profile-avatar {
+    border-radius: 50%; /* Make the image a circle */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+}
 
-/* static/css/styles.css */
+.navbar-avatar {
+    width: 40px; /* Adjust size as needed */
+    height: 40px; /* Ensure width and height are the same */
+}
 
+/* Larger profile avatar in profile modal */
+.profile-avatar {
+    width: 100px; /* Adjust size as needed */
+    height: 100px; /* Ensure width and height are the same */
+}
+
+/* Static styles */
 #messages {
     position: fixed;
     top: 70px; /* Adjust this value if your navbar height is different */
@@ -69,12 +85,13 @@ body {
     background-color: #f8d7da;
     color: #721c24;
 }
+
 #loadingSpinner {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1050; 
+    z-index: 1050;
 }
 
 

@@ -204,11 +204,11 @@ body {
 }
 
 .notification.success {
-    background-color: #4CAF50; /* Green */
+    background-color: #4CAF50; 
 }
 
 .notification.error {
-    background-color: #f44336; /* Red */
+    background-color: #f44336; 
 }
 
 .unclickable {
