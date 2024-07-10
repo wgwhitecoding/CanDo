@@ -106,9 +106,12 @@ document.addEventListener('DOMContentLoaded', function() {
             closeAllModals();
             loadingSpinner.style.display = 'none';
             if (data.status === 'success') {
-                showNotification('Task saved successfully', 'success');
                 if (!editingTaskID) {
+                    showNotification('Task created successfully', 'success');
                     addTaskToColumn(data.task);
+                } else {
+                    showNotification('Task updated successfully', 'success');
+                    updateTaskInColumn(data.task);
                 }
             } else {
                 showNotification('Error creating/editing task', 'error');
@@ -335,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
             this.querySelector('.move-task-dropdown').addEventListener('change', function() {
                 const taskId = task.dataset.taskId;
                 const columnId = this.value;
-                fetch(`/kanban/move_task/${taskId}/`, {
+                fetch(`/kanban/move_task/${task.dataset.taskId}/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -347,9 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     if (data.status === 'success') {
                         showNotification('Task moved successfully', 'success');
-                        moveTaskInDOM(taskId, columnId);
-                    } else {
-                        showNotification('Error moving task', 'error');
+                        setTimeout(() => location.reload(), 1000);
                     }
                 })
                 .catch(error => {
@@ -520,16 +521,19 @@ document.addEventListener('DOMContentLoaded', function() {
             taskElement.className = 'kanban-task';
             taskElement.dataset.taskId = task.id;
             taskElement.innerHTML = `
-                <div class="kanban-task-details">
-                    <h3>${task.title}</h3>
+                <div class="kanban-task-title">
+                    ${task.title}
+                    <span class="priority-indicator ${getPriorityClass(task.priority)}"></span>
+                </div>
+                <div class="kanban-task-due">Due: ${task.due_date}</div>
+                <div class="kanban-task-details" style="display: none;">
                     <p>${task.description}</p>
-                    <p>Due: ${task.due_date}</p>
-                    <p>Priority: ${task.priority}</p>
-                    <button class="edit-task-btn">Edit</button>
-                    <button class="delete-task-btn">Delete</button>
-                    <button class="close-task-btn">Close</button>
-                    <button class="move-task-btn">Move</button>
-                    <select class="move-task-dropdown" style="display: none;">
+                    <div class="attachments"></div>
+                    <button class="btn btn-primary edit-task-btn">Edit</button>
+                    <button class="btn btn-danger delete-task-btn">Delete</button>
+                    <button class="btn btn-secondary close-task-btn">Close</button>
+                    <button class="btn btn-info move-task-btn">Move</button>
+                    <select class="move-task-dropdown" style="display:none;">
                         {% for column in columns %}
                         <option value="{{ column.id }}">{{ column.name }}</option>
                         {% endfor %}
@@ -656,6 +660,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function updateTaskInColumn(task) {
+        const taskElement = document.querySelector(`.kanban-task[data-task-id="${task.id}"]`);
+        if (taskElement) {
+            taskElement.innerHTML = `
+                <div class="kanban-task-title">
+                    ${task.title}
+                    <span class="priority-indicator ${getPriorityClass(task.priority)}"></span>
+                </div>
+                <div class="kanban-task-due">Due: ${task.due_date}</div>
+                <div class="kanban-task-details" style="display: none;">
+                    <p>${task.description}</p>
+                    <div class="attachments"></div>
+                    <button class="btn btn-primary edit-task-btn">Edit</button>
+                    <button class="btn btn-danger delete-task-btn">Delete</button>
+                    <button class="btn btn-secondary close-task-btn">Close</button>
+                    <button class="btn btn-info move-task-btn">Move</button>
+                    <select class="move-task-dropdown" style="display:none;">
+                        {% for column in columns %}
+                        <option value="{{ column.id }}">{{ column.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            `;
+            setupTaskEvents(taskElement);
+        }
+    }
+
     document.querySelectorAll('.kanban-task').forEach(setupTaskEvents);
 
     // Handle attachment removal
@@ -770,7 +801,28 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('scroll-right').click();
         }
     });
+
+    function getPriorityClass(priority) {
+        switch (priority) {
+            case 'Low':
+                return 'priority-low';
+            case 'Medium':
+                return 'priority-medium';
+            case 'High':
+                return 'priority-high';
+            case 'Done':
+                return 'priority-done';
+            default:
+                return '';
+        }
+    }
 });
+
+
+
+
+
+
 
 
 

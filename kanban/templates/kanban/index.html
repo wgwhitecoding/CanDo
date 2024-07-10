@@ -26,10 +26,10 @@
                     {% if task.column.id == column.id %}
                     <div class="kanban-task" data-task-id="{{ task.id }}">
                         <div class="kanban-task-title">
-                            <span class="priority-indicator {% if task.priority == 'Low' %}priority-low{% elif task.priority == 'Medium' %}priority-medium{% elif task.priority == 'High' %}priority-high{% elif task.priority == 'Done' %}priority-done{% endif %}"></span>
                             {{ task.title }}
+                            <span class="priority-indicator {% if task.priority == 'Low' %}priority-low{% elif task.priority == 'Medium' %}priority-medium{% elif task.priority == 'High' %}priority-high{% elif task.priority == 'Done' %}priority-done{% endif %}"></span>
                         </div>
-                        <div class="kanban-task-due">{{ task.due_date }}</div>
+                        <div class="kanban-task-due">Due: {{ task.due_date }}</div>
                         <div class="kanban-task-details" style="display: none;">
                             <p>{{ task.description }}</p>
                             <div class="attachments">
@@ -171,6 +171,11 @@
         <span class="close-btn">&times;</span>
         <p id="delete-attachment-confirmation-text"></p>
         <button id="confirm-delete-attachment-btn" class="btn btn-danger">Delete</button>
+    </div>
+</div>
+<div id="loadingSpinner" style="display: none;">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
     </div>
 </div>
 {% endblock %}
