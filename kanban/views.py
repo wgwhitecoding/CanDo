@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from django.contrib.auth.models import User
 from django.contrib import messages
 from .models import KanbanTask, Column, Board, SearchHistory, Attachment, Profile
 from .forms import KanbanTaskForm, ColumnForm, AttachmentForm, UserForm, ProfileForm
@@ -16,12 +15,12 @@ def index(request):
 @login_required
 def search_tasks(request):
     query = request.GET.get('q')
-    tasks = KanbanTask.objects.filter(title__icontains(query), created_by=request.user) if query else KanbanTask.objects.none()
+    tasks = KanbanTask.objects.filter(title__icontains=query, created_by=request.user) if query else KanbanTask.objects.none()
 
     if query:
         for task in tasks:
             if not SearchHistory.objects.filter(user=request.user, task=task).exists():
-                SearchHistory.objects.create(user=request.user, task=task)
+                SearchHistory.objects.create(user=request.user, task=task, query=query)
 
     search_history = SearchHistory.objects.filter(user=request.user).order_by('-timestamp')[:10]
 
@@ -78,7 +77,6 @@ def create_task(request):
             task.position = KanbanTask.objects.filter(column=task.column).count() + 1
             task.save()
 
-            # Handle file attachments
             files = request.FILES.getlist('attachments')
             for file in files:
                 Attachment.objects.create(task=task, file=file)
@@ -96,9 +94,8 @@ def edit_task(request, task_id):
     if request.method == 'POST':
         form = KanbanTaskForm(request.POST, request.FILES, instance=task)
         if form.is_valid():
-            form.save()
+            task = form.save()
 
-            # Handle file attachments
             files = request.FILES.getlist('attachments')
             for file in files:
                 Attachment.objects.create(task=task, file=file)
@@ -172,7 +169,6 @@ def move_task(request, task_id):
         new_column = get_object_or_404(Column, id=data['column_id'], board__owner=request.user)
         new_position = data['position']
 
-        # Reorder tasks in the old column
         old_column = task.column
         if old_column != new_column:
             old_tasks = KanbanTask.objects.filter(column=old_column).exclude(id=task.id).order_by('position')
@@ -180,7 +176,6 @@ def move_task(request, task_id):
                 t.position = i + 1
                 t.save()
 
-        # Insert task into the new column at the new position
         new_tasks = list(KanbanTask.objects.filter(column=new_column).exclude(id=task.id).order_by('position'))
         new_tasks.insert(new_position - 1, task)
 
@@ -191,7 +186,7 @@ def move_task(request, task_id):
         task.column = new_column
         task.position = new_position
         task.save()
-        
+
         messages.success(request, 'Task moved successfully.')
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
@@ -259,6 +254,9 @@ def edit_profile(request):
             errors = json.loads(user_form.errors.as_json()) + json.loads(profile_form.errors.as_json())
             return JsonResponse({'success': False, 'errors': errors})
 
+    user_form = UserForm(instance=user)
+    profile_form = ProfileForm(instance=profile)
+
     return render(request, 'kanban/edit_profile.html', {
         'user_form': user_form,
         'profile_form': profile_form
@@ -270,7 +268,7 @@ def edit_profile_api(request):
     if request.method == 'POST':
         user = request.user
         profile, created = Profile.objects.get_or_create(user=user)
-        
+
         user_form = UserForm(request.POST, instance=user)
         profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
 
@@ -285,9 +283,9 @@ def edit_profile_api(request):
                 'user_bio': profile.bio
             })
         else:
-            errors = user_form.errors.as_json() + profile_form.errors.as_json()
+            errors = json.loads(user_form.errors.as_json()) + json.loads(profile_form.errors.as_json())
             return JsonResponse({'success': False, 'errors': errors})
-    
+
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 @login_required
@@ -305,11 +303,12 @@ def delete_account(request):
 @login_required
 @csrf_exempt
 def logout_user(request):
-    from django.contrib.auth import logout
     if request.method == 'POST':
         logout(request)
         return JsonResponse({'success': True, 'redirect_url': '/accounts/login/'})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+
 
 
 
