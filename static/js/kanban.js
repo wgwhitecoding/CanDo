@@ -287,8 +287,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (attachment.url.toLowerCase().endsWith('.pdf')) {
                             attachmentDiv.innerHTML = `
                                 <a href="${attachment.url}" target="_blank">
-                                    <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
-                                    ${attachment.name}
+                                    <img src="${static_url}images/pdf-icon.png" alt="PDF" class="attachment-thumbnail">
+                                    ${attachment.public_id}
                                 </a>
                                 <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
                         } else {
@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             attachmentDiv.innerHTML = `
                                 <a href="${attachment.url}" target="_blank">
                                     <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
-                                    ${attachment.name}
+                                    ${attachment.public_id}
                                 </a>
                                 <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
                         } else {
@@ -688,6 +688,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+
 
 
 

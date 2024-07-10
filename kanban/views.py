@@ -16,7 +16,7 @@ def index(request):
 @login_required
 def search_tasks(request):
     query = request.GET.get('q')
-    tasks = KanbanTask.objects.filter(title__icontains=query, created_by=request.user) if query else KanbanTask.objects.none()
+    tasks = KanbanTask.objects.filter(title__icontains(query, created_by=request.user)) if query else KanbanTask.objects.none()
 
     if query:
         for task in tasks:
@@ -196,7 +196,7 @@ def move_task(request, task_id):
 @csrf_exempt
 def get_task(request, task_id):
     task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
-    attachments = [{'id': attachment.id, 'url': attachment.file.url, 'name': attachment.file.name} for attachment in task.attachments.all()]
+    attachments = [{'id': attachment.id, 'url': attachment.file.url, 'name': attachment.file.public_id} for attachment in task.attachments.all()]
     return JsonResponse({
         'title': task.title,
         'description': task.description,
@@ -309,7 +309,6 @@ def logout_user(request):
         return JsonResponse({'success': True, 'redirect_url': '/accounts/login/'})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
-
 @login_required
 @csrf_exempt
 def change_password_api(request):
@@ -317,34 +316,11 @@ def change_password_api(request):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  # Important!
+            update_session_auth_hash(request, user) 
             return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
