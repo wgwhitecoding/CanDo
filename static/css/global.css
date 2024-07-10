@@ -1,5 +1,4 @@
-/* global.css */
-
+/* Global CSS for z-index */
 .dropdown-menu {
     z-index: 1100 !important;
     overflow: visible !important;
@@ -23,7 +22,29 @@
     z-index: 1050 !important;
 }
 
-body > *:not(.modal, .modal-backdrop, .navbar) {
+body > *:not(.modal, .modal-backdrop, .navbar, .notification) {
     z-index: 1000;
 }
+
+/* Ensure notifications are on top */
+.notification {
+    z-index: 9999 !important;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.notification.success {
+    background-color: #4CAF50; 
+}
+
+.notification.error {
+    background-color: #f44336; 
+}
+
+
 

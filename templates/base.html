@@ -52,6 +52,14 @@
         </div>
     </nav>
 
+    <div id="messages" style="display:none;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
     <!-- Settings Modal -->
     <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -214,6 +222,7 @@
     <script src="https://cdn.jsdelivr.net/npm/compressorjs@1.0.7/dist/compressor.min.js"></script>
     <script src="{% static 'js/profile.js' %}"></script>
     <script src="{% static 'js/dark_mode.js' %}"></script>
+    <script src="{% static 'js/notifications.js' %}"></script> <!-- Include the notifications JS -->
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -47,22 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Function to display notifications
-    function showNotification(message, type = 'success') {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        setTimeout(() => {
-            notification.remove();
-        }, 3000); // Remove notification after 3 seconds
-    }
-
     createTaskBtn.addEventListener('click', function() {
         taskModal.style.display = 'flex';
         taskForm.reset();
         document.getElementById('existing-file-preview').innerHTML = ''; // Clear existing file previews
-        document.getElementById('file-preview').innerHTML = ''; // Clear new file previews
+        document.getElementById('file-preview').innerHTML = ''; 
         editingTaskID = null;
     });
 
@@ -104,18 +93,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             closeAllModals();
             if (data.status === 'success') {
-                showNotification('Task saved successfully', 'success');
                 if (!editingTaskID) {
-                    addTaskToColumn(data.task); // Assuming the server returns the new task data
+                    addTaskToColumn(data.task);
                 }
                 setTimeout(() => location.reload(), 1000);
-            } else {
-                showNotification('Error creating/editing task', 'error');
             }
         })
         .catch(error => {
             closeAllModals();
-            showNotification('Error creating/editing task', 'error');
         });
     });
 
@@ -138,18 +123,12 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 closeAllModals();
                 if (data.status === 'success') {
-                    showNotification('Column created successfully', 'success');
                     setTimeout(() => location.reload(), 1000);
-                } else {
-                    showNotification('Error creating column', 'error');
                 }
             })
             .catch(error => {
                 closeAllModals();
-                showNotification('Error creating column', 'error');
             });
-        } else {
-            showNotification('Please enter a column name', 'error');
         }
     });
 
@@ -172,18 +151,12 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 closeAllModals();
                 if (data.status === 'success') {
-                    showNotification('Column updated successfully', 'success');
                     setTimeout(() => location.reload(), 1000);
-                } else {
-                    showNotification('Error editing column', 'error');
                 }
             })
             .catch(error => {
                 closeAllModals();
-                showNotification('Error editing column', 'error');
             });
-        } else {
-            showNotification('Please enter a column name', 'error');
         }
     });
 
@@ -218,18 +191,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             closeAllModals();
             if (data.status === 'success') {
-                showNotification('Column deleted successfully', 'success');
                 const columnElement = document.querySelector(`.kanban-column[data-column-id="${deletingColumnID}"]`);
                 if (columnElement) {
                     columnElement.remove();
                 }
-            } else {
-                showNotification('Error deleting column', 'error');
             }
         })
         .catch(error => {
             closeAllModals();
-            showNotification('Error deleting column', 'error');
         });
     });
 
@@ -329,18 +298,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             closeAllModals();
             if (data.status === 'success') {
-                showNotification('Task deleted successfully', 'success');
                 const taskElement = document.querySelector(`.kanban-task[data-task-id="${deletingTaskID}"]`);
                 if (taskElement) {
                     taskElement.remove(); 
                 }
-            } else {
-                showNotification('Error deleting task', 'error');
             }
         })
         .catch(error => {
             closeAllModals();
-            showNotification('Error deleting task', 'error');
         });
     });
 
@@ -405,15 +370,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    showNotification('Task moved successfully', 'success');
                     this.insertBefore(taskElement, getDragAfterElement(this, e.clientY)); 
-                } else {
-                    showNotification('Error moving task', 'error');
                 }
             })
-            .catch(error => {
-                showNotification('Error moving task', 'error');
-            });
+            .catch(error => {});
         });
     });
 
@@ -552,15 +512,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        showNotification('Task moved successfully', 'success');
                         setTimeout(() => location.reload(), 1000);
-                    } else {
-                        showNotification('Error moving task', 'error');
                     }
                 })
-                .catch(error => {
-                    showNotification('Error moving task', 'error');
-                });
+                .catch(error => {});
             });
         });
 
@@ -628,8 +583,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }).then(response => response.json()).then(data => {
             if (data.status === 'success') {
                 document.getElementById(`attachment-${attachmentId}`).remove();
-            } else {
-                alert('Error removing attachment');
             }
         });
     }
@@ -654,15 +607,11 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 closeAllModals();
                 if (data.status === 'success') {
-                    showNotification('Attachment removed successfully', 'success');
                     document.getElementById(`attachment-${deletingAttachmentID}`).remove(); 
-                } else {
-                    showNotification('Error removing attachment', 'error');
                 }
             })
             .catch(error => {
                 closeAllModals();
-                showNotification('Error removing attachment', 'error');
             });
         }
     });
