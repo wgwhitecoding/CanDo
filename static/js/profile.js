@@ -19,13 +19,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.success) {
                     window.location.href = response.redirect_url;
                 } else {
-                    alert('Error deleting account');
+                    showNotification('Error deleting account', 'error');
                 }
             },
             error: function (xhr, status, error) {
                 loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
-                alert('An error occurred while deleting the account.');
+                showNotification('An error occurred while deleting the account.', 'error');
             }
         });
     });
@@ -56,22 +56,22 @@ document.addEventListener('DOMContentLoaded', function () {
                                 document.querySelector('#profileModal p.email').textContent = 'Email: ' + response.user_email;
                                 document.querySelector('#profileModal p.bio').textContent = 'Bio: ' + response.user_bio;
                                 $('#editProfileModal').modal('hide');
-                                alert('Profile updated successfully');
+                                showNotification('Profile updated successfully', 'success');
                             } else {
-                                alert('Error updating profile');
+                                showNotification('Error updating profile', 'error');
                             }
                         },
                         error: function (xhr, status, error) {
                             loadingSpinner.style.display = 'none';
                             console.error('Error:', error);
-                            alert('An error occurred while updating the profile.');
+                            showNotification('An error occurred while updating the profile.', 'error');
                         }
                     });
                 },
                 error(err) {
                     loadingSpinner.style.display = 'none';
                     console.error('Error:', err);
-                    alert('An error occurred while compressing the image.');
+                    showNotification('An error occurred while compressing the image.', 'error');
                 }
             });
         } else {
@@ -90,15 +90,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         document.querySelector('#profileModal p.email').textContent = 'Email: ' + response.user_email;
                         document.querySelector('#profileModal p.bio').textContent = 'Bio: ' + response.user_bio;
                         $('#editProfileModal').modal('hide');
-                        alert('Profile updated successfully');
+                        showNotification('Profile updated successfully', 'success');
                     } else {
-                        alert('Error updating profile');
+                        showNotification('Error updating profile', 'error');
                     }
                 },
                 error: function (xhr, status, error) {
                     loadingSpinner.style.display = 'none';
                     console.error('Error:', error);
-                    alert('An error occurred while updating the profile.');
+                    showNotification('An error occurred while updating the profile.', 'error');
                 }
             });
         }
@@ -118,15 +118,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 loadingSpinner.style.display = 'none';
                 if (response.success) {
                     $('#changePasswordModal').modal('hide');
-                    alert('Password changed successfully');
+                    showNotification('Password changed successfully', 'success');
                 } else {
-                    alert('Error changing password');
+                    showNotification('Error changing password', 'error');
                 }
             },
             error: function (xhr, status, error) {
                 loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
-                alert('An error occurred while changing the password.');
+                showNotification('An error occurred while changing the password.', 'error');
             }
         });
     });
@@ -144,13 +144,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.success) {
                     window.location.href = response.redirect_url;
                 } else {
-                    alert('Error logging out');
+                    showNotification('Error logging out', 'error');
                 }
             },
             error: function (xhr, status, error) {
                 loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
-                alert('An error occurred while logging out.');
+                showNotification('An error occurred while logging out.', 'error');
             }
         });
     });

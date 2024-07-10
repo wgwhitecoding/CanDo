@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         notification.textContent = message;
-        notification.style.zIndex = '9999'; // Set a very high z-index
         document.body.appendChild(notification);
         setTimeout(() => {
             notification.remove();
@@ -16,5 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const messageType = message.classList.contains('error') ? 'error' : 'success';
         showNotification(message.textContent, messageType);
     });
+
+    // Expose showNotification function globally for other scripts to use
+    window.showNotification = showNotification;
 });
+
 
