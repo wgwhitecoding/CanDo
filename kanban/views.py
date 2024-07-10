@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
 from .models import KanbanTask, Column, Board, SearchHistory, Attachment, Profile
 from .forms import KanbanTaskForm, ColumnForm, AttachmentForm, UserForm, ProfileForm
 import json
@@ -307,6 +308,21 @@ def logout_user(request):
         logout(request)
         return JsonResponse({'success': True, 'redirect_url': '/accounts/login/'})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+
+@login_required
+@csrf_exempt
+def change_password_api(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
 
 
 

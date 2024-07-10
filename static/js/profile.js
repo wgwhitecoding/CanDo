@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const editProfileUrl = document.getElementById('editProfileModal').dataset.editProfileUrl;
+    const changePasswordUrl = document.getElementById('changePasswordModal').dataset.changePasswordUrl;
     const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
-    const logoutUrl = "{% url 'logout_user' %}";
+    const logoutUrl = document.getElementById('logoutModal').dataset.logoutUrl;
     const loginUrl = "{% url 'account_login' %}";
 
     const loadingSpinner = document.getElementById('loadingSpinner');
@@ -17,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
             success: function (response) {
                 loadingSpinner.style.display = 'none';
                 if (response.success) {
-                    window.location.href = loginUrl;
+                    window.location.href = response.redirect_url;
                 } else {
                     alert('Error deleting account');
                 }
@@ -104,6 +105,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        loadingSpinner.style.display = 'block';
+        const formData = new FormData(this);
+        $.ajax({
+            url: changePasswordUrl,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                loadingSpinner.style.display = 'none';
+                if (response.success) {
+                    $('#changePasswordModal').modal('hide');
+                    alert('Password changed successfully');
+                } else {
+                    alert('Error changing password');
+                }
+            },
+            error: function (xhr, status, error) {
+                loadingSpinner.style.display = 'none';
+                console.error('Error:', error);
+                alert('An error occurred while changing the password.');
+            }
+        });
+    });
+
     document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
         $.ajax({
             url: logoutUrl,
@@ -113,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             success: function (response) {
                 if (response.success) {
-                    window.location.href = loginUrl;
+                    window.location.href = response.redirect_url;
                 } else {
                     alert('Error logging out');
                 }

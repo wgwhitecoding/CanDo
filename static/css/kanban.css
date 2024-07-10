@@ -277,6 +277,7 @@ body {
     border-radius: 5px;
     margin-right: 5px;
 }
+/* Media query for small devices */
 @media (max-width: 600px) {
     .kanban-board-wrapper {
         max-width: 100%;
@@ -316,26 +317,54 @@ body {
     #scroll-right {
         right: 10px;
     }
-}
 
-
-
-@media (max-width: 600px) {
     .move-task-btn {
         display: inline-block;
+        position: relative;
+        padding-right: 20px;
     }
 
+    .move-task-btn::after {
+        content: '▼';
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+    }
 
+    .move-task-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+    }
 
-.move-task-btn {
+    .move-task-dropdown.show {
+        display: block;
+    }
+
+    .move-task-dropdown option {
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .move-task-dropdown option:hover {
+        background: #f0f0f0;
+    }
+}
+
+/* General styles to hide move button on larger devices */
+@media (min-width: 601px) {
+    .move-task-btn {
         display: none;
     }
-
-
-.move-task-dropdown {
-    display: block;
-    width: 100%;
 }
-
-}
-

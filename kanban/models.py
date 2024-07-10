@@ -1,9 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_image = models.ImageField(upload_to='profile_images/', default='profile_images/default.png')
+    profile_image = CloudinaryField('image', default='profile_images/default.png')
     bio = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -48,7 +49,7 @@ class KanbanTask(models.Model):
 
 class Attachment(models.Model):
     task = models.ForeignKey(KanbanTask, related_name='attachments', on_delete=models.CASCADE)
-    file = models.FileField(upload_to='attachments/')
+    file = CloudinaryField('file')
 
     def __str__(self):
         return self.file.name

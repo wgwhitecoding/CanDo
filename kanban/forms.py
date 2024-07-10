@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Profile, KanbanTask, Column, Attachment
+from django.contrib.auth.forms import PasswordChangeForm
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -34,6 +35,7 @@ class AttachmentForm(forms.ModelForm):
         widgets = {
             'file': forms.FileInput(attrs={'multiple': False})
         }
+
 
 
 
