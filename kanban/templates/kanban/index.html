@@ -49,6 +49,12 @@
                             <button class="btn btn-primary edit-task-btn">Edit</button>
                             <button class="btn btn-danger delete-task-btn">Delete</button>
                             <button class="btn btn-secondary close-task-btn">Close</button>
+                            <button class="btn btn-info move-task-btn">Move</button>
+                            <select class="move-task-dropdown" style="display:none;">
+                                {% for column in columns %}
+                                <option value="{{ column.id }}">{{ column.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     {% endif %}
@@ -173,9 +179,8 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="{% static 'js/kanban.js' %}"></script>
-<script src="{% static 'js/kanban_custom.js' %}"></script>
-<script src="{% static 'js/file_preview.js' %}"></script>
 {% endblock %}
+
 
 
 

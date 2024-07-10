@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Elements and Variables
     const createTaskBtn = document.getElementById('create-task-btn');
     const createColumnBtn = document.getElementById('create-column-btn');
     const taskModal = document.getElementById('task-modal');
@@ -19,12 +20,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let deletingTaskID = null;
     let deletingColumnID = null;
     let deletingAttachmentID = null;
-document.addEventListener('DOMContentLoaded', function() {
+
+    // Mobile specific variables
     let currentColumn = 0;
     const board = document.querySelector('.kanban-board');
     const columns = document.querySelectorAll('.kanban-column');
     const totalColumns = columns.length;
 
+    // Function to update transform for mobile swipe
     function updateTransform() {
         const transformValue = -currentColumn * 100;
         board.style.transform = `translateX(${transformValue}%)`;
@@ -43,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateTransform();
         }
     });
-});
+
     // Function to display notifications
     function showNotification(message, type = 'success') {
         const notification = document.createElement('div');
@@ -344,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.kanban-column-header').forEach(header => {
         header.addEventListener('click', function() {
             const columnName = this.textContent.trim();
-            if (columnName === 'New' || columnName === 'ToDo') {
+            if (columnName === 'New' || columnName === 'To Do') {
                 return; 
             }
             editingColumnID = this.parentElement.dataset.columnId;
@@ -443,6 +446,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="edit-task-btn">Edit</button>
                     <button class="delete-task-btn">Delete</button>
                     <button class="close-task-btn">Close</button>
+                    <button class="move-task-btn">Move</button>
+                    <select class="move-task-dropdown" style="display: none;">
+                        {% for column in columns %}
+                        <option value="{{ column.id }}">{{ column.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             `;
             taskElement.setAttribute('draggable', true);
@@ -520,6 +529,38 @@ document.addEventListener('DOMContentLoaded', function() {
             this.querySelector('.delete-task-btn').addEventListener('click', function() {
                 deletingTaskID = task.dataset.taskId;
                 deleteConfirmationModal.style.display = 'flex';
+            });
+
+            // Move task functionality for small devices
+            this.querySelector('.move-task-btn').addEventListener('click', function(e) {
+                e.stopPropagation();
+                const dropdown = this.nextElementSibling;
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            this.querySelector('.move-task-dropdown').addEventListener('change', function() {
+                const taskId = task.dataset.taskId;
+                const columnId = this.value;
+                fetch(`/kanban/move_task/${taskId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ column_id: columnId, position: 1 })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showNotification('Task moved successfully', 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showNotification('Error moving task', 'error');
+                    }
+                })
+                .catch(error => {
+                    showNotification('Error moving task', 'error');
+                });
             });
         });
 
@@ -623,6 +664,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeAllModals();
                 showNotification('Error removing attachment', 'error');
             });
+        }
+    });
+
+    // Mobile swipe functionality
+    let startX;
+    let endX;
+
+    document.querySelector('.kanban-board-wrapper').addEventListener('touchstart', function(event) {
+        startX = event.touches[0].pageX;
+    });
+
+    document.querySelector('.kanban-board-wrapper').addEventListener('touchmove', function(event) {
+        endX = event.touches[0].pageX;
+    });
+
+    document.querySelector('.kanban-board-wrapper').addEventListener('touchend', function(event) {
+        const distance = endX - startX;
+        if (distance > 50) {
+            document.getElementById('scroll-left').click();
+        } else if (distance < -50) {
+            document.getElementById('scroll-right').click();
         }
     });
 });

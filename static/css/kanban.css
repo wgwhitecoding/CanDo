@@ -320,6 +320,22 @@ body {
 
 
 
+@media (max-width: 600px) {
+    .move-task-btn {
+        display: inline-block;
+    }
 
 
+
+.move-task-btn {
+        display: none;
+    }
+
+
+.move-task-dropdown {
+    display: block;
+    width: 100%;
+}
+
+}
 
