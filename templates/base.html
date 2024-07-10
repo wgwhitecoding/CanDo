@@ -36,7 +36,7 @@
                 </form>
                 <div class="dropdown">
                     <a href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{% if user.is_authenticated and user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'profile_images/default.png' %}{% endif %}" alt="Profile" class="rounded-circle navbar-avatar">
+                        <img src="{% if user.is_authenticated and user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile" class="rounded-circle navbar-avatar">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         {% if user.is_authenticated %}
@@ -82,7 +82,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img src="{% if user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'profile_images/default.png' %}{% endif %}" alt="Profile" class="rounded-circle profile-avatar">
+                    <img src="{% if user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile" class="rounded-circle profile-avatar">
                     <h3>{{ user.get_full_name }}</h3>
                     <p class="email">Email: {{ user.email }}</p>
                     <p class="bio">Bio: {{ user.profile.bio }}</p>
@@ -217,6 +217,7 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+
 
 
 

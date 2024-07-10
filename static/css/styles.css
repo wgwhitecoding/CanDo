@@ -94,5 +94,12 @@ body {
     z-index: 1050;
 }
 
+/* CSS for rounded profile avatars */
+.profile-avatar {
+    width: 100px; 
+    height: 100px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+}
 
 

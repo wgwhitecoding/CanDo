@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const changePasswordUrl = document.getElementById('changePasswordModal').dataset.changePasswordUrl;
     const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
     const logoutUrl = document.getElementById('logoutModal').dataset.logoutUrl;
-    const loginUrl = "{% url 'account_login' %}";
 
     const loadingSpinner = document.getElementById('loadingSpinner');
 
@@ -133,6 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
+        loadingSpinner.style.display = 'block';
         $.ajax({
             url: logoutUrl,
             type: "POST",
@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
             },
             success: function (response) {
+                loadingSpinner.style.display = 'none';
                 if (response.success) {
                     window.location.href = response.redirect_url;
                 } else {
@@ -147,13 +148,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             },
             error: function (xhr, status, error) {
+                loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
                 alert('An error occurred while logging out.');
             }
         });
     });
 });
-
 
 
 
