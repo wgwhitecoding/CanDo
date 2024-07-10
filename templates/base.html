@@ -15,11 +15,17 @@
     <link rel="shortcut icon" href="{% static 'favicon/favicon.ico' %}">
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body style="
+    background-image: url('{% if user.is_authenticated and user.profile.background_image %}{{ user.profile.background_image.url }}{% endif %}');
+    background-size: cover; /* Ensure the image covers the entire background */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-position: center center; /* Center the image */
+    background-attachment: fixed; /* Optional: Keeps the background fixed during scrolling */
+">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
-                <img src="{% static 'logo/candologo.png' %}" alt="Logo">
+                <img src="{% static 'logo/darkmode.png' %}" alt="Logo">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -60,26 +66,32 @@
         {% endif %}
     </div>
 
-    <!-- Settings Modal -->
-    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+   <!-- Settings Modal -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                    <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
                 </div>
-                <div class="modal-body">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="darkModeToggle">
-                        <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
-                    </div>
+                <div class="mb-3">
+                    <label for="backgroundImage" class="form-label">Background Image</label>
+                    <input class="form-control" type="file" id="backgroundImage" name="background_image">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
             </div>
         </div>
     </div>
+</div>
+
 
     <!-- Profile Modal -->
     <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">

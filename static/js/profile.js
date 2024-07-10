@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const changePasswordUrl = document.getElementById('changePasswordModal').dataset.changePasswordUrl;
     const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
     const logoutUrl = document.getElementById('logoutModal').dataset.logoutUrl;
+    const uploadBackgroundImageUrl = '/kanban/upload_background_image/';
 
     const loadingSpinner = document.getElementById('loadingSpinner');
 
@@ -154,7 +155,64 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    // Handle background image upload
+    document.getElementById('saveSettingsBtn').addEventListener('click', function () {
+        const backgroundImageInput = document.getElementById('backgroundImage');
+        if (backgroundImageInput.files.length > 0) {
+            loadingSpinner.style.display = 'block'; // Show loading spinner
+            const formData = new FormData();
+            formData.append('background_image', backgroundImageInput.files[0]);
+
+            fetch(uploadBackgroundImageUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingSpinner.style.display = 'none'; // Hide loading spinner
+                if (data.status === 'success') {
+                    document.body.style.backgroundImage = `url('${data.image_url}')`;
+                    $('#settingsModal').modal('hide');
+                    showNotification('Background image updated successfully', 'success');
+                } else {
+                    showNotification('Failed to upload background image.', 'error');
+                }
+            })
+            .catch(error => {
+                loadingSpinner.style.display = 'none'; // Hide loading spinner
+                console.error('Error:', error);
+                showNotification('An error occurred while uploading the background image.', 'error');
+            });
+        }
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showNotification(message, type) {
+        // Assuming you have a function to show notifications
+        // You can implement this function to display notifications to the user
+        console.log(`${type}: ${message}`);
+    }
 });
+
+
 
 
 

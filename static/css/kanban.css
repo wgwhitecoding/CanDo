@@ -30,7 +30,7 @@ body {
 }
 
 .kanban-column {
-    background-color: #f4f4f4;
+    background-color: rgba(244, 244, 244, 0.8); 
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -40,6 +40,7 @@ body {
     display: flex;
     flex-direction: column;
 }
+
 
 .kanban-column-header {
     font-weight: bold;

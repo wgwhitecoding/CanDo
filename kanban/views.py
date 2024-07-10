@@ -323,7 +323,15 @@ def change_password_api(request):
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 
-
+@login_required
+@csrf_exempt
+def upload_background_image(request):
+    if request.method == 'POST':
+        profile = request.user.profile
+        profile.background_image = request.FILES['background_image']
+        profile.save()
+        return JsonResponse({'status': 'success', 'image_url': profile.background_image.url})
+    return JsonResponse({'status': 'error'}, status=400)
 
 
 
