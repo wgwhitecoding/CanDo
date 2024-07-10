@@ -1,6 +1,8 @@
+# models.py
+
 from django.db import models
-from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
+from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -52,11 +54,11 @@ class Attachment(models.Model):
     file = CloudinaryField('file')
 
     def __str__(self):
-        return self.file.name
+        return self.file.public_id
 
     @property
     def is_pdf(self):
-        return self.file.name.lower().endswith('.pdf')
+        return self.file.url.lower().endswith('.pdf')
 
 class SearchHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -66,6 +68,7 @@ class SearchHistory(models.Model):
 
     def __str__(self):
         return self.query
+
 
 
 

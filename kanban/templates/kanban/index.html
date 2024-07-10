@@ -39,7 +39,7 @@
                                     <a href="{{ attachment.file.url }}" target="_blank">
                                         <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
                                     </a>
-                                    <span>{{ attachment.file.name|slice:":20" }}</span>
+                                    <span>{{ attachment.file.public_id|slice:":20" }}</span>
                                     {% else %}
                                     <a href="{{ attachment.file.url }}" target="_blank"><img src="{{ attachment.file.url }}" alt="Attachment" class="attachment-thumbnail"></a>
                                     {% endif %}
@@ -90,7 +90,7 @@
                         <a href="{{ attachment.file.url }}" target="_blank">
                             <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
                         </a>
-                        <span>{{ attachment.file.name|slice:":20" }}</span>
+                        <span>{{ attachment.file.public_id|slice:":20" }}</span>
                         {% else %}
                         <a href="{{ attachment.file.url }}" target="_blank">
                             <img src="{{ attachment.file.url }}" alt="Attachment" class="attachment-thumbnail">
@@ -180,6 +180,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script src="{% static 'js/kanban.js' %}"></script>
 {% endblock %}
+
 
 
 
