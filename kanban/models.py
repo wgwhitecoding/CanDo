@@ -7,6 +7,7 @@ class Profile(models.Model):
     profile_image = CloudinaryField('image', default='profile_images/default.png')
     background_image = CloudinaryField('image', blank=True, null=True) 
     bio = models.TextField(blank=True, null=True)
+    use_default_background = models.BooleanField(default=False)  
 
     def __str__(self):
         return self.user.username

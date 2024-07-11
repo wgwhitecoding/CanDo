@@ -322,16 +322,30 @@ def change_password_api(request):
             return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
-
 @login_required
 @csrf_exempt
 def upload_background_image(request):
     if request.method == 'POST':
         profile = request.user.profile
         profile.background_image = request.FILES['background_image']
+        profile.use_default_background = False  # Ensure custom background is used
         profile.save()
         return JsonResponse({'status': 'success', 'image_url': profile.background_image.url})
     return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+@csrf_exempt
+def save_background_settings(request):
+    if request.method == 'POST':
+        use_default_background = request.POST.get('use_default_background') == 'true'
+        profile = request.user.profile
+        profile.use_default_background = use_default_background
+        if use_default_background:
+            profile.background_image = None  
+        profile.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'fail'}, status=400)
+
 
 
 

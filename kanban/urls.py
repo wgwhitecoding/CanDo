@@ -25,6 +25,8 @@ urlpatterns = [
     path('change_password_api/', views.change_password_api, name='change_password_api'),
     path('logout_user/', views.logout_user, name='logout_user'),
     path('upload_background_image/', views.upload_background_image, name='upload_background_image'),
+    path('save_background_settings/', views.save_background_settings, name='save_background_settings'),
+
 ]
 
 

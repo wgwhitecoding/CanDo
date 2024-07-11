@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const changePasswordUrl = document.getElementById('changePasswordModal').dataset.changePasswordUrl;
     const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
     const logoutUrl = document.getElementById('logoutModal').dataset.logoutUrl;
-    const loginUrl = "{% url 'account_login' %}";
+    const uploadBackgroundImageUrl = '/kanban/upload_background_image/';
+    const saveBackgroundSettingsUrl = '/kanban/save_background_settings/';
 
     const loadingSpinner = document.getElementById('loadingSpinner');
 
@@ -20,13 +21,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.success) {
                     window.location.href = response.redirect_url;
                 } else {
-                    alert('Error deleting account');
+                    showNotification('Error deleting account', 'error');
                 }
             },
             error: function (xhr, status, error) {
                 loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
-                alert('An error occurred while deleting the account.');
+                showNotification('An error occurred while deleting the account.', 'error');
             }
         });
     });
@@ -57,22 +58,22 @@ document.addEventListener('DOMContentLoaded', function () {
                                 document.querySelector('#profileModal p.email').textContent = 'Email: ' + response.user_email;
                                 document.querySelector('#profileModal p.bio').textContent = 'Bio: ' + response.user_bio;
                                 $('#editProfileModal').modal('hide');
-                                alert('Profile updated successfully');
+                                showNotification('Profile updated successfully', 'success');
                             } else {
-                                alert('Error updating profile');
+                                showNotification('Error updating profile', 'error');
                             }
                         },
                         error: function (xhr, status, error) {
                             loadingSpinner.style.display = 'none';
                             console.error('Error:', error);
-                            alert('An error occurred while updating the profile.');
+                            showNotification('An error occurred while updating the profile.', 'error');
                         }
                     });
                 },
                 error(err) {
                     loadingSpinner.style.display = 'none';
                     console.error('Error:', err);
-                    alert('An error occurred while compressing the image.');
+                    showNotification('An error occurred while compressing the image.', 'error');
                 }
             });
         } else {
@@ -91,15 +92,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         document.querySelector('#profileModal p.email').textContent = 'Email: ' + response.user_email;
                         document.querySelector('#profileModal p.bio').textContent = 'Bio: ' + response.user_bio;
                         $('#editProfileModal').modal('hide');
-                        alert('Profile updated successfully');
+                        showNotification('Profile updated successfully', 'success');
                     } else {
-                        alert('Error updating profile');
+                        showNotification('Error updating profile', 'error');
                     }
                 },
                 error: function (xhr, status, error) {
                     loadingSpinner.style.display = 'none';
                     console.error('Error:', error);
-                    alert('An error occurred while updating the profile.');
+                    showNotification('An error occurred while updating the profile.', 'error');
                 }
             });
         }
@@ -119,20 +120,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 loadingSpinner.style.display = 'none';
                 if (response.success) {
                     $('#changePasswordModal').modal('hide');
-                    alert('Password changed successfully');
+                    showNotification('Password changed successfully', 'success');
                 } else {
-                    alert('Error changing password');
+                    showNotification('Error changing password', 'error');
                 }
             },
             error: function (xhr, status, error) {
                 loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
-                alert('An error occurred while changing the password.');
+                showNotification('An error occurred while changing the password.', 'error');
             }
         });
     });
 
     document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
+        loadingSpinner.style.display = 'block';
         $.ajax({
             url: logoutUrl,
             type: "POST",
@@ -140,19 +142,117 @@ document.addEventListener('DOMContentLoaded', function () {
                 csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
             },
             success: function (response) {
+                loadingSpinner.style.display = 'none';
                 if (response.success) {
                     window.location.href = response.redirect_url;
                 } else {
-                    alert('Error logging out');
+                    showNotification('Error logging out', 'error');
                 }
             },
             error: function (xhr, status, error) {
+                loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
-                alert('An error occurred while logging out.');
+                showNotification('An error occurred while logging out.', 'error');
             }
         });
     });
+
+    // Handle background image upload and default background setting
+    document.getElementById('saveSettingsBtn').addEventListener('click', function () {
+        const backgroundImageInput = document.getElementById('backgroundImage');
+        const useCustomBackground = document.getElementById('customBackgroundToggle').checked;
+
+        console.log('Custom Background Toggle:', useCustomBackground);
+
+        if (!useCustomBackground) {
+            // Set no background
+            document.body.style.backgroundImage = 'none';
+            const formData = new FormData();
+            formData.append('use_default_background', 'true');
+
+            fetch(saveBackgroundSettingsUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response Data:', data);
+                if (data.status === 'success') {
+                    $('#settingsModal').modal('hide');
+                    showNotification('Background set to default successfully', 'success');
+                } else {
+                    showNotification('Failed to set default background.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while setting the default background.', 'error');
+            });
+        } else if (backgroundImageInput.files.length > 0) {
+            // Upload new background image
+            loadingSpinner.style.display = 'block';
+            const formData = new FormData();
+            formData.append('background_image', backgroundImageInput.files[0]);
+            formData.append('use_default_background', 'false'); // Ensure it's set to custom background
+
+            fetch(uploadBackgroundImageUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingSpinner.style.display = 'none';
+                console.log('Response Data:', data);
+                if (data.status === 'success') {
+                    document.body.style.backgroundImage = `url('${data.image_url}')`;
+                    $('#settingsModal').modal('hide');
+                    showNotification('Background image updated successfully', 'success');
+                } else {
+                    showNotification('Failed to upload background image.', 'error');
+                }
+            })
+            .catch(error => {
+                loadingSpinner.style.display = 'none';
+                console.error('Error:', error);
+                showNotification('An error occurred while uploading the background image.', 'error');
+            });
+        } else {
+            // No custom background selected and no new file provided
+            showNotification('Please select a custom background image or disable the custom background toggle.', 'error');
+        }
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function showNotification(message, type) {
+        // Assuming you have a function to show notifications
+        // You can implement this function to display notifications to the user
+        console.log(`${type}: ${message}`);
+    }
 });
+
+
+
+
 
 
 

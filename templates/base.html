@@ -66,7 +66,7 @@
         {% endif %}
     </div>
 
-   <!-- Settings Modal -->
+<!-- Settings Modal -->
 <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -83,6 +83,10 @@
                     <label for="backgroundImage" class="form-label">Background Image</label>
                     <input class="form-control" type="file" id="backgroundImage" name="background_image">
                 </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="customBackgroundToggle">
+                    <label class="form-check-label" for="customBackgroundToggle">Use Custom Background</label>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -91,6 +95,8 @@
         </div>
     </div>
 </div>
+
+
 
 
     <!-- Profile Modal -->

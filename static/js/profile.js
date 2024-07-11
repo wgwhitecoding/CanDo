@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
     const logoutUrl = document.getElementById('logoutModal').dataset.logoutUrl;
     const uploadBackgroundImageUrl = '/kanban/upload_background_image/';
+    const saveBackgroundSettingsUrl = '/kanban/save_background_settings/';
 
     const loadingSpinner = document.getElementById('loadingSpinner');
 
@@ -156,13 +157,46 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Handle background image upload
+    // Handle background image upload and default background setting
     document.getElementById('saveSettingsBtn').addEventListener('click', function () {
         const backgroundImageInput = document.getElementById('backgroundImage');
-        if (backgroundImageInput.files.length > 0) {
-            loadingSpinner.style.display = 'block'; // Show loading spinner
+        const useCustomBackground = document.getElementById('customBackgroundToggle').checked;
+
+        console.log('Custom Background Toggle:', useCustomBackground);
+
+        if (!useCustomBackground) {
+            // Set no background
+            document.body.style.backgroundImage = 'none';
+            const formData = new FormData();
+            formData.append('use_default_background', 'true');
+
+            fetch(saveBackgroundSettingsUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response Data:', data);
+                if (data.status === 'success') {
+                    $('#settingsModal').modal('hide');
+                    showNotification('Background set to default successfully', 'success');
+                } else {
+                    showNotification('Failed to set default background.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while setting the default background.', 'error');
+            });
+        } else if (backgroundImageInput.files.length > 0) {
+            // Upload new background image
+            loadingSpinner.style.display = 'block';
             const formData = new FormData();
             formData.append('background_image', backgroundImageInput.files[0]);
+            formData.append('use_default_background', 'false'); // Ensure it's set to custom background
 
             fetch(uploadBackgroundImageUrl, {
                 method: 'POST',
@@ -173,7 +207,8 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(response => response.json())
             .then(data => {
-                loadingSpinner.style.display = 'none'; // Hide loading spinner
+                loadingSpinner.style.display = 'none';
+                console.log('Response Data:', data);
                 if (data.status === 'success') {
                     document.body.style.backgroundImage = `url('${data.image_url}')`;
                     $('#settingsModal').modal('hide');
@@ -183,10 +218,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             })
             .catch(error => {
-                loadingSpinner.style.display = 'none'; // Hide loading spinner
+                loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
                 showNotification('An error occurred while uploading the background image.', 'error');
             });
+        } else {
+            // No custom background selected and no new file provided
+            showNotification('Please select a custom background image or disable the custom background toggle.', 'error');
         }
     });
 
@@ -211,6 +249,9 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(`${type}: ${message}`);
     }
 });
+
+
+
 
 
 

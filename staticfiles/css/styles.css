@@ -1,3 +1,4 @@
+/* General styles */
 body {
     font-family: Arial, sans-serif;
 }
@@ -45,15 +46,30 @@ body {
     list-style-type: none;
 }
 
+/* Avatar and profile images */
+.navbar-avatar, .profile-avatar {
+    border-radius: 50%; 
+    object-fit: cover; 
+}
 
-/* static/css/styles.css */
+.navbar-avatar {
+    width: 40px; 
+    height: 40px; 
+}
 
+/* Larger profile avatar in profile modal */
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+}
+
+/* Static styles */
 #messages {
     position: fixed;
-    top: 70px; /* Adjust this value if your navbar height is different */
+    top: 70px; 
     right: 10px;
     width: auto;
-    z-index: 1060; /* Ensure this is higher than the navbar's z-index and other elements */
+    z-index: 1060;
 }
 
 .alert {
@@ -69,13 +85,35 @@ body {
     background-color: #f8d7da;
     color: #721c24;
 }
+
 #loadingSpinner {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1050; 
+    z-index: 1050;
 }
 
+/* CSS for rounded profile avatars */
+.profile-avatar {
+    width: 100px; 
+    height: 100px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+}
+.list-group-item {
+    background-color: transparent !important;
+    border: none !important;
+}
 
+.kanban-task-title {
+    color: #fff; 
+}
 
+.priority-done {
+    background: url("/static/images/apple-touch-icon.png") no-repeat center center;
+    background-size: contain;
+    width: 20px;
+    height: 20px; 
+    display: inline-block;
+}
