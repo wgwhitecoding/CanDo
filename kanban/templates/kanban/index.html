@@ -26,7 +26,7 @@
                     {% if task.column.id == column.id %}
                     <div class="kanban-task" data-task-id="{{ task.id }}">
                         <div class="kanban-task-title">
-                            {{ task.title }}
+                            <span>{{ task.title }}</span>
                             <span class="priority-indicator {% if task.priority == 'Low' %}priority-low{% elif task.priority == 'Medium' %}priority-medium{% elif task.priority == 'High' %}priority-high{% elif task.priority == 'Done' %}priority-done{% endif %}"></span>
                         </div>
                         <div class="kanban-task-due">Due: {{ task.due_date }}</div>

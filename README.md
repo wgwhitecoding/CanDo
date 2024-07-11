@@ -9,9 +9,9 @@ This Kanban Board allows users to create, manage, and prioritize tasks within cu
 This project is intended for educational purposes only, showcasing the integration of key web development technologies and best practices.
 
 
-View live site here : FreeFido
+View live site here : Cando ....dpjioefhief
 
-For Admin access with relevant sign-in information: Freefido Admin
+For Admin access with relevant sign-in information: Cando Admin vjhefehjwf
 
 
 ## Table of Content
