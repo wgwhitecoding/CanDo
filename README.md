@@ -48,7 +48,28 @@ For Admin access with relevant sign-in information: Cando Admin vjhefehjwf
     - [Wireframes](#wireframes)
     - [Database Schema - Entity Relationship Diagram](#database-schema---entity-relationship-diagram)
     - [Security](#security)
-
+- [Features](#features)
+    - [User View - Registered/Unregistered](#user-view---registeredunregistered)
+    - [CRUD Functionality](#crud-functionality)
+    - [Feature Showcase](#feature-showcase)
+    - [Future Features](#future-features)
+- [Technologies \& Languages Used](#technologies--languages-used)
+  - [Libraries \& Frameworks](#libraries--frameworks)
+  - [Tools \& Programs](#tools--programs)
+- [Testing](#testing)
+- [Deployment](#deployment)
+  - [Connecting to GitHub](#connecting-to-github)
+  - [Django Project Setup](#django-project-setup)
+  - [Cloudinary API](#cloudinary-api)
+  - [Elephant SQL](#elephant-sql)
+  - [Heroku deployment](#heroku-deployment)
+  - [Clone project](#clone-project)
+  - [Fork Project](#fork-project)
+- [Credits](#credits)
+  - [Code](#code)
+  - [Media](#media)
+    - [Additional reading/tutorials/books/blogs](#additional-readingtutorialsbooksblogs)
+  - [Acknowledgements](#acknowledgements)
 
 
 ## Overview
@@ -346,13 +367,30 @@ The structural plane of the Kanban Board project is designed to ensure all compo
 
 The wireframes of the Kanban Board project outline the basic structure and layout of the application. They provide a visual guide for the placement of elements such as navigation, columns, tasks, and modals. The wireframes ensure that the user interface is intuitive and easy to navigate, providing a blueprint for the final design.
 
+
+- **Login Page**:
+  ![Login Page](static/wireframes/loginpage.png)
+- **Signup Page**:
+  ![Signup Page](static/wireframes/singuppage.png)
+- **Kanban Page**:
+  ![Kanban Page](static/wireframes/kanban%20page.png)
+- **Profile Page**:
+  ![Profile Page](static/wireframes/profilepage.png)
+- **Settings Page**:
+  ![Settings Page](static/wireframes/settings.png)
+- **Mobile View**:
+  ![Mobile View](static/wireframes/mobile.png)
+
 #### Base HTML Template
 
 The `base.html` template serves as the foundation for all other pages in the application. It includes common elements such as the navigation bar, modals for settings, profile management, and global CSS and JavaScript imports. This template ensures a consistent look and feel across the application and handles the inclusion of dynamic content through Django template blocks.
-
+- **Nav code**:
+  ![Basecode](static/readme/basecode.png)
+- 
 #### Navigation
-
 The navigation bar is a crucial part of the structure, providing easy access to the main sections of the application. It includes links to the Kanban board, a search form for tasks, and a profile dropdown for authenticated users. The profile dropdown allows users to access their profile, settings, and logout options quickly.
+- **NavBar**:
+  ![Navbar](static/readme/navbar.png)
 
 #### Modals
 
@@ -364,12 +402,14 @@ Several modals are implemented throughout the application to enhance user intera
 - **Column Modal**: For creating and editing columns.
 - **Delete Confirmation Modal**: Ensures users confirm before deleting tasks or columns.
 
+![Modals](static/readme/modals.png)
+
 #### Kanban Board Interface
 
 The core feature of the application is the Kanban board interface. It is structured to display columns and tasks dynamically:
 - **Columns**: Users can create, edit, and delete columns. Each column contains a list of tasks and has a header that users can interact with.
 - **Tasks**: Users can create, edit, delete, and move tasks between columns. Tasks are displayed with their title, due date, priority indicators, and any attachments.
-
+![KanBan](static/readme/kanbanview.png)
 #### Responsive Design
 
 The application is designed to be fully responsive, ensuring accessibility on mobile, tablet, and desktop devices. Bootstrap is utilized to handle the responsive layout, making sure that the interface adjusts smoothly to different screen sizes.
@@ -377,6 +417,9 @@ The application is designed to be fully responsive, ensuring accessibility on mo
 #### User Authentication
 
 User authentication is handled to secure access to the application. Users can log in, register, and manage their profiles. The profile management includes updating personal information, changing passwords, and setting profile pictures and custom background images.
+
+- **Login Page**:
+  ![Sign In](static/readme/signin.png)
 
 #### Search Functionality
 
@@ -396,35 +439,18 @@ The database schema of the Kanban Board project is designed to efficiently store
 - **Attachment**: Stores files attached to tasks.
 - **Search History**: Logs user search queries and viewed tasks for easy retrieval.
 
-### Surface Plane
-
-#### Visual Design
-
-The visual design of the Kanban Board project is clean and intuitive. The interface uses a consistent color scheme and typography to create a cohesive look. Icons and images are used to enhance the user experience and provide visual cues.
-
-#### Navigation Bar
-
-The navigation bar is styled to be unobtrusive yet functional. It includes a brand logo, links to the main sections of the application, a search form, and a profile dropdown. The profile dropdown includes profile, settings, and logout options, and displays the user's profile picture.
-
-#### Modals
-
-The modals are designed to be simple and user-friendly. They provide a clean interface for users to manage their profile, settings, tasks, and columns. Each modal includes clear labels and input fields to guide the user through the process.
-
-#### Kanban Board
-
-The Kanban board interface is visually organized with columns and tasks. Each column is color-coded for easy identification, and tasks include visual indicators for priority and due dates. Drag-and-drop functionality is visually intuitive, with clear feedback when moving tasks between columns.
-
-#### Responsive Design
-
-The responsive design ensures that the application looks and functions well on all devices. The layout adjusts seamlessly between mobile, tablet, and desktop views, maintaining usability and accessibility across different screen sizes.
 
 #### Dark Mode
 
 A dark mode feature is available, allowing users to switch between light and dark themes. This is implemented using a toggle switch in the settings modal, providing a better user experience based on personal preferences or environmental lighting conditions.
+##### dark view
+![Darkmade](static/readme/darkmode.png)
 
 #### Notification System
 
 The notification system is designed to keep users informed about task updates in real-time. Notifications are styled to be noticeable without being intrusive, ensuring users stay aware of important changes.
+
+![Notification](static/readme/notification.png)
 
 ### Security
 
@@ -437,7 +463,261 @@ Security is a critical aspect of the Kanban Board project. Measures include:
 
 By structuring the application in this way, the project ensures a robust, user-friendly experience that caters to the needs of managing tasks efficiently while maintaining a clean and intuitive interface. The combination of a well-thought-out skeleton and an appealing surface design results in an effective and engaging user experience.
 
+### CSRF Tokens
+
+CSRF (Cross-Site Request Forgery) tokens are included in every form to help authenticate the request with the server when the form is submitted. Absence of these tokens can leave a site vulnerable to attackers who may steal a users data.
+
+
+## Features
+
+### User View - Registered/Unregistered
+
+It was important to make the Kanban Board accessible to both registered and unregistered users in various capacities. The following is a breakdown of the site's accessibility for registered/unregistered users:
+
+| Feature       | Unregistered User                                                | Registered, Logged-In User                              |
+|---------------|------------------------------------------------------------------|--------------------------------------------------------|
+| Home Page     | Visible                                                          | Visible                                                |
+| Profile       | Not Visible - Profile icon only appears for registered, logged-in users | Visible and full feature interaction available          |
+| Tasks         | Not visible                                                      | Visible and full feature interaction available          |
+| Columns       | Not visible                                                      | Visible and full feature interaction available          |
+| Boards        | Not visible                                                      | Visible and full feature interaction available          |
+| Search        | Not visible                                                      | Visible and full feature interaction available          |
+| Notifications | Not visible                                                      | Visible and full feature interaction available          |
+
+### CRUD Functionality
+
+Users are able to Create, Read, Update, and Delete their tasks, columns, and boards. Some features make full CRUD functionality available, while others present the necessary options only. Here is the CRUD breakdown for the Kanban Board:
+
+| Feature       | Create                      | Read                        | Update                      | Delete                      |
+|---------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|
+| Profile       | Created upon registration   | Yes                         | Yes                         | Full Profile deletion is available to the user |
+| Tasks         | Yes                         | Yes                         | Yes                         | Yes                         |
+| Columns       | Yes                         | Yes                         | Yes                         | Yes                         |
+| Boards        | Yes                         | Yes                         | Yes                         | Yes                         |
+| Search History| Yes (automatically recorded)| Yes                         | No                          | Yes (user can clear history)|
+| Notifications | No (system generated)       | Yes                         | No                          | No                          |
 
 
 
 
+### Feature Highlights
+
+Here are some highlighted features of the Kanban Board project:
+
+- **Kanban Board Interface**: Users can create and manage tasks within columns on a dynamic Kanban board.
+- **User Profiles**: Users can create and manage their profiles, including uploading profile images and setting custom backgrounds.
+- **Responsive Design**: The application is fully responsive, ensuring usability across mobile, tablet, and desktop devices.
+- **Dark Mode**: Users can toggle between light and dark themes based on their preferences.
+- **Search Functionality**: Users can search for tasks and maintain a search history for quick retrieval.
+- **Notifications**: Users receive real-time notifications about task updates to stay informed about changes.
+
+## Feature Showcase
+
+The feature showcase highlights the main functionalities of the Kanban Board project, providing an in-depth look at how each feature works and benefits the user. Here are the key features along with suggested images to include:
+
+#### 1. Kanban Board Interface
+
+The Kanban Board Interface allows users to create, manage, and organize tasks within columns. Users can visually track the progress of tasks by moving them between columns.
+
+##### kanban
+- ![Kanban Board](static/readme/kanban1.png)
+
+#### 2. User Profiles
+
+Users can create and manage their profiles, including updating personal information, uploading profile images, and setting custom backgrounds.
+##### Profile
+- ![Profile Page](static/readme/profilepage.png)
+##### Edit Profile
+- ![Profile Edit](static/readme/editprofile.png)
+
+#### 3. Task Management
+
+Users can create, edit, delete, and prioritize tasks within the Kanban board. Each task can have a title, description, due date, priority level, and attachments.
+
+##### Task Creation
+- ![Task Creation](static/readme/creation.png)
+##### Attachments
+- ![Task Attachments](static/readme/attach.png)
+
+#### 4. Responsive Design
+
+The application is fully responsive, ensuring usability across mobile, tablet, and desktop devices. Users can access the Kanban board and manage tasks from any device.
+
+
+- ![Mobile View](static/wireframes/)
+- ![Tablet View](static/wireframes/tablet.png) 
+
+
+#### 5. Dark Mode
+
+A dark mode feature allows users to switch between light and dark themes based on their preferences, enhancing the user experience in different lighting conditions.
+
+##### Light Mode
+- ![Light Mode](static/readme/kanbanview.png)
+##### Dark Mode
+- ![Dark Mode](static/readme/darkmode.png)
+
+#### 6. Search Functionality
+
+Users can search for tasks and maintain a search history for quick retrieval. The search bar is prominently placed in the navigation for easy access.
+
+#### Seach Bar
+- ![Search Bar](static/readme/seach.png) 
+#### Search Results 
+- ![Search Results](static/readme/seachresults.png)
+
+### Future Features
+
+The future features section highlights potential enhancements that can further improve the user experience and functionality of the Kanban Board project. Here are some ideas for future development:
+
+#### 1. Collaboration Features
+
+To enhance team collaboration and project management, the following features could be implemented:
+- **Real-time Collaboration**: Allow multiple users to work on the same board simultaneously with real-time updates and synchronization.
+- **Task Comments**: Enable users to comment on tasks to facilitate communication and collaboration directly within the Kanban board.
+- **Assign Tasks to Users**: Allow tasks to be assigned to specific users, with notifications and reminders for due dates.
+- **Shared Boards**: Provide the ability to share boards with other users or teams, with customizable permissions (view, edit, comment).
+
+#### 2. Social Media Integration
+
+Integrating social media features can enhance user engagement and community building:
+- **Social Media Sharing**: Allow users to share their boards or specific tasks on social media platforms like Facebook, Twitter, and LinkedIn.
+- **Activity Feed**: Implement an activity feed to show recent actions and updates within the board, similar to social media timelines.
+- **User Profiles with Social Links**: Allow users to add links to their social media profiles in their user profiles.
+
+#### 3. Enhanced Task Management
+
+Adding more advanced task management features can improve productivity:
+- **Subtasks**: Allow users to create subtasks within a task to break down complex tasks into manageable parts.
+- **Task Dependencies**: Implement task dependencies to visualize and manage task sequences and prerequisites.
+- **Recurring Tasks**: Enable users to set up recurring tasks for regular activities.
+
+#### 4. Advanced Search and Filtering
+
+Improving the search and filtering capabilities can help users find and manage tasks more efficiently:
+- **Advanced Search**: Provide advanced search options with filters for due dates, priorities, and assigned users.
+- **Saved Searches and Filters**: Allow users to save frequently used search queries and filters for quick access.
+
+#### 5. Integration with Other Tools
+
+Integrating with other productivity and communication tools can enhance the utility of the Kanban Board:
+- **Calendar Integration**: Sync tasks with calendar applications like Google Calendar or Outlook.
+- **Email Notifications**: Implement email notifications for task updates, due dates, and reminders.
+- **Third-Party App Integration**: Integrate with popular third-party applications like Slack, Trello, or Asana for seamless workflow management.
+
+#### 6. Enhanced User Interface
+
+Improving the user interface and user experience can make the application more enjoyable to use:
+- **Customizable Themes**: Allow users to choose from a variety of themes and color schemes.
+- **Drag-and-Drop File Uploads**: Implement drag-and-drop functionality for uploading attachments to tasks.
+- **Interactive Tutorials and Help**: Provide interactive tutorials and a comprehensive help section to guide new users.
+
+#### 7. Analytics and Reporting
+
+Providing analytics and reporting features can help users track progress and productivity:
+- **Task Completion Reports**: Generate reports on task completion rates and timelines.
+- **User Activity Reports**: Track user activity and contributions within the board.
+- **Project Progress Dashboards**: Visualize project progress with interactive dashboards and charts.
+
+### Future Features Showcase
+
+Here are some highlighted future features with suggested images to include:
+
+**Images to include:**
+- **Real-time Collaboration**: Screenshot of multiple users working on the same board.
+- **Task Comments**: Screenshot showing a task with comments from different users.
+- **Assign Tasks to Users**: Screenshot of a task assignment interface.
+- **Social Media Sharing**: Screenshot of a board with social media sharing options.
+- **Subtasks**: Screenshot showing a task with subtasks.
+- **Advanced Search**: Screenshot of an advanced search interface.
+- **Calendar Integration**: Screenshot of tasks synced with a calendar application.
+- **Customizable Themes**: Screenshot showing different theme options.
+- **Analytics and Reporting**: Screenshot of a project progress dashboard.
+
+
+## Technologies & Languages Used
+
+- **Django**
+- **HTML**
+- **JavaScript**
+- **CSS**
+- **SQL**
+- **Git**
+- **GitHub**
+- **Cloudinary**
+- **Heroku**
+
+### Libraries & Frameworks
+
+- **annotated-types==0.7.0**
+- **asgiref==3.8.1**
+- **autobahn==23.6.2**
+- **Automat==22.10.0**
+- **channels==4.1.0**
+- **cloudinary==1.36.0**
+- **constantly==23.10.4**
+- **crispy-bootstrap5==2024.2**
+- **daphne==4.1.2**
+- **dj-database-url==2.2.0**
+- **dj3-cloudinary-storage==0.0.6**
+- **Django==5.0.6**
+- **django-allauth==0.63.3**
+- **django-bootstrap-datepicker-plus==5.0.5**
+- **django-bootstrap5==24.2**
+- **django-crispy-forms==2.2**
+- **django-environ==0.11.2**
+- **django-storages==1.14.3**
+- **django-summernote==0.8.20.0**
+- **django-tempus-dominus==5.1.2.17**
+- **django-widget-tweaks==1.5.0**
+- **djangorestframework==3.15.2**
+- **gunicorn==22.0.0**
+- **hyperlink==21.0.0**
+- **incremental==22.10.0**
+- **oauthlib==3.2.2**
+- **pillow==10.3.0**
+- **psycopg2-binary==2.9.9**
+- **pyasn1==0.6.0**
+- **pyasn1_modules==0.4.0**
+- **pydantic==2.8.2**
+- **pydantic_core==2.20.1**
+- **pyOpenSSL==24.1.0**
+- **requests-oauthlib==2.0.0**
+- **service-identity==24.1.0**
+- **shortuuid==1.0.13**
+- **sqlparse==0.5.0**
+- **Twisted==24.3.0**
+- **txaio==23.1.1**
+- **urllib3==2.2.1**
+- **whitenoise==6.7.0**
+- **zope.interface==6.4.post2**
+
+### Tools & Programs
+
+- **Favicons**
+- **Trello**
+- **Git Project**
+- **Claude 3**
+- **ChatGPT**
+- **DBDiagram**
+- **Slack**
+- **Stack Overflow**
+- **Coding Couch**
+
+### Additional Tools & Programs
+
+Other tools and programs that would have been beneficial include:
+
+- **Jira**: For advanced project management and agile planning.
+- **Postman**: For testing API endpoints.
+- **Docker**: For containerization and ensuring consistent development environments.
+- **VS Code Extensions**: Various extensions for improving code quality and productivity.
+- **Sentry**: For error tracking and monitoring.
+- **Travis CI**: For continuous integration and deployment.
+
+# Testing
+
+- For all testing, please refer to the [TESTING.md](TESTING.md) file.
+
+# Deployment
+  
