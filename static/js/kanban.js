@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         board.style.transform = `translateX(${transformValue}%)`;
     }
 
+    // Event listeners for mobile swipe buttons
     document.getElementById('scroll-left').addEventListener('click', function() {
         if (currentColumn > 0) {
             currentColumn--;
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Function to show notifications
     function showNotification(message, type = 'success') {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
@@ -58,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000); // Remove notification after 3 seconds
     }
 
+    // Event listener for showing the task modal
     createTaskBtn.addEventListener('click', function() {
         taskModal.style.display = 'flex';
         taskForm.reset();
@@ -66,18 +69,21 @@ document.addEventListener('DOMContentLoaded', function() {
         editingTaskID = null;
     });
 
+    // Event listener for showing the column modal
     createColumnBtn.addEventListener('click', function() {
         columnModal.style.display = 'flex';
         columnForm.reset();
         editingColumnID = null;
     });
 
+    // Event listeners for closing modals
     closeBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
             closeAllModals();
         });
     });
 
+    // Function to close all modals
     function closeAllModals() {
         taskModal.style.display = 'none';
         columnModal.style.display = 'none';
@@ -88,10 +94,10 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteAttachmentConfirmationModal.style.display = 'none';
     }
 
+    // Event listener for task form submission
     taskForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(taskForm);
-        formData.append('column', 'New');
         loadingSpinner.style.display = 'block';
 
         fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
@@ -103,9 +109,9 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            closeAllModals();
             loadingSpinner.style.display = 'none';
             if (data.status === 'success') {
+                closeAllModals();
                 if (!editingTaskID) {
                     showNotification('Task created successfully', 'success');
                     addTaskToColumn(data.task);
@@ -118,12 +124,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            closeAllModals();
             loadingSpinner.style.display = 'none';
             showNotification('Error creating/editing task', 'error');
         });
     });
 
+    // Event listener for column form submission
     columnForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const columnNameField = columnForm.querySelector('[name="column-name"]');
@@ -141,9 +147,9 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                closeAllModals();
                 loadingSpinner.style.display = 'none';
                 if (data.status === 'success') {
+                    closeAllModals();
                     showNotification('Column created successfully', 'success');
                     addColumnToBoard(data.column);
                 } else {
@@ -151,7 +157,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                closeAllModals();
                 loadingSpinner.style.display = 'none';
                 showNotification('Error creating column', 'error');
             });
@@ -160,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Event listener for edit column form submission
     editColumnForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const editColumnNameField = editColumnForm.querySelector('[name="edit-column-name"]');
@@ -177,9 +183,9 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                closeAllModals();
                 loadingSpinner.style.display = 'none';
                 if (data.status === 'success') {
+                    closeAllModals();
                     showNotification('Column updated successfully', 'success');
                     updateColumnInBoard(editingColumnID, data.name);
                 } else {
@@ -187,7 +193,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                closeAllModals();
                 loadingSpinner.style.display = 'none';
                 showNotification('Error editing column', 'error');
             });
@@ -196,6 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Event listener for delete column button
     document.getElementById('delete-column-btn').addEventListener('click', function() {
         deletingColumnID = editingColumnID;
 
@@ -216,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 
+    // Event listener for confirming delete column
     document.getElementById('confirm-delete-column-btn').addEventListener('click', function() {
         loadingSpinner.style.display = 'block';
         fetch(`/kanban/delete_column/${deletingColumnID}/`, {
@@ -226,9 +233,9 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            closeAllModals();
             loadingSpinner.style.display = 'none';
             if (data.status === 'success') {
+                closeAllModals();
                 showNotification('Column deleted successfully', 'success');
                 const columnElement = document.querySelector(`.kanban-column[data-column-id="${deletingColumnID}"]`);
                 if (columnElement) {
@@ -239,21 +246,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            closeAllModals();
             loadingSpinner.style.display = 'none';
             showNotification('Error deleting column', 'error');
         });
     });
 
+    // Event listener for closing move/delete task modal
     document.getElementById('close-move-delete-task-modal-btn').addEventListener('click', function() {
         moveDeleteTaskModal.style.display = 'none';
     });
 
+    // Function to get CSRF token
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
             const cookies = document.cookie.split(';');
-            for (let i = 0; cookies.length > i; i++) {
+            for (let i = 0; i < cookies.length; i++) {
                 const cookie = cookies[i].trim();
                 if (cookie.substring(0, name.length + 1) === (name + '=')) {
                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
@@ -264,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 
+    // Event listeners for task interactions
     document.querySelectorAll('.kanban-task').forEach(task => {
         task.addEventListener('click', function() {
             const taskDetails = this.querySelector('.kanban-task-details');
@@ -350,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     if (data.status === 'success') {
                         showNotification('Task moved successfully', 'success');
-                        setTimeout(() => location.reload(), 1000);
+                        moveTaskInDOM(taskId, columnId);
                     }
                 })
                 .catch(error => {
@@ -371,6 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Function to dynamically add a new column to the board
     function addColumnToBoard(column) {
         const columnElement = document.createElement('div');
         columnElement.className = 'kanban-column';
@@ -383,6 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.kanban-board').appendChild(columnElement);
     }
 
+    // Function to dynamically update a column's name in the board
     function updateColumnInBoard(columnId, name) {
         const columnElement = document.querySelector(`.kanban-column[data-column-id="${columnId}"]`);
         if (columnElement) {
@@ -390,6 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Function to move a task within the DOM
     function moveTaskInDOM(taskId, columnId) {
         const taskElement = document.querySelector(`.kanban-task[data-task-id="${taskId}"]`);
         const newColumnBody = document.querySelector(`.kanban-column[data-column-id="${columnId}"] .kanban-column-body`);
@@ -398,6 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Event listener for confirming task deletion
     document.getElementById('confirm-delete-btn').addEventListener('click', function() {
         loadingSpinner.style.display = 'block';
         fetch(`/kanban/delete_task/${deletingTaskID}/`, {
@@ -408,9 +421,9 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            closeAllModals();
             loadingSpinner.style.display = 'none';
             if (data.status === 'success') {
+                closeAllModals();
                 showNotification('Task deleted successfully', 'success');
                 const taskElement = document.querySelector(`.kanban-task[data-task-id="${deletingTaskID}"]`);
                 if (taskElement) {
@@ -421,12 +434,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            closeAllModals();
             loadingSpinner.style.display = 'none';
             showNotification('Error deleting task', 'error');
         });
     });
 
+    // Event listener for column header click (edit column)
     document.querySelectorAll('.kanban-column-header').forEach(header => {
         header.addEventListener('click', function() {
             const columnName = this.textContent.trim();
@@ -443,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Drag and drop functionality
+    // Drag and drop functionality for tasks
     document.querySelectorAll('.kanban-task').forEach(task => {
         task.setAttribute('draggable', true);
 
@@ -500,6 +513,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Function to determine where to place a dragged task
     function getDragAfterElement(column, y) {
         const draggableElements = [...column.querySelectorAll('.kanban-task:not(.dragging)')];
 
@@ -514,8 +528,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
+    // Function to dynamically add a task to a column in the DOM
     function addTaskToColumn(task) {
-        const newColumn = document.querySelector('.kanban-column[data-column-name="New"] .kanban-column-body');
+        const newColumn = document.querySelector(`.kanban-column[data-column-id="${task.column_id}"] .kanban-column-body`);
         if (newColumn) {
             const taskElement = document.createElement('div');
             taskElement.className = 'kanban-task';
@@ -553,6 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Function to set up event listeners for tasks
     function setupTaskEvents(task) {
         task.addEventListener('click', function() {
             const taskDetails = this.querySelector('.kanban-task-details');
@@ -639,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(data => {
                     if (data.status === 'success') {
                         showNotification('Task moved successfully', 'success');
-                        setTimeout(() => location.reload(), 1000);
+                        moveTaskInDOM(taskId, columnId);
                     }
                 })
                 .catch(error => {
@@ -660,6 +676,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Function to dynamically update a task in its column in the DOM
     function updateTaskInColumn(task) {
         const taskElement = document.querySelector(`.kanban-task[data-task-id="${task.id}"]`);
         if (taskElement) {
@@ -687,6 +704,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Set up event listeners for initial tasks
     document.querySelectorAll('.kanban-task').forEach(setupTaskEvents);
 
     // Handle attachment removal
@@ -728,6 +746,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Function to remove an attachment
     function removeAttachment(button) {
         const attachmentId = button.getAttribute('data-attachment-id');
         fetch(`/kanban/remove_attachment/${attachmentId}/`, {
@@ -764,9 +783,9 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                closeAllModals();
                 loadingSpinner.style.display = 'none';
                 if (data.status === 'success') {
+                    closeAllModals();
                     showNotification('Attachment removed successfully', 'success');
                     document.getElementById(`attachment-${deletingAttachmentID}`).remove(); 
                 } else {
@@ -774,7 +793,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                closeAllModals();
                 loadingSpinner.style.display = 'none';
                 showNotification('Error removing attachment', 'error');
             });
@@ -802,6 +820,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Function to get the priority class for tasks
     function getPriorityClass(priority) {
         switch (priority) {
             case 'Low':
@@ -817,6 +836,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+
 
 
 

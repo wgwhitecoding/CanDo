@@ -1,5 +1,5 @@
 # CanDo
-![Example Image](static/logo/candologo.png)
+![Example Image](static/logo/darkmode.png)
 
 ## Introduction:
 Welcome to the Kanban Board Project, a task management application designed to streamline project workflows and enhance productivity. Developed as part of the Code Institute's Full-Stack Developer course, this project demonstrates the application of Django and Bootstrap frameworks, focusing on database manipulation and CRUD functionality.
@@ -27,6 +27,29 @@ For Admin access with relevant sign-in information: Cando Admin vjhefehjwf
     - [Strategy](#strategy)
         - [Site Goals](#site-goals)
     - [Agile Methodologies - Project Management](#agile-methodologies---project-management)
+        - [MoSCoW Prioritization](#moscow-prioritization)
+        - [Sprints](#sprints)
+        - [User Stories](#user-stories)
+            - [Manage Columns](#manage-columns)
+            - [Manage Tasks](#manage-tasks)
+            - [Move Tasks Between Columns](#move-tasks-between-columns)
+            - [Assign Due Dates to Tasks](#assign-due-dates-to-tasks)
+            - [Set Task Priorities](#set-task-priorities)
+            - [Archive Completed Tasks](#archive-completed-tasks)
+        - [User Stories: User](#user-stories-user)
+            - [Edit Profile Information](#edit-profile-information)
+            - [Search and Maintain Search History](#search-and-maintain-search-history)
+            - [Manage Account Settings](#manage-account-settings)
+        - [User Stories: Board Owner/Member](#user-stories-board-ownermember)
+            - [Manage Task Attachments](#manage-task-attachments)
+        - [Receive Task Update Notifications](#receive-task-update-notifications)
+- [Scope Plane](#scope-plane)
+- [Skeleton \& Surface Planes](#skeleton--surface-planes)
+    - [Wireframes](#wireframes)
+    - [Database Schema - Entity Relationship Diagram](#database-schema---entity-relationship-diagram)
+    - [Security](#security)
+
+
 
 ## Overview
 The Kanban Board Project is a task management application designed to streamline project workflows and enhance productivity. It is built as part of the Code Institute's Full-Stack Developer course, showcasing skills in using Django and Bootstrap frameworks, with a focus on database manipulation and CRUD functionality. This project aims to provide an efficient and intuitive tool for managing tasks within various projects.
@@ -125,7 +148,296 @@ The iterative nature of Agile allowed me to continuously improve the project. Re
 Using the GitHub Projects board for this project was a testament to the effectiveness of Kanban boards in managing workflows and maintaining productivity. It reinforced the importance of Agile methodologies in software development, driving home the value of iterative progress and constant refinement.
 
 
+![kanban](static/readme/kanban.png)
 
-## Database Schema - Entity Relationship Diagram
+### MoSCoW Prioritization
+
+To effectively manage task prioritization in my Kanban Board Project, I employed the MoSCoW method, utilizing color-coded labels. As shown in the project board image, each task is assigned a priority level with specific colors:
+
+- **Must Have** tasks are marked in red, indicating high priority and critical importance.
+- **Should Have** tasks are labeled in orange, representing tasks that are important but not essential.
+- **Could Have** tasks are in green, highlighting desirable but non-essential features.
+- **Won't Have** tasks are in grey, indicating features that are not planned for this release.
+
+This visual prioritization system helps maintain clarity and focus, ensuring that the most critical tasks are addressed first.
+
+### Sprints
+
+
+
+| Sprint No. | Sprint Content                   | Start/Finish Dates   |
+|------------|----------------------------------|----------------------|
+| #1         | Project Setup                    | 23/06/23 -> 24/06/23 |
+| #2         | User Authentication & Navigation | 25/06/23 -> 27/06/23 |
+| #3         | Board and Column Management      | 28/06/23 -> 30/06/23 |
+| #4         | Task Management Features         | 01/07/23 -> 03/07/23 |
+| #5         | Attachments and Search History   | 04/07/23 -> 06/07/23 |
+| #6         | Profile Management & Notifications | 07/07/23 -> 09/07/23 |
+| #7         | Frontend Development             | 10/07/23 -> 12/07/23 |
+| #8         | Testing & Documentation          | 13/07/23 -> 15/07/23 |
+
+
+- **Sprint #1: Project Setup**
+  - **Dates:** 23/06/23 -> 24/06/23
+  - Initial setup of the development environment, version control, and basic project structure.
+
+- **Sprint #2: User Authentication & Navigation**
+  - **Dates:** 25/06/23 -> 27/06/23
+  - Implemented user registration, login, and logout functionalities.
+  - Developed site navigation and basic layout.
+
+- **Sprint #3: Board and Column Management**
+  - **Dates:** 28/06/23 -> 30/06/23
+  - Created functionalities for users to create and manage boards and columns.
+  - Ensured proper associations and relationships between users, boards, and columns.
+
+- **Sprint #4: Task Management Features**
+  - **Dates:** 01/07/23 -> 03/07/23
+  - Developed features for creating, editing, and deleting tasks.
+  - Implemented task prioritization and due date settings.
+
+- **Sprint #5: Attachments and Search History**
+  - **Dates:** 04/07/23 -> 06/07/23
+  - Added functionality for uploading and managing attachments within tasks.
+  - Implemented search history tracking for task searches.
+
+- **Sprint #6: Profile Management & Notifications**
+  - **Dates:** 07/07/23 -> 09/07/23
+  - Developed user profile management features.
+  - Implemented notification system for task updates and user actions.
+
+- **Sprint #7: Frontend Development**
+  - **Dates:** 10/07/23 -> 12/07/23
+  - Focused on designing and refining the user interface.
+  - Ensured responsiveness and cross-browser compatibility.
+
+- **Sprint #8: Testing & Documentation**
+  - **Dates:** 13/07/23 -> 15/07/23
+  - Conducted thorough testing of all features and functionalities.
+  - Prepared comprehensive project documentation and user guides.
+
+
+## User Stories
+
+User stories and features recorded and managed on [Github Projects Board ](https://github.com/users/wgwhitecoding/projects/8/views/1)
+
+
+#### Manage Columns
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **create new columns within a board**.    | **Must Have**  |
+| As a **user**, I can **edit the name of an existing column**.  | **Must Have**|
+| As a **user**, I can **delete a column if it has no tasks assigned**. | **Must Have** |
+
+#### Manage Tasks
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **create a new task and assign it to a specific column**. | **Must Have** |
+| As a **user**, I can **edit the details of an existing task**.            | **Should Have**|
+| As a **user**, I can **delete a task**.                                   | **Should Have** |
+
+#### Move Tasks Between Columns
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **drag and drop tasks between columns**.             | **Must Have**  |
+| As a **user**, I can have the **system update the task's position based on its new column**. | **Must Have** |
+| As a **user**, I can have the **system maintain the task's position within the column**. | **Must Have** |
+
+#### Assign Due Dates to Tasks
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **assign a due date to a task when creating or editing it**. | **Must Have** |
+| As a **user**, I can **see the system display due dates on tasks**.       | **Must Have**  |
+| As a **user**, I can **filter tasks by due date**.                        | **Could Have** |
+
+#### Set Task Priorities
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **set a priority level (Low, Medium, High, Done) when creating or editing a task**. | **Must Have** |
+| As a **user**, I can **see the system visually distinguish tasks based on priority**. | **Should Have** |
+| As a **user**, I can **filter tasks by priority**.                        | **Should Have** |
+
+
+#### Archive Completed Tasks
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **mark tasks as completed**.              | **Should Have** |
+| As a **user**, I can **have completed tasks archived and moved out of active view**. | **Should Have** |
+| As a **user**, I can **view and restore archived tasks if needed**. | **Should Have** |
+
+### User Stories: User
+
+#### Edit Profile Information
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **update my profile information (name, email, bio)**. | **Should Have** |
+| As a **user**, I can **upload a new profile picture**.         | **Should Have** |
+| As a **user**, I can **set or remove a custom background image for my profile**. | **Could Have** |
+
+#### Search and Maintain Search History
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **search tasks by title**.                | **Must Have**  |
+| As a **user**, I can **have the system record each search query and task viewed in the search history**. | **Should Have** |
+| As a **user**, I can **clear my search history**.           | **Could Have** |
+
+#### Manage Account Settings
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **change my account password**.        | **Must Have**  |
+| As a **user**, I can **delete my account**.                 | **Must Have**  |
+| As a **user**, I can **have the system log me out upon account deletion**. | **Must Have** |
+
+### User Stories: Board Owner/Member
+#### Manage Task Attachments
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **upload files as attachments to tasks**. | **Should Have** |
+| As a **user**, I can **view and download task attachments**.   | **Should Have** |
+| As a **user**, I can **delete attachments from tasks**.        | **Should Have** |
+
+#### Receive Task Update Notifications
+
+| Completion Standards                             | Priority   |
+|--------------------------------------------------|------------|
+| As a **user**, I can **receive notifications for task updates (creation, editing, moving, and deletion)**. | **Must Have**  |
+| As a **user**, I can **view notifications in the application**.  | **Must Have**  |
+| As a **user**, I can **configure notification preferences**.   | **Could Have** |
+
+## Scope Plane
+
+As I embarked on this project, I was acutely aware that it would serve as both a learning experience and a developmental challenge. With technologies like Django, SQL, Bootstrap, and Cloudinary being new to me, I made a conscious effort to keep the project's scope manageable and focused. Given the complexity and number of files involved, it was crucial to define and control the project's features early on to ensure the development of a viable minimum viable product (MVP).
+
+Starting with no prior knowledge of coding, I dedicated time to learning the Django MVT (Model-View-Template) framework, which provided the foundation for building dynamic web applications. This understanding allowed me to modularize the project's structure, making it easier to expand from a basic task management tool into a comprehensive Kanban board with additional features. Following Agile Planning Methodologies, I systematically added Developer Tasks, User Stories, and Testing Tasks to my GitHub project board, organizing them into sprints to maintain a steady and structured workflow.
+
+Essential features of my project were:
+
+- A user-friendly interface that enhances the user experience
+- Responsive design ensuring accessibility on mobile, tablet, and desktop devices
+- User Authentication for secure access
+- Board and Column management with full CRUD (Create, Read, Update, Delete) functionality
+- Task management features including creation, editing, deletion, and prioritization
+- Drag-and-drop functionality to move tasks between columns
+- Profile management for personalized user experiences
+- Notifications to keep users informed of task updates
+- Search functionality with a maintained search history for easy task retrieval
+
+Planning the project meticulously from the beginning allowed me to pinpoint key areas crucial for MVP completion and align them with the course's assessment criteria. This approach ensured a balanced development process, keeping both the project's feasibility and the implementation of desired features in check. By maintaining a clear focus on essential functionalities and using Agile methodologies, I successfully navigated the learning curve and achieved the project's goals.
+
+## Skeleton & Surface Planes
+
+### Structural Plane
+
+The structural plane of the Kanban Board project is designed to ensure all components work seamlessly together, providing a coherent and functional user experience. The structure is laid out in a clear hierarchy, with a focus on maintainability and scalability.
+
+### Skeleton Plane
+
+#### Wireframes
+
+The wireframes of the Kanban Board project outline the basic structure and layout of the application. They provide a visual guide for the placement of elements such as navigation, columns, tasks, and modals. The wireframes ensure that the user interface is intuitive and easy to navigate, providing a blueprint for the final design.
+
+#### Base HTML Template
+
+The `base.html` template serves as the foundation for all other pages in the application. It includes common elements such as the navigation bar, modals for settings, profile management, and global CSS and JavaScript imports. This template ensures a consistent look and feel across the application and handles the inclusion of dynamic content through Django template blocks.
+
+#### Navigation
+
+The navigation bar is a crucial part of the structure, providing easy access to the main sections of the application. It includes links to the Kanban board, a search form for tasks, and a profile dropdown for authenticated users. The profile dropdown allows users to access their profile, settings, and logout options quickly.
+
+#### Modals
+
+Several modals are implemented throughout the application to enhance user interaction without navigating away from the current page. These include:
+- **Profile Modal**: Allows users to view and edit their profile information.
+- **Settings Modal**: Provides options for toggling dark mode and uploading custom background images.
+- **Logout Confirmation Modal**: Confirms user intent to logout.
+- **Task Modal**: For creating and editing tasks.
+- **Column Modal**: For creating and editing columns.
+- **Delete Confirmation Modal**: Ensures users confirm before deleting tasks or columns.
+
+#### Kanban Board Interface
+
+The core feature of the application is the Kanban board interface. It is structured to display columns and tasks dynamically:
+- **Columns**: Users can create, edit, and delete columns. Each column contains a list of tasks and has a header that users can interact with.
+- **Tasks**: Users can create, edit, delete, and move tasks between columns. Tasks are displayed with their title, due date, priority indicators, and any attachments.
+
+#### Responsive Design
+
+The application is designed to be fully responsive, ensuring accessibility on mobile, tablet, and desktop devices. Bootstrap is utilized to handle the responsive layout, making sure that the interface adjusts smoothly to different screen sizes.
+
+#### User Authentication
+
+User authentication is handled to secure access to the application. Users can log in, register, and manage their profiles. The profile management includes updating personal information, changing passwords, and setting profile pictures and custom background images.
+
+#### Search Functionality
+
+A search functionality is integrated to allow users to quickly find specific tasks. The search bar is prominently placed in the navigation bar for easy access, and search results are displayed dynamically.
+
+#### Database Schema - Entity Relationship Diagram
 
 ![Database schema](static/readme/databaseS.png)
+
+The database schema of the Kanban Board project is designed to efficiently store and retrieve data related to users, boards, columns, tasks, attachments, and search history. The Entity Relationship Diagram (ERD) provides a visual representation of the database structure, showing how the entities are related. Key entities include:
+
+- **User**: Stores user information and authentication details.
+- **Profile**: Linked to the user, storing additional profile information such as profile image and background image.
+- **Board**: Represents a collection of columns and tasks owned by a user.
+- **Column**: Represents a category within a board to which tasks are assigned.
+- **Task**: Represents an individual task within a column, including attributes like title, description, due date, priority, and attachments.
+- **Attachment**: Stores files attached to tasks.
+- **Search History**: Logs user search queries and viewed tasks for easy retrieval.
+
+### Surface Plane
+
+#### Visual Design
+
+The visual design of the Kanban Board project is clean and intuitive. The interface uses a consistent color scheme and typography to create a cohesive look. Icons and images are used to enhance the user experience and provide visual cues.
+
+#### Navigation Bar
+
+The navigation bar is styled to be unobtrusive yet functional. It includes a brand logo, links to the main sections of the application, a search form, and a profile dropdown. The profile dropdown includes profile, settings, and logout options, and displays the user's profile picture.
+
+#### Modals
+
+The modals are designed to be simple and user-friendly. They provide a clean interface for users to manage their profile, settings, tasks, and columns. Each modal includes clear labels and input fields to guide the user through the process.
+
+#### Kanban Board
+
+The Kanban board interface is visually organized with columns and tasks. Each column is color-coded for easy identification, and tasks include visual indicators for priority and due dates. Drag-and-drop functionality is visually intuitive, with clear feedback when moving tasks between columns.
+
+#### Responsive Design
+
+The responsive design ensures that the application looks and functions well on all devices. The layout adjusts seamlessly between mobile, tablet, and desktop views, maintaining usability and accessibility across different screen sizes.
+
+#### Dark Mode
+
+A dark mode feature is available, allowing users to switch between light and dark themes. This is implemented using a toggle switch in the settings modal, providing a better user experience based on personal preferences or environmental lighting conditions.
+
+#### Notification System
+
+The notification system is designed to keep users informed about task updates in real-time. Notifications are styled to be noticeable without being intrusive, ensuring users stay aware of important changes.
+
+### Security
+
+Security is a critical aspect of the Kanban Board project. Measures include:
+
+- **User Authentication**: Secure login and registration processes to ensure only authorized users can access the application.
+- **Data Encryption**: Sensitive data, such as passwords, are encrypted to protect user information.
+- **File Upload Validation**: Uploaded files are validated to prevent malicious files from being uploaded.
+- **Secure Connections**: The application uses HTTPS to ensure secure communication between the client and server.
+
+By structuring the application in this way, the project ensures a robust, user-friendly experience that caters to the needs of managing tasks efficiently while maintaining a clean and intuitive interface. The combination of a well-thought-out skeleton and an appealing surface design results in an effective and engaging user experience.
+
+
+
+
+

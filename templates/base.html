@@ -1,4 +1,4 @@
-{% load static %}
+{% load static crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +22,7 @@
     background-position: center center; /* Center the image */
     background-attachment: fixed; /* Optional: Keeps the background fixed during scrolling */
 ">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">
                 <img src="{% static 'logo/darkmode.png' %}" alt="Logo">
@@ -89,8 +89,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
+                <div class="d-grid gap-2 w-100">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save Changes</button>
+                </div>
             </div>
         </div>
     </div>
@@ -99,62 +101,68 @@
 
 
 
-    <!-- Profile Modal -->
-    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="profileModalLabel">User Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <img src="{% if user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile" class="rounded-circle profile-avatar">
-                    <h3>{{ user.get_full_name }}</h3>
-                    <p class="email">Email: {{ user.email }}</p>
-                    <p class="bio">Bio: {{ user.profile.bio }}</p>
-                </div>
-                <div class="modal-footer">
+  <!-- Profile Modal -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profileModalLabel">User Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="{% if user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile" class="rounded-circle profile-avatar mb-3">
+                <h3>{{ user.get_full_name }}</h3>
+                <p class="email">Email: {{ user.email }}</p>
+                <p class="bio">Bio: {{ user.profile.bio }}</p>
+            </div>
+            <div class="modal-footer">
+                <div class="d-grid gap-2 w-100">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Delete Account</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Edit Profile Modal -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true" data-edit-profile-url="{% url 'kanban:edit_profile_api' %}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editProfileForm" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="profileImage" class="form-label">Profile Image</label>
-                            <input class="form-control" type="file" id="profileImage" name="profile_image">
-                        </div>
-                        <div class="mb-3">
-                            <label for="profileName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="profileName" name="first_name" value="{{ user.first_name }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="profileEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="profileEmail" name="email" value="{{ user.email }}">
-                        </div>
-                        <div class="mb-3">
-                            <label for="profileBio" class="form-label">Bio</label>
-                            <textarea class="form-control" id="profileBio" name="bio">{{ user.profile.bio }}</textarea>
-                        </div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true" data-edit-profile-url="{% url 'kanban:edit_profile_api' %}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="profileImage" class="form-label">Profile Image</label>
+                        <input class="form-control" type="file" id="profileImage" name="profile_image">
+                    </div>
+                    <div class="mb-3">
+                        <label for="profileName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="profileName" name="first_name" value="{{ user.first_name }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="profileEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="profileEmail" name="email" value="{{ user.email }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="profileBio" class="form-label">Bio</label>
+                        <textarea class="form-control" id="profileBio" name="bio">{{ user.profile.bio }}</textarea>
+                    </div>
+                    <div class="d-grid gap-2 w-100">
                         <button type="submit" class="btn btn-primary" id="saveProfileChangesBtn">Save Changes</button>
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
 
     <!-- Change Password Modal -->
     <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true" data-change-password-url="{% url 'kanban:change_password_api' %}">
@@ -212,24 +220,28 @@
         </div>
     </div>
     
-    <!-- Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true" data-logout-url="{% url 'kanban:logout_user' %}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to logout?
-                </div>
-                <div class="modal-footer">
+ <!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true" data-logout-url="{% url 'kanban:logout_user' %}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to logout?
+            </div>
+            <div class="modal-footer">
+                <div class="d-grid gap-2 w-100">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-danger" id="confirmLogoutBtn">Logout</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+
 
     <div class="container mt-4">
         {% block content %}{% endblock %}

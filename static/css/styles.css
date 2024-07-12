@@ -4,14 +4,14 @@ body {
 }
 
 .navbar {
-    background-color: #333;
+    background-color: #e6e6ea;
     overflow: hidden;
 }
 
 .navbar a {
     float: left;
     display: block;
-    color: #f2f2f2;
+    color: #333; /* Dark grey text */
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -31,7 +31,7 @@ body {
 }
 
 .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%2833, 37, 41, 1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
 
 .collapse {
@@ -46,10 +46,27 @@ body {
     list-style-type: none;
 }
 
+/* Dropdown styles */
+.dropdown-menu {
+    background-color: #ffffff; /* White background */
+    border: 1px solid #ddd; /* Light grey border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a more stylish look */
+}
+
+.dropdown-item {
+    color: #000; /* Black text for dropdown items */
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0; /* Light grey hover background */
+    color: black;
+}
+
 /* Avatar and profile images */
 .navbar-avatar, .profile-avatar {
     border-radius: 50%; 
     object-fit: cover; 
+    border: 2px solid #fff; /* White border around avatars */
 }
 
 .navbar-avatar {
@@ -100,6 +117,7 @@ body {
     height: 100px; 
     border-radius: 50%; 
     object-fit: cover; 
+    border: 2px solid #fff; 
 }
 .list-group-item {
     background-color: transparent !important;
@@ -116,4 +134,78 @@ body {
     width: 20px;
     height: 20px; 
     display: inline-block;
+}
+
+/* Modal styling */
+.modal-content {
+    border-radius: 10px; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    background-color: #f8f9fa; 
+    border-bottom: 1px solid #ddd; 
+}
+
+.modal-footer {
+    background-color: #f8f9fa; 
+    border-top: 1px solid #ddd; 
+}
+
+.modal-title {
+    font-weight: bold;
+    color: #333; 
+}
+
+.btn-close {
+    filter: brightness(0) invert(1); 
+}
+
+.modal-body {
+    background-color: #ffffff; 
+    color: #333; 
+}
+
+/* Stylish form inside modals */
+.modal-content .form-control,
+.modal-content input[type="text"],
+.modal-content input[type="password"],
+.modal-content input[type="email"],
+.modal-content input[type="number"],
+.modal-content input[type="search"],
+.modal-content input[type="tel"],
+.modal-content input[type="url"],
+.modal-content input[type="file"],
+.modal-content select,
+.modal-content textarea {
+    background-color: #f8f9fa; /* Light grey background for input fields */
+    color: #333; /* Dark grey text */
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.modal-content .form-control::placeholder,
+.modal-content input::placeholder,
+.modal-content textarea::placeholder {
+    color: #999999; /* Dark placeholder text */
+}
+/* Media queries for small devices */
+@media (max-width: 600px) {
+    .modal-content {
+        width: 80%; /* Adjust the width to fit smaller screens */
+        margin: auto;
+    }
+
+    .navbar-brand, .navbar-toggler {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-avatar {
+        margin-left: 10px;
+    }
+
+    .button-container .btn {
+        width: 100%; /* Ensure buttons take full width on small devices */
+    }
 }

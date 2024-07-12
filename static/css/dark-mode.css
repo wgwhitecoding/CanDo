@@ -8,7 +8,10 @@ body {
 .navbar-light {
     background-color: #1f1f1f !important;
 }
-
+.navbar {
+    background-color: #1f1f1f;
+    
+}
 .nav-link {
     color: #ffffff !important;
 }
@@ -43,6 +46,7 @@ body {
 /* Kanban columns background in dark mode */
 .kanban-column {
     background-color: rgba(16, 15, 15, 0.8)  !important;
+    border: 3px solid #555555;
 }
 
 /* Dark mode for modals */
@@ -101,6 +105,7 @@ body {
 .kanban-task-title {
     color: #000000 !important; /* Black text for task titles */
 }
+
 
 
 
