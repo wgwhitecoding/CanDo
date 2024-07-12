@@ -74,6 +74,7 @@ def create_task(request):
         if form.is_valid():
             task = form.save(commit=False)
             task.created_by = request.user
+            # Ensure the task is assigned to the "New" column
             task.column = Column.objects.get(name='New', board__owner=request.user)
             task.position = KanbanTask.objects.filter(column=task.column).count() + 1
             task.save()
@@ -83,10 +84,12 @@ def create_task(request):
                 Attachment.objects.create(task=task, file=file)
 
             messages.success(request, 'Task created successfully.')
-            return JsonResponse({'status': 'success', 'task': {'id': task.id, 'title': task.title, 'description': task.description, 'due_date': str(task.due_date), 'priority': task.priority}})
+            # Ensure column_id is included in the task data
+            return JsonResponse({'status': 'success', 'task': {'id': task.id, 'title': task.title, 'description': task.description, 'due_date': str(task.due_date), 'priority': task.priority, 'column_id': task.column.id}})
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 
 @login_required
 @csrf_exempt
@@ -102,20 +105,22 @@ def edit_task(request, task_id):
                 Attachment.objects.create(task=task, file=file)
 
             messages.success(request, 'Task edited successfully.')
-            return JsonResponse({'status': 'success'})
+
+            # Return the task data
+            task_data = {
+                'id': task.id,
+                'title': task.title,
+                'description': task.description,
+                'due_date': str(task.due_date),
+                'priority': task.priority,
+                'column_id': task.column.id,
+                'attachments': [{'id': att.id, 'url': att.file.url} for att in task.attachments.all()]
+            }
+            return JsonResponse({'status': 'success', 'task': task_data})
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
-@login_required
-@csrf_exempt
-def delete_task(request, task_id):
-    task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
-    if request.method == 'POST':
-        task.delete()
-        messages.success(request, 'Task deleted successfully.')
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 @login_required
 @csrf_exempt
@@ -128,10 +133,11 @@ def create_column(request):
             column.board = Board.objects.get(owner=request.user, name='Default Board')
             column.save()
             messages.success(request, 'Column created successfully.')
-            return JsonResponse({'status': 'success', 'column_id': column.id, 'name': column.name})
+            return JsonResponse({'status': 'success', 'column': {'id': column.id, 'name': column.name}})
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 
 @login_required
 @csrf_exempt
@@ -230,6 +236,7 @@ def remove_attachment(request, attachment_id):
         except Attachment.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Attachment not found'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 
 @login_required
 def edit_profile(request):
@@ -346,8 +353,31 @@ def save_background_settings(request):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'fail'}, status=400)
 
+@login_required
+@csrf_exempt
+def delete_task(request, task_id):
+    task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
+    if request.method == 'POST':
+        task.delete()
+        messages.success(request, 'Task deleted successfully.')
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 
+
+@login_required
+@csrf_exempt  # Add this only if necessary, ideally handle CSRF properly
+def add_attachment(request, task_id):
+    task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
+    if request.method == 'POST':
+        files = request.FILES.getlist('attachments')
+        attachments = []
+        for file in files:
+            attachment = Attachment.objects.create(task=task, file=file)
+            attachments.append({'id': attachment.id, 'url': attachment.file.url, 'name': file.name})
+        
+        return JsonResponse({'status': 'success', 'attachments': attachments})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 
 

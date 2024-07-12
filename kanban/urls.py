@@ -26,6 +26,7 @@ urlpatterns = [
     path('logout_user/', views.logout_user, name='logout_user'),
     path('upload_background_image/', views.upload_background_image, name='upload_background_image'),
     path('save_background_settings/', views.save_background_settings, name='save_background_settings'),
+    path('add_attachment/<int:task_id>/', views.add_attachment, name='add_attachment'),
 
 ]
 

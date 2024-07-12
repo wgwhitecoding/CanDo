@@ -94,76 +94,83 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteAttachmentConfirmationModal.style.display = 'none';
     }
 
-    // Event listener for task form submission
-    taskForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(taskForm);
+// Event listener for task form submission
+taskForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(taskForm);
+    loadingSpinner.style.display = 'block';
+
+    fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response from server:', data); // Debugging log
+        loadingSpinner.style.display = 'none';
+        if (data.status === 'success') {
+            closeAllModals();
+            if (!editingTaskID) {
+                showNotification('Task created successfully', 'success');
+                addTaskToColumn(data.task);
+            } else {
+                showNotification('Task updated successfully', 'success');
+                updateTaskInColumn(data.task);
+            }
+        } else {
+            showNotification('Error creating/editing task', 'error');
+        }
+    })
+    .catch(error => {
+        loadingSpinner.style.display = 'none';
+        console.error('Error:', error); // Debugging log
+        showNotification('Error creating/editing task', 'error');
+    });
+});
+
+
+
+ // Event listener for column form submission
+columnForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const columnNameField = columnForm.querySelector('[name="column-name"]');
+    if (columnNameField) {
+        const data = { name: columnNameField.value };
         loadingSpinner.style.display = 'block';
 
-        fetch(editingTaskID ? `/kanban/edit_task/${editingTaskID}/` : '/kanban/create_task/', {
+        fetch('/kanban/create_column/', {
             method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken')
             },
-            body: formData
+            body: JSON.stringify(data)
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Response from server:', data); // Debugging log
             loadingSpinner.style.display = 'none';
             if (data.status === 'success') {
                 closeAllModals();
-                if (!editingTaskID) {
-                    showNotification('Task created successfully', 'success');
-                    addTaskToColumn(data.task);
-                } else {
-                    showNotification('Task updated successfully', 'success');
-                    updateTaskInColumn(data.task);
-                }
+                showNotification('Column created successfully', 'success');
+                addColumnToBoard(data.column); // Add the new column to the board
             } else {
-                showNotification('Error creating/editing task', 'error');
+                showNotification('Error creating column', 'error');
             }
         })
         .catch(error => {
             loadingSpinner.style.display = 'none';
-            showNotification('Error creating/editing task', 'error');
+            console.error('Error:', error); // Debugging log
+            showNotification('Error creating column', 'error');
         });
-    });
+    } else {
+        showNotification('Please enter a column name', 'error');
+    }
+});
 
-    // Event listener for column form submission
-    columnForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const columnNameField = columnForm.querySelector('[name="column-name"]');
-        if (columnNameField) {
-            const data = { name: columnNameField.value };
-            loadingSpinner.style.display = 'block';
-
-            fetch('/kanban/create_column/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                loadingSpinner.style.display = 'none';
-                if (data.status === 'success') {
-                    closeAllModals();
-                    showNotification('Column created successfully', 'success');
-                    addColumnToBoard(data.column);
-                } else {
-                    showNotification('Error creating column', 'error');
-                }
-            })
-            .catch(error => {
-                loadingSpinner.style.display = 'none';
-                showNotification('Error creating column', 'error');
-            });
-        } else {
-            showNotification('Please enter a column name', 'error');
-        }
-    });
 
     // Event listener for edit column form submission
     editColumnForm.addEventListener('submit', function(e) {
@@ -527,46 +534,51 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
-
-    // Function to dynamically add a task to a column in the DOM
-    function addTaskToColumn(task) {
-        const newColumn = document.querySelector(`.kanban-column[data-column-id="${task.column_id}"] .kanban-column-body`);
-        if (newColumn) {
-            const taskElement = document.createElement('div');
-            taskElement.className = 'kanban-task';
-            taskElement.dataset.taskId = task.id;
-            taskElement.innerHTML = `
-                <div class="kanban-task-title">
-                    ${task.title}
-                    <span class="priority-indicator ${getPriorityClass(task.priority)}"></span>
-                </div>
-                <div class="kanban-task-due">Due: ${task.due_date}</div>
-                <div class="kanban-task-details" style="display: none;">
-                    <p>${task.description}</p>
-                    <div class="attachments"></div>
-                    <button class="btn btn-primary edit-task-btn">Edit</button>
-                    <button class="btn btn-danger delete-task-btn">Delete</button>
-                    <button class="btn btn-secondary close-task-btn">Close</button>
-                    <button class="btn btn-info move-task-btn">Move</button>
-                    <select class="move-task-dropdown" style="display:none;">
-                        {% for column in columns %}
-                        <option value="{{ column.id }}">{{ column.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            `;
-            taskElement.setAttribute('draggable', true);
-            taskElement.addEventListener('dragstart', function(e) {
-                taskElement.classList.add('dragging');
-                e.dataTransfer.setData('text/plain', task.id);
-            });
-            taskElement.addEventListener('dragend', function() {
-                taskElement.classList.remove('dragging');
-            });
-            newColumn.prepend(taskElement); 
-            setupTaskEvents(taskElement); 
-        }
+// Function to dynamically add a task to a column in the DOM
+function addTaskToColumn(task) {
+    console.log('Adding task to column:', task); // Debugging log
+    const newColumn = document.querySelector(`.kanban-column[data-column-id="${task.column_id}"] .kanban-column-body`);
+    if (newColumn) {
+        const taskElement = document.createElement('div');
+        taskElement.className = 'kanban-task';
+        taskElement.dataset.taskId = task.id;
+        taskElement.innerHTML = `
+            <div class="kanban-task-title">
+                ${task.title}
+                <span class="priority-indicator ${getPriorityClass(task.priority)}"></span>
+            </div>
+            <div class="kanban-task-due">Due: ${task.due_date}</div>
+            <div class="kanban-task-details" style="display: none;">
+                <p>${task.description}</p>
+                <div class="attachments"></div>
+                <button class="btn btn-primary edit-task-btn">Edit</button>
+                <button class="btn btn-danger delete-task-btn">Delete</button>
+                <button class="btn btn-secondary close-task-btn">Close</button>
+                <button class="btn btn-info move-task-btn">Move</button>
+                <select class="move-task-dropdown" style="display:none;">
+                    {% for column in columns %}
+                    <option value="{{ column.id }}">{{ column.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        `;
+        taskElement.setAttribute('draggable', true);
+        taskElement.addEventListener('dragstart', function(e) {
+            taskElement.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', task.id);
+        });
+        taskElement.addEventListener('dragend', function() {
+            taskElement.classList.remove('dragging');
+        });
+        newColumn.prepend(taskElement); 
+        setupTaskEvents(taskElement); 
+    } else {
+        console.error('Column not found for task:', task); // Debugging log
     }
+}
+
+
+
 
     // Function to set up event listeners for tasks
     function setupTaskEvents(task) {
@@ -676,33 +688,43 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Function to dynamically update a task in its column in the DOM
-    function updateTaskInColumn(task) {
-        const taskElement = document.querySelector(`.kanban-task[data-task-id="${task.id}"]`);
-        if (taskElement) {
-            taskElement.innerHTML = `
-                <div class="kanban-task-title">
-                    ${task.title}
-                    <span class="priority-indicator ${getPriorityClass(task.priority)}"></span>
-                </div>
-                <div class="kanban-task-due">Due: ${task.due_date}</div>
-                <div class="kanban-task-details" style="display: none;">
-                    <p>${task.description}</p>
-                    <div class="attachments"></div>
-                    <button class="btn btn-primary edit-task-btn">Edit</button>
-                    <button class="btn btn-danger delete-task-btn">Delete</button>
-                    <button class="btn btn-secondary close-task-btn">Close</button>
-                    <button class="btn btn-info move-task-btn">Move</button>
-                    <select class="move-task-dropdown" style="display:none;">
-                        {% for column in columns %}
-                        <option value="{{ column.id }}">{{ column.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            `;
-            setupTaskEvents(taskElement);
-        }
+   // Function to dynamically update a task in its column in the DOM
+   function updateTaskInColumn(task) {
+    console.log('Updating task in column:', task); // Debugging log
+    if (!task || !task.id) {
+        console.error('Task data is undefined or missing id:', task); // Debugging log
+        showNotification('Error updating task: invalid task data', 'error');
+        return;
     }
+    const taskElement = document.querySelector(`.kanban-task[data-task-id="${task.id}"]`);
+    if (taskElement) {
+        taskElement.innerHTML = `
+            <div class="kanban-task-title">
+                ${task.title}
+                <span class="priority-indicator ${getPriorityClass(task.priority)}"></span>
+            </div>
+            <div class="kanban-task-due">Due: ${task.due_date}</div>
+            <div class="kanban-task-details" style="display: none;">
+                <p>${task.description}</p>
+                <div class="attachments"></div>
+                <button class="btn btn-primary edit-task-btn">Edit</button>
+                <button class="btn btn-danger delete-task-btn">Delete</button>
+                <button class="btn btn-secondary close-task-btn">Close</button>
+                <button class="btn btn-info move-task-btn">Move</button>
+                <select class="move-task-dropdown" style="display:none;">
+                    {% for column in columns %}
+                    <option value="{{ column.id }}">{{ column.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        `;
+        setupTaskEvents(taskElement);
+    } else {
+        console.error('Task element not found:', task); // Debugging log
+    }
+}
+
+
 
     // Set up event listeners for initial tasks
     document.querySelectorAll('.kanban-task').forEach(setupTaskEvents);
@@ -770,7 +792,7 @@ document.addEventListener('DOMContentLoaded', function() {
         deleteAttachmentConfirmationText.innerText = `Are you sure you want to delete the attachment: "${attachmentName}"?`;
         deleteAttachmentConfirmationModal.style.display = 'flex';
     }
-
+    
     // Event listener for confirming attachment deletion
     confirmDeleteAttachmentBtn.addEventListener('click', function() {
         if (deletingAttachmentID) {
@@ -787,18 +809,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     closeAllModals();
                     showNotification('Attachment removed successfully', 'success');
-                    document.getElementById(`attachment-${deletingAttachmentID}`).remove(); 
+                    const attachmentElement = document.getElementById(`attachment-${deletingAttachmentID}`);
+                    if (attachmentElement) {
+                        attachmentElement.remove();
+                    }
                 } else {
                     showNotification('Error removing attachment', 'error');
                 }
             })
             .catch(error => {
                 loadingSpinner.style.display = 'none';
+                console.error('Error:', error); // Debugging log
                 showNotification('Error removing attachment', 'error');
             });
         }
     });
-
+    
     // Mobile swipe functionality
     let startX;
     let endX;
