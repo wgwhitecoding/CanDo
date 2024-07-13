@@ -275,26 +275,22 @@ def edit_profile(request):
 def edit_profile_api(request):
     if request.method == 'POST':
         user = request.user
-        profile, created = Profile.objects.get_or_create(user=user)
+        user.first_name = request.POST.get('first_name', user.first_name)
+        user.email = request.POST.get('email', user.email)
+        user.profile.bio = request.POST.get('bio', user.profile.bio)
+        
+        if 'profile_image' in request.FILES:
+            user.profile.profile_image = request.FILES['profile_image']
+        
+        user.save()
+        user.profile.save()
+        
+        messages.success(request, 'Profile updated successfully.')
+        return JsonResponse({'success': True, 'profile_picture_url': user.profile.profile_image.url, 'user_name': user.first_name, 'user_email': user.email, 'user_bio': user.profile.bio})
+    
+    messages.error(request, 'Error updating profile.')
+    return JsonResponse({'success': False})
 
-        user_form = UserForm(request.POST, instance=user)
-        profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            return JsonResponse({
-                'success': True,
-                'profile_picture_url': profile.profile_image.url,
-                'user_name': f'{user.first_name} {user.last_name}',
-                'user_email': user.email,
-                'user_bio': profile.bio
-            })
-        else:
-            errors = json.loads(user_form.errors.as_json()) + json.loads(profile_form.errors.as_json())
-            return JsonResponse({'success': False, 'errors': errors})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 @login_required
 @csrf_exempt
@@ -302,11 +298,17 @@ def delete_account(request):
     if request.method == 'POST':
         try:
             user = request.user
+            try:
+                user.profile.delete()
+            except Profile.DoesNotExist:
+                pass
             user.delete()
             return JsonResponse({'success': True, 'redirect_url': '/accounts/login/'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+
 
 @login_required
 @csrf_exempt
@@ -323,35 +325,49 @@ def change_password_api(request):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user) 
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Password changed successfully.')
             return JsonResponse({'success': True})
         else:
+            messages.error(request, 'Error changing password.')
             return JsonResponse({'success': False, 'errors': form.errors})
+    messages.error(request, 'Invalid request method.')
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
 
 @login_required
 @csrf_exempt
 def upload_background_image(request):
     if request.method == 'POST':
-        profile = request.user.profile
-        profile.background_image = request.FILES['background_image']
-        profile.use_default_background = False  # Ensure custom background is used
-        profile.save()
-        return JsonResponse({'status': 'success', 'image_url': profile.background_image.url})
-    return JsonResponse({'status': 'error'}, status=400)
+        user = request.user
+        if 'background_image' in request.FILES:
+            user.profile.background_image = request.FILES['background_image']
+            user.profile.save()
+            messages.success(request, 'Background image updated successfully.')
+            return JsonResponse({'status': 'success', 'image_url': user.profile.background_image.url})
+    
+    messages.error(request, 'Failed to upload background image.')
+    return JsonResponse({'status': 'error'})
 
 @login_required
 @csrf_exempt
 def save_background_settings(request):
     if request.method == 'POST':
+        user = request.user
         use_default_background = request.POST.get('use_default_background') == 'true'
-        profile = request.user.profile
-        profile.use_default_background = use_default_background
+        user.profile.use_default_background = use_default_background
+        
         if use_default_background:
-            profile.background_image = None  
-        profile.save()
+            user.profile.background_image = None
+            messages.success(request, 'Background set to default successfully.')
+        else:
+            messages.success(request, 'Custom background set successfully.')
+        
+        user.profile.save()
         return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'fail'}, status=400)
+    
+    messages.error(request, 'Failed to save background settings.')
+    return JsonResponse({'status': 'error'})
 
 @login_required
 @csrf_exempt

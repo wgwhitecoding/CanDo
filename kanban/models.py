@@ -5,9 +5,9 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_image = CloudinaryField('image', default='profile_images/default.png')
-    background_image = CloudinaryField('image', blank=True, null=True) 
+    background_image = CloudinaryField('image', blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
-    use_default_background = models.BooleanField(default=False)  
+    use_default_background = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
@@ -68,6 +68,7 @@ class SearchHistory(models.Model):
 
     def __str__(self):
         return self.query
+
 
 
 
