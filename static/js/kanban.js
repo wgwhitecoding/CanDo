@@ -882,7 +882,18 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
+$(document).ready(function() {
+    // Event listener for "Move" button click
+    $('.move-task-btn').click(function() {
+        // Hide all other dropdowns
+        $('.move-task-dropdown-container').hide();
+        
+        // Show the dropdown in the current task details
+        var taskDetails = $(this).closest('.kanban-task').find('.kanban-task-details');
+        var moveDropdown = taskDetails.find('.move-task-dropdown-container');
+        moveDropdown.show();
+    });
+});
 
 
 
