@@ -1,13 +1,43 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Variables for various URLs
     const editProfileUrl = document.getElementById('editProfileModal').dataset.editProfileUrl;
     const changePasswordUrl = document.getElementById('changePasswordModal').dataset.changePasswordUrl;
     const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
     const logoutUrl = document.getElementById('logoutModal').dataset.logoutUrl;
     const uploadBackgroundImageUrl = '/kanban/upload_background_image/';
     const saveBackgroundSettingsUrl = '/kanban/save_background_settings/';
-
     const loadingSpinner = document.getElementById('loadingSpinner');
 
+    // Function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Function to show notifications
+    function showNotification(message, type) {
+        // Assuming you have a function to show notifications
+        // You can implement this function to display notifications to the user
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.remove();
+        }, 3000); // Remove notification after 3 seconds
+    }
+
+    // Delete Account
     document.getElementById('confirmDeleteAccountBtn').addEventListener('click', function () {
         loadingSpinner.style.display = 'block';
         $.ajax({
@@ -19,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
             success: function (response) {
                 loadingSpinner.style.display = 'none';
                 if (response.success) {
+                    showNotification('Account deleted successfully', 'success');
                     window.location.href = response.redirect_url;
                 } else {
                     showNotification('Error deleting account', 'error');
@@ -32,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Edit Profile
     document.getElementById('editProfileForm').addEventListener('submit', function (event) {
         event.preventDefault();
         loadingSpinner.style.display = 'block';
@@ -106,33 +138,59 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-        loadingSpinner.style.display = 'block';
-        const formData = new FormData(this);
-        $.ajax({
-            url: changePasswordUrl,
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                loadingSpinner.style.display = 'none';
-                if (response.success) {
-                    $('#changePasswordModal').modal('hide');
-                    showNotification('Password changed successfully', 'success');
-                } else {
-                    showNotification('Error changing password', 'error');
+    // Change Password
+    document.addEventListener('DOMContentLoaded', function () {
+        // Ensure that the URL for changing password is correctly fetched from the modal attribute
+        const changePasswordUrl = document.getElementById('changePasswordModal').dataset.changePasswordUrl;
+    
+        // Ensure the loading spinner element is accessible
+        const loadingSpinner = document.getElementById('loadingSpinner');
+    
+        // Add event listener for the change password form submission
+        document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+            event.preventDefault();  // Prevent the default form submission
+    
+            loadingSpinner.style.display = 'block';  // Show the loading spinner
+    
+            const formData = new FormData(this);  // Create a FormData object with the form data
+    
+            $.ajax({
+                url: changePasswordUrl,  // Use the change password URL
+                type: "POST",  // Send the request as POST
+                data: formData,  // Send the form data
+                processData: false,  // Prevent jQuery from processing the data
+                contentType: false,  // Prevent jQuery from setting the content type
+    
+                success: function (response) {
+                    loadingSpinner.style.display = 'none';  // Hide the loading spinner
+    
+                    if (response.success) {
+                        $('#changePasswordModal').modal('hide');  // Hide the modal on success
+                        showNotification('Password changed successfully', 'success');  // Show success notification
+                    } else {
+                        showNotification('Error changing password', 'error');  // Show error notification
+                    }
+                },
+                error: function (xhr, status, error) {
+                    loadingSpinner.style.display = 'none';  // Hide the loading spinner on error
+                    console.error('Error:', error);  // Log the error
+                    showNotification('An error occurred while changing the password.', 'error');  // Show error notification
                 }
-            },
-            error: function (xhr, status, error) {
-                loadingSpinner.style.display = 'none';
-                console.error('Error:', error);
-                showNotification('An error occurred while changing the password.', 'error');
-            }
+            });
         });
+    
+        // Function to show notifications
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
     });
+    
 
+    // Logout
     document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
         loadingSpinner.style.display = 'block';
         $.ajax({
@@ -144,6 +202,7 @@ document.addEventListener('DOMContentLoaded', function () {
             success: function (response) {
                 loadingSpinner.style.display = 'none';
                 if (response.success) {
+                    showNotification('Logged out successfully', 'success');
                     window.location.href = response.redirect_url;
                 } else {
                     showNotification('Error logging out', 'error');
@@ -227,28 +286,8 @@ document.addEventListener('DOMContentLoaded', function () {
             showNotification('Please select a custom background image or disable the custom background toggle.', 'error');
         }
     });
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    function showNotification(message, type) {
-        // Assuming you have a function to show notifications
-        // You can implement this function to display notifications to the user
-        console.log(`${type}: ${message}`);
-    }
 });
+
 
 
 
