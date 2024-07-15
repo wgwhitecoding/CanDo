@@ -843,26 +843,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Mobile swipe functionality
-    let startX;
-    let endX;
 
-    document.querySelector('.kanban-board-wrapper').addEventListener('touchstart', function(event) {
-        startX = event.touches[0].pageX;
-    });
-
-    document.querySelector('.kanban-board-wrapper').addEventListener('touchmove', function(event) {
-        endX = event.touches[0].pageX;
-    });
-
-    document.querySelector('.kanban-board-wrapper').addEventListener('touchend', function(event) {
-        const distance = endX - startX;
-        if (distance > 50) {
-            document.getElementById('scroll-left').click();
-        } else if (distance < -50) {
-            document.getElementById('scroll-right').click();
-        }
-    });
 
     // Function to get the priority class for tasks
     function getPriorityClass(priority) {
