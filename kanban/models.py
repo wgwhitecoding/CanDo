@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_image = CloudinaryField('image', default='profile_images/default.png')
+    profile_image = CloudinaryField('image', default='v1721073459/fggjygoiwuzrqhjwsxxq.png')
     background_image = CloudinaryField('image', blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
     use_default_background = models.BooleanField(default=False)

@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const defaultProfileImageUrl = "https://res.cloudinary.com/dpujkdryq/image/upload/v1721073459/fggjygoiwuzrqhjwsxxq.png";
+
+    // Set default profile image if the current profile image is not set
+    const profileImageElements = document.querySelectorAll('#profileDropdown img, #profileModal img');
+    profileImageElements.forEach(img => {
+        if (!img.src || img.src.endsWith('avatar.png')) {
+            img.src = defaultProfileImageUrl;
+        }
+    });
+
     const editProfileUrl = document.getElementById('editProfileModal').dataset.editProfileUrl;
     const changePasswordUrl = document.getElementById('changePasswordModal').dataset.changePasswordUrl;
     const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
@@ -275,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
 
 
 

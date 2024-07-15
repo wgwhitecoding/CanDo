@@ -1,4 +1,4 @@
-{% load static crispy_forms_tags %}
+{% load static crispy_forms_tags cloudinary%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,43 +22,46 @@
     background-position: center center;
     background-attachment: fixed;
 ">
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <img src="{% static 'logo/candologo.png' %}" alt="Logo" class="logo-light">
-                <img src="{% static 'logo/darkmode.png' %}" alt="Logo" class="logo-dark">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'kanban:board' %}">Kanban</a>
-                    </li>
+ <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'logo/candologo.png' %}" alt="Logo" class="logo-light">
+            <img src="{% static 'logo/darkmode.png' %}" alt="Logo" class="logo-dark">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'kanban:board' %}">Kanban</a>
+                </li>
+            </ul>
+            <form class="d-flex me-auto" method="get" action="{% url 'kanban:search_tasks' %}">
+                <input class="form-control me-2" type="search" name="q" placeholder="Search tasks" aria-label="Search" required>
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <div class="dropdown">
+                <a href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    {% if user.is_authenticated and user.profile.profile_image %}
+                        <img src="{{ user.profile.profile_image.url }}" alt="Profile" class="rounded-circle navbar-avatar">
+                    {% else %}
+                        <img src="https://res.cloudinary.com/dpujkdryq/image/upload/v1721073459/fggjygoiwuzrqhjwsxxq.png" alt="Profile" class="rounded-circle navbar-avatar">
+                    {% endif %}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                    {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">Profile</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a></li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="{% url 'account_login' %}">Login</a></li>
+                    {% endif %}
                 </ul>
-                <form class="d-flex me-auto" method="get" action="{% url 'kanban:search_tasks' %}">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Search tasks" aria-label="Search" required>
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-                <div class="dropdown">
-                    <a href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{% if user.is_authenticated and user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile" class="rounded-circle navbar-avatar">
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                        {% if user.is_authenticated %}
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">Profile</a></li>
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">Settings</a></li>
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a></li>
-                        {% else %}
-                            <li><a class="dropdown-item" href="{% url 'account_login' %}">Login</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
             </div>
         </div>
-    </nav>
-
+    </div>
+</nav>
     <div id="messages" style="display:none;">
         {% if messages %}
             {% for message in messages %}
@@ -102,7 +105,6 @@
         </div>
     </div>
 
-    <!-- Profile Modal -->
     <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -111,7 +113,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img src="{% if user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile" class="rounded-circle profile-avatar mb-3">
+                    <img src="{% if user.profile.profile_image %}{{ user.profile.profile_image.url }}{% else %}https://res.cloudinary.com/dpujkdryq/image/upload/v1721073459/fggjygoiwuzrqhjwsxxq.png{% endif %}" alt="Profile" class="rounded-circle profile-avatar mb-3">
                     <h3>{{ user.get_full_name }}</h3>
                     <p class="email">Email: {{ user.email }}</p>
                     <p class="bio">Bio: {{ user.profile.bio }}</p>
@@ -125,6 +127,8 @@
             </div>
         </div>
     </div>
+    
+    
 
     <!-- Edit Profile Modal -->
     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true" data-edit-profile-url="{% url 'kanban:edit_profile_api' %}">
