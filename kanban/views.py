@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from .models import KanbanTask, Column, Board, SearchHistory, Attachment, Profile
 from .forms import KanbanTaskForm, ColumnForm, AttachmentForm, UserForm, ProfileForm
+from .utils import pdf_to_images  # Ensure this import is correct
 import json
 
 @login_required
@@ -74,22 +75,24 @@ def create_task(request):
         if form.is_valid():
             task = form.save(commit=False)
             task.created_by = request.user
-            # Ensure the task is assigned to the "New" column
             task.column = Column.objects.get(name='New', board__owner=request.user)
             task.position = KanbanTask.objects.filter(column=task.column).count() + 1
             task.save()
 
             files = request.FILES.getlist('attachments')
             for file in files:
-                Attachment.objects.create(task=task, file=file)
+                if file.name.lower().endswith('.pdf'):
+                    images = pdf_to_images(file)
+                    for image in images:
+                        Attachment.objects.create(task=task, file=image)
+                else:
+                    Attachment.objects.create(task=task, file=file)
 
             messages.success(request, 'Task created successfully.')
-            # Ensure column_id is included in the task data
             return JsonResponse({'status': 'success', 'task': {'id': task.id, 'title': task.title, 'description': task.description, 'due_date': str(task.due_date), 'priority': task.priority, 'column_id': task.column.id}})
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
 
 @login_required
 @csrf_exempt
@@ -102,11 +105,15 @@ def edit_task(request, task_id):
 
             files = request.FILES.getlist('attachments')
             for file in files:
-                Attachment.objects.create(task=task, file=file)
+                if file.name.lower().endswith('.pdf'):
+                    images = pdf_to_images(file)
+                    for image in images:
+                        Attachment.objects.create(task=task, file=image)
+                else:
+                    Attachment.objects.create(task=task, file=file)
 
             messages.success(request, 'Task edited successfully.')
 
-            # Return the task data
             task_data = {
                 'id': task.id,
                 'title': task.title,
@@ -120,7 +127,6 @@ def edit_task(request, task_id):
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
 
 @login_required
 @csrf_exempt
@@ -137,7 +143,6 @@ def create_column(request):
         else:
             return JsonResponse({'status': 'error', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
 
 @login_required
 @csrf_exempt
@@ -237,7 +242,6 @@ def remove_attachment(request, attachment_id):
             return JsonResponse({'status': 'error', 'message': 'Attachment not found'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
-
 @login_required
 def edit_profile(request):
     user = request.user
@@ -278,35 +282,31 @@ def edit_profile_api(request):
         user.first_name = request.POST.get('first_name', user.first_name)
         user.email = request.POST.get('email', user.email)
         user.profile.bio = request.POST.get('bio', user.profile.bio)
-        
+
         if 'profile_image' in request.FILES:
             user.profile.profile_image = request.FILES['profile_image']
-        
+
         user.save()
         user.profile.save()
-        
+
         messages.success(request, 'Profile updated successfully.')
         return JsonResponse({'success': True, 'profile_picture_url': user.profile.profile_image.url, 'user_name': user.first_name, 'user_email': user.email, 'user_bio': user.profile.bio})
-    
+
     messages.error(request, 'Error updating profile.')
     return JsonResponse({'success': False})
 
-
 @login_required
-@csrf_exempt  
+@csrf_exempt
 def delete_account(request):
     if request.method == 'POST':
         try:
             user = request.user
-            user.delete()  
-            logout(request) 
+            user.delete()
+            logout(request)
             return JsonResponse({'success': True, 'redirect_url': '/accounts/login/'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
-
-
-
 
 @login_required
 @csrf_exempt
@@ -332,7 +332,6 @@ def change_password_api(request):
     messages.error(request, 'Invalid request method.')
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
-
 @login_required
 @csrf_exempt
 def upload_background_image(request):
@@ -343,7 +342,7 @@ def upload_background_image(request):
             user.profile.save()
             messages.success(request, 'Background image updated successfully.')
             return JsonResponse({'status': 'success', 'image_url': user.profile.background_image.url})
-    
+
     messages.error(request, 'Failed to upload background image.')
     return JsonResponse({'status': 'error'})
 
@@ -354,16 +353,16 @@ def save_background_settings(request):
         user = request.user
         use_default_background = request.POST.get('use_default_background') == 'true'
         user.profile.use_default_background = use_default_background
-        
+
         if use_default_background:
             user.profile.background_image = None
             messages.success(request, 'Background set to default successfully.')
         else:
             messages.success(request, 'Custom background set successfully.')
-        
+
         user.profile.save()
         return JsonResponse({'status': 'success'})
-    
+
     messages.error(request, 'Failed to save background settings.')
     return JsonResponse({'status': 'error'})
 
@@ -377,21 +376,27 @@ def delete_task(request, task_id):
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
-
-
 @login_required
-@csrf_exempt  # Add this only if necessary, ideally handle CSRF properly
+@csrf_exempt
 def add_attachment(request, task_id):
     task = get_object_or_404(KanbanTask, id=task_id, created_by=request.user)
     if request.method == 'POST':
         files = request.FILES.getlist('attachments')
         attachments = []
         for file in files:
-            attachment = Attachment.objects.create(task=task, file=file)
-            attachments.append({'id': attachment.id, 'url': attachment.file.url, 'name': file.name})
-        
+            if file.name.lower().endswith('.pdf'):
+                images = pdf_to_images(file)
+                for image in images:
+                    attachment = Attachment.objects.create(task=task, file=image)
+                    attachments.append({'id': attachment.id, 'url': attachment.file.url, 'name': file.name})
+            else:
+                attachment = Attachment.objects.create(task=task, file=file)
+                attachments.append({'id': attachment.id, 'url': attachment.file.url, 'name': file.name})
+
         return JsonResponse({'status': 'success', 'attachments': attachments})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
 
 
 
