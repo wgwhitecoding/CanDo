@@ -1,108 +1,177 @@
-/* dark-mode.css */
-
-body {
+/* General dark mode styles */
+body.dark-mode {
     background-color: #121212;
     color: #ffffff;
 }
 
-.navbar-light {
+body.dark-mode .navbar-light {
     background-color: #1f1f1f !important;
 }
 
-.nav-link {
+body.dark-mode .navbar {
+    background-color: #1f1f1f;
+}
+
+body.dark-mode .nav-link {
     color: #ffffff !important;
 }
 
-.form-control {
-    background-color: #ffffff; 
-    color: #000000;
-    border: 1px solid #555555;
+body.dark-mode .form-control {
+    background-color: #333333; 
+    color: #ffffff; 
+    border: 1px solid #555555; 
 }
 
-.btn-outline-success {
+body.dark-mode .btn-outline-success {
     color: #ffffff;
     border-color: #ffffff;
 }
 
-.btn-outline-success:hover {
+body.dark-mode .btn-outline-success:hover {
     background-color: #ffffff;
     color: #000000;
 }
 
-.modal-content {
+body.dark-mode .modal-content {
     background-color: #333333; 
     color: #ffffff;
     background: #333 !important; 
 }
 
-.form-check-input:checked {
+body.dark-mode .form-check-input:checked {
     background-color: #0d6efd;
     border-color: #0d6efd;
 }
 
-/* Kanban columns background in dark mode */
-.kanban-column {
-    background-color: rgba(16, 15, 15, 0.8)  !important;
+body.dark-mode .kanban-column {
+    background-color: rgba(16, 15, 15, 0.8) !important;
+    border: 3px solid #555555;
 }
 
-/* Dark mode for modals */
-.modal-content {
-    background-color: #333333; /* Dark background for modal content */
-    color: #fff;
-    background: #333 !important; 
+body.dark-mode .modal-content .form-control,
+body.dark-mode .modal-content input[type="text"],
+body.dark-mode .modal-content input[type="password"],
+body.dark-mode .modal-content input[type="email"],
+body.dark-mode .modal-content input[type="number"],
+body.dark-mode .modal-content input[type="search"],
+body.dark-mode .modal-content input[type="tel"],
+body.dark-mode .modal-content input[type="url"],
+body.dark-mode .modal-content input[type="file"],
+body.dark-mode .modal-content select,
+body.dark-mode .modal-content textarea {
+    background-color: #333333; 
+    color: #ffffff; 
+    border: 1px solid #666666; 
 }
 
-/* Dark mode for input fields inside modals */
-.modal-content .form-control,
-.modal-content input[type="text"],
-.modal-content input[type="password"],
-.modal-content input[type="email"],
-.modal-content input[type="number"],
-.modal-content input[type="search"],
-.modal-content input[type="tel"],
-.modal-content input[type="url"],
-.modal-content input[type="file"],
-.modal-content select,
-.modal-content textarea {
-    background-color: #ffffff; /* White background for input fields */
-    color: #000000; /* Black text for input fields */
-    border: 1px solid #666666;
+body.dark-mode .modal-content .form-control::placeholder,
+body.dark-mode .modal-content input::placeholder,
+body.dark-mode .modal-content textarea::placeholder {
+    color: #999999; 
 }
 
-.modal-content .form-control::placeholder,
-.modal-content input::placeholder,
-.modal-content textarea::placeholder {
-    color: #999999; /* Dark placeholder text */
-}
-
-/* Specific to crispy forms */
-.crispy-form .form-group {
-    background-color: #333333; /* Dark background for crispy form groups */
+body.dark-mode .crispy-form .form-group {
+    background-color: #333333; 
     padding: 15px;
     border-radius: 5px;
 }
 
-.crispy-form .form-control {
-    background-color: #ffffff; /* White background for input fields */
-    color: #000000; /* Black text for input fields */
+body.dark-mode .crispy-form .form-control {
+    background-color: #333333; 
+    color: #ffffff; 
 }
 
-.crispy-form label {
-    color: #ffffff; /* White text for labels */
+body.dark-mode .crispy-form label {
+    color: #ffffff; 
 }
 
-/* Ensure preview text is black */
-.file-preview-container,
-.file-preview-container * {
-    color: #000000 !important; /* Black text for previews */
+body.dark-mode .file-preview-container,
+body.dark-mode .file-preview-container * {
+    color: #ffffff !important; 
 }
 
-/* Ensure kanban task titles are black */
-.kanban-task-title {
-    color: #000000 !important; /* Black text for task titles */
+body.dark-mode .kanban-task-title {
+    color: #ffffff !important; 
 }
 
+/* Ensure the dark mode CSS is loaded when dark mode is active */
+body.dark-mode .logo-light {
+    display: none;
+}
 
+body.dark-mode .logo-dark {
+    display: inline;
+}
 
+/* Dark mode styles for tasks */
+body.dark-mode .kanban-task {
+    background-color: #1e1e1e; 
+    border: 1px solid #666666 !important; 
+    color: #ffffff; 
+    padding: 10px; 
+    margin-bottom: 10px; 
+}
 
+body.dark-mode .kanban-task .kanban-task-title {
+    color: #ffffff !important; 
+}
 
+body.dark-mode .kanban-task .kanban-task-due {
+    color: #cccccc; 
+}
+
+body.dark-mode .kanban-task .kanban-task-details {
+    color: #dddddd; 
+}
+
+body.dark-mode .kanban-task .priority-indicator {
+    color: #ffffff; 
+}
+
+/* Dark mode styles for dropdowns and modals */
+body.dark-mode .dropdown-menu {
+    background-color: #333333; 
+    color: #ffffff; 
+}
+
+body.dark-mode .dropdown-item {
+    color: #ffffff; 
+}
+
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item:focus {
+    background-color: #444444; 
+    color: #ffffff; 
+}
+
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer {
+    background-color: #333333; 
+    color: #ffffff; 
+}
+
+body.dark-mode .modal-body {
+    background-color: #333333; 
+    color: #ffffff; 
+}
+
+body.dark-mode .form-check-label,
+body.dark-mode .form-label {
+    color: #ffffff;
+}
+
+body.dark-mode .btn-primary {
+    background-color: #0d6efd; 
+    border-color: #0d6efd; 
+}
+
+body.dark-mode .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3; 
+}
+
+@media (max-width: 767.98px) {
+    body.dark-mode .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    }
+}

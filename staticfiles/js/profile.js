@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Variables for various URLs
     const editProfileUrl = document.getElementById('editProfileModal').dataset.editProfileUrl;
     const changePasswordUrl = document.getElementById('changePasswordModal').dataset.changePasswordUrl;
     const deleteAccountUrl = document.getElementById('confirmDeleteModal').dataset.deleteAccountUrl;
@@ -8,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const saveBackgroundSettingsUrl = '/kanban/save_background_settings/';
     const loadingSpinner = document.getElementById('loadingSpinner');
 
-    // Function to get CSRF token
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -24,27 +22,43 @@ document.addEventListener('DOMContentLoaded', function () {
         return cookieValue;
     }
 
-    // Function to show notifications
     function showNotification(message, type) {
-        // Assuming you have a function to show notifications
-        // You can implement this function to display notifications to the user
+        const notificationContainer = document.getElementById('notificationContainer');
+        if (!notificationContainer) {
+            console.error('Notification container not found!');
+            return;
+        }
+
         const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
+        notification.className = `alert alert-${type} alert-dismissible fade show`;
+        notification.role = 'alert';
         notification.textContent = message;
-        document.body.appendChild(notification);
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn-close';
+        button.setAttribute('data-bs-dismiss', 'alert');
+        button.setAttribute('aria-label', 'Close');
+
+        notification.appendChild(button);
+        notificationContainer.appendChild(notification);
+
         setTimeout(() => {
-            notification.remove();
-        }, 3000); // Remove notification after 3 seconds
+            notification.classList.remove('show');
+            notification.classList.add('fade');
+            setTimeout(() => {
+                notification.remove();
+            }, 150);
+        }, 3000);
     }
 
-    // Delete Account
     document.getElementById('confirmDeleteAccountBtn').addEventListener('click', function () {
         loadingSpinner.style.display = 'block';
         $.ajax({
             url: deleteAccountUrl,
             type: "POST",
-            data: {
-                csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
             },
             success: function (response) {
                 loadingSpinner.style.display = 'none';
@@ -52,18 +66,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     showNotification('Account deleted successfully', 'success');
                     window.location.href = response.redirect_url;
                 } else {
-                    showNotification('Error deleting account', 'error');
+                    showNotification('Error deleting account', 'danger');
                 }
             },
             error: function (xhr, status, error) {
                 loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
-                showNotification('An error occurred while deleting the account.', 'error');
+                showNotification('An error occurred while deleting the account.', 'danger');
             }
         });
     });
 
-    // Edit Profile
     document.getElementById('editProfileForm').addEventListener('submit', function (event) {
         event.preventDefault();
         loadingSpinner.style.display = 'block';
@@ -81,6 +94,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         data: formData,
                         processData: false,
                         contentType: false,
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
                         success: function (response) {
                             loadingSpinner.style.display = 'none';
                             if (response.success) {
@@ -92,20 +108,20 @@ document.addEventListener('DOMContentLoaded', function () {
                                 $('#editProfileModal').modal('hide');
                                 showNotification('Profile updated successfully', 'success');
                             } else {
-                                showNotification('Error updating profile', 'error');
+                                showNotification('Error updating profile', 'danger');
                             }
                         },
                         error: function (xhr, status, error) {
                             loadingSpinner.style.display = 'none';
                             console.error('Error:', error);
-                            showNotification('An error occurred while updating the profile.', 'error');
+                            showNotification('An error occurred while updating the profile.', 'danger');
                         }
                     });
                 },
                 error(err) {
                     loadingSpinner.style.display = 'none';
                     console.error('Error:', err);
-                    showNotification('An error occurred while compressing the image.', 'error');
+                    showNotification('An error occurred while compressing the image.', 'danger');
                 }
             });
         } else {
@@ -115,6 +131,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: formData,
                 processData: false,
                 contentType: false,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
                 success: function (response) {
                     loadingSpinner.style.display = 'none';
                     if (response.success) {
@@ -126,78 +145,55 @@ document.addEventListener('DOMContentLoaded', function () {
                         $('#editProfileModal').modal('hide');
                         showNotification('Profile updated successfully', 'success');
                     } else {
-                        showNotification('Error updating profile', 'error');
+                        showNotification('Error updating profile', 'danger');
                     }
                 },
                 error: function (xhr, status, error) {
                     loadingSpinner.style.display = 'none';
                     console.error('Error:', error);
-                    showNotification('An error occurred while updating the profile.', 'error');
+                    showNotification('An error occurred while updating the profile.', 'danger');
                 }
             });
         }
     });
 
-    // Change Password
-    document.addEventListener('DOMContentLoaded', function () {
-        // Ensure that the URL for changing password is correctly fetched from the modal attribute
-        const changePasswordUrl = document.getElementById('changePasswordModal').dataset.changePasswordUrl;
-    
-        // Ensure the loading spinner element is accessible
-        const loadingSpinner = document.getElementById('loadingSpinner');
-    
-        // Add event listener for the change password form submission
-        document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
-            event.preventDefault();  // Prevent the default form submission
-    
-            loadingSpinner.style.display = 'block';  // Show the loading spinner
-    
-            const formData = new FormData(this);  // Create a FormData object with the form data
-    
-            $.ajax({
-                url: changePasswordUrl,  // Use the change password URL
-                type: "POST",  // Send the request as POST
-                data: formData,  // Send the form data
-                processData: false,  // Prevent jQuery from processing the data
-                contentType: false,  // Prevent jQuery from setting the content type
-    
-                success: function (response) {
-                    loadingSpinner.style.display = 'none';  // Hide the loading spinner
-    
-                    if (response.success) {
-                        $('#changePasswordModal').modal('hide');  // Hide the modal on success
-                        showNotification('Password changed successfully', 'success');  // Show success notification
-                    } else {
-                        showNotification('Error changing password', 'error');  // Show error notification
-                    }
-                },
-                error: function (xhr, status, error) {
-                    loadingSpinner.style.display = 'none';  // Hide the loading spinner on error
-                    console.error('Error:', error);  // Log the error
-                    showNotification('An error occurred while changing the password.', 'error');  // Show error notification
+    document.getElementById('changePasswordForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        loadingSpinner.style.display = 'block';
+        const formData = new FormData(this);
+        $.ajax({
+            url: changePasswordUrl,
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            success: function (response) {
+                loadingSpinner.style.display = 'none';
+                if (response.success) {
+                    $('#changePasswordModal').modal('hide');
+                    showNotification('Password changed successfully', 'success');
+                } else {
+                    showNotification('Error changing password', 'danger');
                 }
-            });
+            },
+            error: function (xhr, status, error) {
+                loadingSpinner.style.display = 'none';
+                console.error('Error:', error);
+                showNotification('An error occurred while changing the password.', 'danger');
+            }
         });
-    
-        // Function to show notifications
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        }
     });
-    
 
-    // Logout
     document.getElementById('confirmLogoutBtn').addEventListener('click', function () {
         loadingSpinner.style.display = 'block';
         $.ajax({
             url: logoutUrl,
             type: "POST",
-            data: {
-                csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
             },
             success: function (response) {
                 loadingSpinner.style.display = 'none';
@@ -205,26 +201,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     showNotification('Logged out successfully', 'success');
                     window.location.href = response.redirect_url;
                 } else {
-                    showNotification('Error logging out', 'error');
+                    showNotification('Error logging out', 'danger');
                 }
             },
             error: function (xhr, status, error) {
                 loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
-                showNotification('An error occurred while logging out.', 'error');
+                showNotification('An error occurred while logging out.', 'danger');
             }
         });
     });
 
-    // Handle background image upload and default background setting
     document.getElementById('saveSettingsBtn').addEventListener('click', function () {
         const backgroundImageInput = document.getElementById('backgroundImage');
         const useCustomBackground = document.getElementById('customBackgroundToggle').checked;
 
-        console.log('Custom Background Toggle:', useCustomBackground);
-
         if (!useCustomBackground) {
-            // Set no background
             document.body.style.backgroundImage = 'none';
             const formData = new FormData();
             formData.append('use_default_background', 'true');
@@ -238,24 +230,22 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(response => response.json())
             .then(data => {
-                console.log('Response Data:', data);
                 if (data.status === 'success') {
                     $('#settingsModal').modal('hide');
                     showNotification('Background set to default successfully', 'success');
                 } else {
-                    showNotification('Failed to set default background.', 'error');
+                    showNotification('Failed to set default background.', 'danger');
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showNotification('An error occurred while setting the default background.', 'error');
+                showNotification('An error occurred while setting the default background.', 'danger');
             });
         } else if (backgroundImageInput.files.length > 0) {
-            // Upload new background image
             loadingSpinner.style.display = 'block';
             const formData = new FormData();
             formData.append('background_image', backgroundImageInput.files[0]);
-            formData.append('use_default_background', 'false'); // Ensure it's set to custom background
+            formData.append('use_default_background', 'false');
 
             fetch(uploadBackgroundImageUrl, {
                 method: 'POST',
@@ -267,27 +257,24 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 loadingSpinner.style.display = 'none';
-                console.log('Response Data:', data);
                 if (data.status === 'success') {
                     document.body.style.backgroundImage = `url('${data.image_url}')`;
                     $('#settingsModal').modal('hide');
                     showNotification('Background image updated successfully', 'success');
                 } else {
-                    showNotification('Failed to upload background image.', 'error');
+                    showNotification('Failed to upload background image.', 'danger');
                 }
             })
             .catch(error => {
                 loadingSpinner.style.display = 'none';
                 console.error('Error:', error);
-                showNotification('An error occurred while uploading the background image.', 'error');
+                showNotification('An error occurred while uploading the background image.', 'danger');
             });
         } else {
-            // No custom background selected and no new file provided
-            showNotification('Please select a custom background image or disable the custom background toggle.', 'error');
+            showNotification('Please select a custom background image or disable the custom background toggle.', 'danger');
         }
     });
 });
-
 
 
 

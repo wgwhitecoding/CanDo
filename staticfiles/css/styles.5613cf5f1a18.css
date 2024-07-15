@@ -69,11 +69,11 @@ body {
 }
 
 .dropdown-item {
-    color: #000; 
+    color: #000; /* Black text for dropdown items */
 }
 
 .dropdown-item:hover {
-    background-color: #f0f0f0; 
+    background-color: #f0f0f0; /* Light grey hover background */
     color: black;
 }
 
@@ -81,7 +81,7 @@ body {
 .navbar-avatar, .profile-avatar {
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #fff;
+    border: 2px solid #fff; /* White border around avatars */
 }
 
 .navbar-avatar {
@@ -145,7 +145,7 @@ body {
 }
 
 .priority-done {
-    background: url("/static/images/apple-touch-icon.png") no-repeat center center;
+    background: url("/static/images/apple-touch-icon.0732a30e8b7c.png") no-repeat center center;
     background-size: contain;
     width: 20px;
     height: 20px;
@@ -241,3 +241,4 @@ body {
         width: 100%;
     }
 }
+

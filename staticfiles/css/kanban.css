@@ -73,7 +73,7 @@ body {
     align-items: center;
     justify-content: space-between;
     font-weight: bold;
-    color: #000; /* Ensure the text color is visible */
+    color: #000; 
 }
 
 .priority-indicator {
@@ -272,53 +272,7 @@ body {
 }
 
 .button-container .btn {
-    width: 200px; /* Adjust the width as needed */
-    height: auto; /* Ensure the height does not increase */
-    font-size: 1em; /* Maintain a reasonable font size */
-}
-
-
-
-
-/* Media query for small devices */
-@media (max-width: 600px) {
-    .kanban-board-wrapper {
-        max-width: 100%;
-        overflow-x: hidden;
-        position: relative;
-    }
-
-    .kanban-board {
-        display: flex;
-        flex-wrap: nowrap; /* Ensure columns stay in a row */
-        width: fit-content; /* Adjust width as per content */
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .kanban-column {
-        flex: 0 0 auto; /* Allow columns to shrink as needed */
-        max-width: calc(100vw - 20px); /* Adjust to fit screen width minus margin */
-        min-width: calc(100vw - 20px); /* Adjust to fit screen width minus margin */
-        margin-right: 10px; /* Adjust margin between columns */
-    }
-
-    .scroll-button {
-        display: block;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #333;
-        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background for visibility */
-        border-radius: 50%;
-        z-index: 10;
-        padding: 5px;
-    }
-
-    #scroll-left {
-        left: 10px;
-    }
-
-    #scroll-right {
-        right: 10px;
-    }
+    width: 200px; 
+    height: auto; 
+    font-size: 1em; 
 }

@@ -20,14 +20,15 @@
         {% for task in tasks %}
             <li class="list-group-item">
                 <div class="kanban-task" data-task-id="{{ task.id }}">
-                    <div class="kanban-task-title">
+                    <div class="kanban-task-title d-flex justify-content-between align-items-center">
+                        <span>{{ task.title }}</span>
                         <span class="priority-indicator 
                             {% if task.priority == 'Low' %}priority-low
                             {% elif task.priority == 'Medium' %}priority-medium
                             {% elif task.priority == 'High' %}priority-high
+                            {% elif task.priority == 'Done' %}priority-done
                             {% endif %}
                         "></span>
-                        {{ task.title }}
                     </div>
                     <div class="kanban-task-due">{{ task.due_date }}</div>
                     <div class="kanban-task-details" style="display: none;">
@@ -53,14 +54,15 @@
         {% for history in search_history %}
             <li class="list-group-item">
                 <div class="kanban-task" data-task-id="{{ history.task.id }}">
-                    <div class="kanban-task-title">
+                    <div class="kanban-task-title d-flex justify-content-between align-items-center">
+                        <span>{{ history.task.title }}</span>
                         <span class="priority-indicator 
                             {% if history.task.priority == 'Low' %}priority-low
                             {% elif history.task.priority == 'Medium' %}priority-medium
                             {% elif history.task.priority == 'High' %}priority-high
+                            {% elif history.task.priority == 'Done' %}priority-done
                             {% endif %}
                         "></span>
-                        {{ history.task.title }}
                     </div>
                     <div class="kanban-task-due">{{ history.task.due_date }}</div>
                     <div class="kanban-task-details" style="display: none;">
@@ -102,8 +104,6 @@
 {% block extra_js %}
 <script src="{% static 'js/search.js' %}"></script>
 {% endblock %}
-
-
 
 
 
