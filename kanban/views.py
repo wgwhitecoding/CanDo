@@ -293,20 +293,18 @@ def edit_profile_api(request):
 
 
 @login_required
-@csrf_exempt
+@csrf_exempt  
 def delete_account(request):
     if request.method == 'POST':
         try:
             user = request.user
-            try:
-                user.profile.delete()
-            except Profile.DoesNotExist:
-                pass
-            user.delete()
+            user.delete()  
+            logout(request) 
             return JsonResponse({'success': True, 'redirect_url': '/accounts/login/'})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
 
 
 

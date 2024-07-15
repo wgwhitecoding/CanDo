@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set default profile image if the current profile image is not set
     const profileImageElements = document.querySelectorAll('#profileDropdown img, #profileModal img');
     profileImageElements.forEach(img => {
-        if (!img.src || img.src.endsWith('avatar.png')) {
+        if (!img.src || img.src.includes('avatar.png')) {
             img.src = defaultProfileImageUrl;
         }
     });
@@ -285,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
 
 
 
