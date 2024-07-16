@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(notification);
         setTimeout(() => {
             notification.remove();
-        }, 3000); // Remove notification after 3 seconds
+        }, 3000); 
     }
 
     // Event listener for showing the task modal

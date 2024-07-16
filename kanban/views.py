@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from .models import KanbanTask, Column, Board, SearchHistory, Attachment, Profile
 from .forms import KanbanTaskForm, ColumnForm, AttachmentForm, UserForm, ProfileForm
-from .utils import pdf_to_images  # Ensure this import is correct
+from .utils import pdf_to_images
 import json
 
 @login_required
@@ -395,16 +395,3 @@ def add_attachment(request, task_id):
 
         return JsonResponse({'status': 'success', 'attachments': attachments})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
-
-
-
-
-
-
-
-
-
-
-
-

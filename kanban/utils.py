@@ -4,6 +4,7 @@ from pdf2image import convert_from_path
 from cloudinary.uploader import upload
 from cloudinary.utils import cloudinary_url
 
+
 def pdf_to_images(pdf_file):
     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_pdf:
         temp_pdf.write(pdf_file.read())
@@ -12,7 +13,9 @@ def pdf_to_images(pdf_file):
 
     uploaded_images = []
     for image in images:
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_img:
+        with tempfile.NamedTemporaryFile(
+            delete=False, suffix='.png'
+        ) as temp_img:
             image.save(temp_img.name, 'PNG')
             response = upload(temp_img.name, folder='pdf_images')
             uploaded_images.append(response['url'])
@@ -21,6 +24,4 @@ def pdf_to_images(pdf_file):
     os.unlink(temp_pdf.name)
 
     return uploaded_images
-
-
 

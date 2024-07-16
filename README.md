@@ -1,5 +1,5 @@
 # CanDo
-![Example Image](static/logo/darkmode.png)
+![Example Image](static/wireframes/responsive.jpg)
 
 ## Introduction:
 Welcome to the Kanban Board Project, a task management application designed to streamline project workflows and enhance productivity. Developed as part of the Code Institute's Full-Stack Developer course, this project demonstrates the application of Django and Bootstrap frameworks, focusing on database manipulation and CRUD functionality.
@@ -369,11 +369,13 @@ The wireframes of the Kanban Board project outline the basic structure and layou
 
 
 - **Login Page**:
+
   ![Login Page](static/wireframes/loginpage.png)
 - **Signup Page**:
+
   ![Signup Page](static/wireframes/singuppage.png)
 - **Kanban Page**:
-  ![Kanban Page](static/wireframes/kanban%20page.png)
+  ![Kanban Page](static/wireframes/kanbanpage.png)
 - **Profile Page**:
   ![Profile Page](static/wireframes/profilepage.png)
 - **Settings Page**:
