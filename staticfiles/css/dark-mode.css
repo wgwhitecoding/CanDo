@@ -170,6 +170,33 @@ body.dark-mode .btn-primary:hover {
     border-color: #0056b3; 
 }
 
+body.dark-mode .move-task-dropdown-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+body.dark-mode .move-task-dropdown {
+    width: 70%;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #666666;
+    font-size: 0.9em;
+    background-color: #333333;
+    color: #ffffff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    appearance: none; 
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23ccc" d="M2 0L0 2h4zM2 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 8px 10px;
+}
+
+body.dark-mode .move-task-dropdown:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
 @media (max-width: 767.98px) {
     body.dark-mode .navbar-toggler {
         border-color: rgba(255, 255, 255, 0.1);

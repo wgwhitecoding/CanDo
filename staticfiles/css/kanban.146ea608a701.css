@@ -99,7 +99,7 @@ body {
 }
 
 .priority-done {
-    background: url("/static/images/apple-touch-icon.png") no-repeat center center;
+    background: url("/static/images/apple-touch-icon.0732a30e8b7c.png") no-repeat center center;
     background-size: contain;
     width: 20px;
     height: 20px; 
@@ -329,25 +329,4 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 9999;
-}
-
-@media (max-width: 600px) {
-    .modal-content {
-        width: 90%;
-        margin: auto;
-    }
-
-    .navbar-brand, .navbar-toggler {
-        display: flex;
-        align-items: center;
-    }
-
-    .navbar-avatar {
-        margin-left: 10px;
-    }
-
-
-    .kanban-column {
-        height: 70vh; /* Adjusted height for small devices */
-    }
 }

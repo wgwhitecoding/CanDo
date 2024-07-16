@@ -28,27 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const columns = document.querySelectorAll('.kanban-column');
     const totalColumns = columns.length;
 
-    // Function to update transform for mobile swipe
-    function updateTransform() {
-        const transformValue = -currentColumn * 100;
-        board.style.transform = `translateX(${transformValue}%)`;
-    }
-
-    // Event listeners for mobile swipe buttons
-    document.getElementById('scroll-left').addEventListener('click', function() {
-        if (currentColumn > 0) {
-            currentColumn--;
-            updateTransform();
-        }
-    });
-
-    document.getElementById('scroll-right').addEventListener('click', function() {
-        if (currentColumn < totalColumns - 1) {
-            currentColumn++;
-            updateTransform();
-        }
-    });
-
     // Function to show notifications
     function showNotification(message, type = 'success') {
         const notification = document.createElement('div');
@@ -64,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     createTaskBtn.addEventListener('click', function() {
         taskModal.style.display = 'flex';
         taskForm.reset();
-        document.getElementById('existing-file-preview').innerHTML = ''; // Clear existing file previews
+        document.getElementById('existing-file-preview').innerHTML = '';
         document.getElementById('file-preview').innerHTML = ''; 
         editingTaskID = null;
     });
@@ -154,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.status === 'success') {
                     closeAllModals();
                     showNotification('Column created successfully', 'success');
-                    addColumnToBoard(data.column); // Add the new column to the board
+                    addColumnToBoard(data.column); 
                 } else {
                     showNotification('Error creating column', 'error');
                 }
@@ -313,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             attachmentDiv.innerHTML = `
                                 <a href="${attachment.url}" target="_blank">
                                     <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
-                                    ${attachment.public_id}
+                                    ${attachment.url.split('/').pop()}
                                 </a>
                                 <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
                         } else {
@@ -652,7 +631,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             attachmentDiv.innerHTML = `
                                 <a href="${attachment.url}" target="_blank">
                                     <img src="{% static 'images/pdf-icon.png' %}" alt="PDF" class="attachment-thumbnail">
-                                    ${attachment.public_id}
+                                    ${attachment.url.split('/').pop()}
                                 </a>
                                 <button type="button" class="btn btn-danger remove-attachment-btn" data-attachment-id="${attachment.id}">×</button>`;
                         } else {
@@ -843,8 +822,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-
-
     // Function to get the priority class for tasks
     function getPriorityClass(priority) {
         switch (priority) {
@@ -862,7 +839,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 $(document).ready(function() {
     // Event listener for "Move" button click
     $('.move-task-btn').click(function() {
@@ -875,6 +851,7 @@ $(document).ready(function() {
         moveDropdown.show();
     });
 });
+
 
 
 

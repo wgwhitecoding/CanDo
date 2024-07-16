@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Lato', Arial, sans-serif;
 }
 
 .kanban-container {
@@ -41,6 +41,7 @@ body {
 }
 
 .kanban-column-header {
+    font-family: 'Lato', Arial, sans-serif;
     font-weight: bold;
     margin-bottom: 10px;
     text-align: center;
@@ -60,6 +61,7 @@ body {
 }
 
 .kanban-task {
+    font-family: 'Lato', Arial, sans-serif;
     background-color: #fff;
     padding: 10px;
     border-radius: 5px;
@@ -72,6 +74,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    font-family: 'Lato', Arial, sans-serif;
     font-weight: bold;
     color: #000; 
 }
@@ -104,11 +107,13 @@ body {
 }
 
 .kanban-task-due {
+    font-family: 'Lato', Arial, sans-serif;
     font-size: 0.8em;
     color: #888;
 }
 
 .modal {
+    font-family: 'Lato', Arial, sans-serif;
     display: none;
     position: fixed;
     z-index: 1050;
@@ -123,6 +128,7 @@ body {
 }
 
 .modal-content {
+    font-family: 'Lato', Arial, sans-serif;
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
@@ -135,12 +141,14 @@ body {
 }
 
 .close-btn {
+    font-family: 'Lato', Arial, sans-serif;
     float: right;
     font-size: 1.2em;
     cursor: pointer;
 }
 
 .scroll-button {
+    font-family: 'Lato', Arial, sans-serif;
     cursor: pointer;
     font-size: 2em;
     background: none;
@@ -212,6 +220,18 @@ body {
     border-radius: 5px;
 }
 
+/* Attachments container */
+.attachments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.attachment {
+    position: relative;
+    display: inline-block;
+}
+
 /* Hide remove button initially */
 .attachment .remove-attachment-btn {
     display: none;
@@ -222,10 +242,6 @@ body {
     display: inline-block;
     margin-top: 5px;
     font-size: 0.8em;
-}
-
-.attachment .remove-attachment-btn {
-    display: none;
 }
 
 /* Delete confirmation */
@@ -254,6 +270,9 @@ body {
 }
 
 .file-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
     margin-top: 10px;
 }
 
@@ -264,6 +283,7 @@ body {
     border-radius: 5px;
     margin-right: 5px;
 }
+
 .button-container {
     display: flex;
     justify-content: center;
@@ -275,4 +295,59 @@ body {
     width: 200px; 
     height: auto; 
     font-size: 1em; 
+}
+
+.move-task-dropdown-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.move-task-dropdown {
+    width: 70%;  
+    padding: 5px;  
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;  
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    appearance: none; 
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23ccc" d="M2 0L0 2h4zM2 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 8px 10px;
+}
+
+.move-task-dropdown:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+}
+
+#loadingSpinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        width: 90%;
+        margin: auto;
+    }
+
+    .navbar-brand, .navbar-toggler {
+        display: flex;
+        align-items: center;
+    }
+
+    .navbar-avatar {
+        margin-left: 10px;
+    }
+
+
+    .kanban-column {
+        height: 70vh; /* Adjusted height for small devices */
+    }
 }
