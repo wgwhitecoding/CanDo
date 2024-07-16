@@ -1,6 +1,6 @@
 # Testing
 
-This is the TESTING file for the [FreeFido](https://freefido.herokuapp.com/) website.
+This is the TESTING file for the [CanDo](https://cando-ci-6dea2075e664.herokuapp.com/accounts/login/) website.
 
 Return back to the [README.md](README.md) file.
 
@@ -76,16 +76,16 @@ Return back to the [README.md](README.md) file.
 
 ### CSS Validation 
 
-[W3C CSS Validator](https://jigsaw.w3.org/css-validator/) was used to validate my CSS file. External CSS for Bootstrap, provided by [CDN](https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css) was not tested. Warnings were present, these were related to my use of variables for colors and fonts in my CSS file.
+[W3C CSS Validator](https://jigsaw.w3.org/css-validator/) was used to validate my CSS file.
 
 
 | File | W3C URL | Screenshot | Notes |
 | --- | --- | --- | --- |
-| darkmode.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/darkmodejs.png)  | Pass: No Errors |
-| global.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/kanban_custom.png)  | Pass: No Errors |
-| kanban.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/kanbanjs.png)  | Pass: no Errors |
-| login.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/notificationsjs.png)  | |
-| styles.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/modelspy.png)  | Pass: No Errors |
+| darkmode.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/darkmode.png)  | Pass: No Errors |
+| global.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/globalcc.png)  | Pass: No Errors |
+| kanban.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/kanbancss.png)  | Pass: no Errors |
+| login.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/logincss.png)  | |
+| styles.css | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/stylescss.png)  | Pass: No Errors |
   
 <hr> 
    
@@ -165,52 +165,6 @@ Freefido was tested on the following browsers, new users were created, old users
 | Safari  | Scrollbars following Safari styling | No issue |
 
 <hr>
-
-### Testing User Stories
-
-User Stories are documented in the FreeFido [GitHub Projects Board](https://github.com/users/amylour/projects/4). User Stories are numbered, with Acceptance Criteria and Tasks detailed within. Testing was carried out on Dev Tools for desktop/tablet/mobile, by creating multiple accounts for test users: FidoTest1, FidoTest2, FidoTest3 etc and following through by ensuring that the Acceptance Criteria were met. All features were tested to ensure that they provided the user with the expected output and action.
-
-
-| User Story                 | Acceptance Criteria Met?  | Tested | Response     | Pass/Fail | Fix     |
-|----------------------------|---------------------------|--------|--------------|-----------|---------|
-| #1 - Home/About Template   | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #2 - Navigation            | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #3 - Footer                | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #4 - Login Page            | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #5 - SignUp/Register Page  | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #6 - Profile SetUp         | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #7 - Make a Booking Page   | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #8 - Create a Booking Page | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #9 - Visit Us Page         | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #10 - Logout Page          | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #11 - Booking Confirmation Email | Feature not included in this version - 'Should Have' item | | | | |
-| #12 - Edit User Profile    | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #13 - Delete User Profile  | Feature left in backlog as currently unnecessary, User can delete individual items and Admin can delete complete account, future version will include delete account | | | | |
-| #14 - Edit Booking         | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #15 - Delete Booking       | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #16 - Error Pages          | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #17 - Articles             | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #18 - Site Pagination      | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #19 - View Likes           | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #20 - View Articles        | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #21 - Open Article         | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #22 - Like/Unlike Article  | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #23 - Comment on a Post    | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #24 - Gallery Page         | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #24(mistake-allocated #24 twice) | Alert Messages | Yes   | No issues    | Pass      |    -    |
-| #25 - Create Article       | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #26 - Delete Article       | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #27 - Edit Article         | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #28 - Search Function      | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #29 - Delete Comment       | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #30 - User Feedback for max Booking Allowance | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #31 - Upload Image to Gallery Wall | Yes                       | Yes    | No issues    | Pass      |    -    |
-| #32 - Add Review           | Feature not included in this version - 'Could Have' item | | | | |
-| #33 - Edit Review          | Feature not included in this version - 'Could Have' item | | | | |
-| #34 - Delete Review        | Feature not included in this version - 'Could Have' item | | | | |
-| #35 - Delete Photo         | Yes                       | Yes    | No issues    | Pass      |    -    |
-
-<hr>
   
 ### Dev Tools/Real World Device Testing
 
@@ -255,13 +209,8 @@ As this was my first Django/Database project, most of the bugs that I encountere
 
 ### Known Bugs
 
-- An error is logged in the console for the deployed FreeFido site:
-   'alert.js:21 Uncaught TypeError: Cannot read properties of null (reading 'defaultPrevented')
-    at Q.close (alert.js:21:22)
-    at (index):337:19'
-    
-From reading through the linked lines of JS, it seems that the error stems from an issue with calling 'EVENT_CLOSE', originating from the Bootstrap library. Other members of my group experienced the same error in their console. There were no issues with closing the modals in my features and their functionality. I will pursue this issue in future developments as I believe it may stem from a third-party library clash.
-
-- The scrollbar redesign did not translate over to Mozilla and Safari browsers, further learning about webkits is needed to push the design across all browsers.
-
-There are currently no other known bugs, if you find one then please do let me know :smile:
+- Attachments show are succefully added but do not appaer till page is refreshed 
+- Notifications for loggin page when sign in / sign up with wrong user are password are not working i am continuning to work on it after submittion to correct this.
+- Sometimes when pressing create task or collum functionality does not work till user refreshs page rarely happens but it does.
+- I have tested it on mobile and it works fine but the css is not as it shows on dev tools... i know how to fix time and i have but when i do it looks bad on dev-tools, not sure how it will be tested s i left it so it look good on dev-tools its a minor css fix . 
+- Able to uploard images and pdfs but no other file types, cloudinary does not allow pdf for free users i installed pdf2image and usered utils to hold and convert pdfs to jpegs before sending them to clodinary 

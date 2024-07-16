@@ -9,9 +9,9 @@ This Kanban Board allows users to create, manage, and prioritize tasks within cu
 This project is intended for educational purposes only, showcasing the integration of key web development technologies and best practices.
 
 
-View live site here : Cando ....dpjioefhief
+View live site here : [Cando](https://cando-ci-6dea2075e664.herokuapp.com/accounts/login/)
 
-For Admin access with relevant sign-in information: Cando Admin vjhefehjwf
+For Admin access with relevant sign-in information: [Cando Admin](https://cando-ci-6dea2075e664.herokuapp.com/admin/login/?next=/admin/)
 
 
 ## Table of Content
@@ -52,7 +52,10 @@ For Admin access with relevant sign-in information: Cando Admin vjhefehjwf
     - [User View - Registered/Unregistered](#user-view---registeredunregistered)
     - [CRUD Functionality](#crud-functionality)
     - [Feature Showcase](#feature-showcase)
+    - [Responsiveness](#responsiveness) 
+    - [Django Admin Interface](#responsiveness)
     - [Future Features](#future-features)
+   
 - [Technologies \& Languages Used](#technologies--languages-used)
   - [Libraries \& Frameworks](#libraries--frameworks)
   - [Tools \& Programs](#tools--programs)
@@ -61,7 +64,6 @@ For Admin access with relevant sign-in information: Cando Admin vjhefehjwf
   - [Connecting to GitHub](#connecting-to-github)
   - [Django Project Setup](#django-project-setup)
   - [Cloudinary API](#cloudinary-api)
-  - [Elephant SQL](#elephant-sql)
   - [Heroku deployment](#heroku-deployment)
   - [Clone project](#clone-project)
   - [Fork Project](#fork-project)
@@ -365,7 +367,7 @@ The structural plane of the Kanban Board project is designed to ensure all compo
 
 #### Wireframes
 
-The wireframes of the Kanban Board project outline the basic structure and layout of the application. They provide a visual guide for the placement of elements such as navigation, columns, tasks, and modals. The wireframes ensure that the user interface is intuitive and easy to navigate, providing a blueprint for the final design.
+The wireframes of the Kanban Board project outline the basic structure and layout of the application. They provide a visual guide for the placement of elements such as navigation, columns, tasks, and modals. The wireframes ensure that the user interface is intuitive and easy to navigate, providing a blueprint for the final design. the wireframs were created using Balsamiq.
 
 
 - **Login Page**:
@@ -375,12 +377,16 @@ The wireframes of the Kanban Board project outline the basic structure and layou
 
   ![Signup Page](static/wireframes/singuppage.png)
 - **Kanban Page**:
+
   ![Kanban Page](static/wireframes/kanbanpage.png)
 - **Profile Page**:
+
   ![Profile Page](static/wireframes/profilepage.png)
 - **Settings Page**:
+
   ![Settings Page](static/wireframes/settings.png)
 - **Mobile View**:
+
   ![Mobile View](static/wireframes/mobile.png)
 
 #### Base HTML Template
@@ -397,14 +403,28 @@ The navigation bar is a crucial part of the structure, providing easy access to 
 #### Modals
 
 Several modals are implemented throughout the application to enhance user interaction without navigating away from the current page. These include:
-- **Profile Modal**: Allows users to view and edit their profile information.
+- **Profile Modal**: Allows users to view and edit their profile information and has option to delete account.
+ 
+![User profile](static/readme/userprofile.png)
+-**Edit Profile Modal** : Provides options for user to add name email bio and change password.
+
+![Edit User profile](static/readme/edituser.png)
 - **Settings Modal**: Provides options for toggling dark mode and uploading custom background images.
+
+![Setting](static/readme/settings.png)
 - **Logout Confirmation Modal**: Confirms user intent to logout.
+
+![Logout](static/readme/logout.png)
 - **Task Modal**: For creating and editing tasks.
+
+![Task](static/readme/task.png)
 - **Column Modal**: For creating and editing columns.
+
+![column](static/readme/column.png)
+
 - **Delete Confirmation Modal**: Ensures users confirm before deleting tasks or columns.
 
-![Modals](static/readme/modals.png)
+![Delete](static/readme/delete.png)
 
 #### Kanban Board Interface
 
@@ -421,7 +441,7 @@ The application is designed to be fully responsive, ensuring accessibility on mo
 User authentication is handled to secure access to the application. Users can log in, register, and manage their profiles. The profile management includes updating personal information, changing passwords, and setting profile pictures and custom background images.
 
 - **Login Page**:
-  ![Sign In](static/readme/signin.png)
+![Sign In](static/readme/signin.png)
 
 #### Search Functionality
 
@@ -522,51 +542,99 @@ The feature showcase highlights the main functionalities of the Kanban Board pro
 The Kanban Board Interface allows users to create, manage, and organize tasks within columns. Users can visually track the progress of tasks by moving them between columns.
 
 ##### kanban
-- ![Kanban Board](static/readme/kanban1.png)
+![Kanban Board](static/readme/kanban1.png)
 
 #### 2. User Profiles
 
 Users can create and manage their profiles, including updating personal information, uploading profile images, and setting custom backgrounds.
 ##### Profile
-- ![Profile Page](static/readme/profilepage.png)
+![Profile Page](static/readme/profilepage.png)
 ##### Edit Profile
-- ![Profile Edit](static/readme/editprofile.png)
+![Profile Edit](static/readme/editprofile.png)
 
 #### 3. Task Management
 
 Users can create, edit, delete, and prioritize tasks within the Kanban board. Each task can have a title, description, due date, priority level, and attachments.
 
 ##### Task Creation
-- ![Task Creation](static/readme/creation.png)
+![Task Creation](static/readme/creation.png)
 ##### Attachments
-- ![Task Attachments](static/readme/attach.png)
+![Task Attachments](static/readme/attach.png)
 
 #### 4. Responsive Design
 
 The application is fully responsive, ensuring usability across mobile, tablet, and desktop devices. Users can access the Kanban board and manage tasks from any device.
 
+# Responsiveness 
 
-- ![Mobile View](static/wireframes/)
-- ![Tablet View](static/wireframes/tablet.png) 
+Our Kanban Board project is designed to offer a seamless and intuitive user experience across all device types. Below is an overview of the responsive design considerations for various devices:
 
+**Mobile Devices**
+On mobile devices, the Kanban Board is optimized for smaller screens, ensuring that columns are fully visible without horizontal scrolling. The layout adapts to a single-column view, providing a clear and accessible interface for users on the go.
+
+![Moble](static/readme/mobile1.png)
+
+**Desktops**
+On desktop devices, the Kanban Board takes full advantage of larger screens, displaying all columns in a spacious layout. This ensures that users have a complete overview of their tasks and projects, facilitating efficient workflow management.
+
+**Tablets**
+The tablet view enhances the user experience by maintaining a balance between visibility and accessibility. Columns are displayed side-by-side with a responsive design that adapts to different orientations, allowing for easy navigation and interaction.
+
+![Tablet](static/readme/tablet.png) 
+
+**Laptops**
+For laptop users, the Kanban Board offers a comprehensive view with multiple columns visible simultaneously. The design maximizes screen real estate, providing a detailed and organized workspace that enhances productivity.
 
 #### 5. Dark Mode
 
 A dark mode feature allows users to switch between light and dark themes based on their preferences, enhancing the user experience in different lighting conditions.
 
 ##### Light Mode
-- ![Light Mode](static/readme/kanbanview.png)
+![Light Mode](static/readme/kanbanview.png)
 ##### Dark Mode
-- ![Dark Mode](static/readme/darkmode.png)
+![Dark Mode](static/readme/darkmode.png)
 
 #### 6. Search Functionality
 
 Users can search for tasks and maintain a search history for quick retrieval. The search bar is prominently placed in the navigation for easy access.
 
 #### Seach Bar
-- ![Search Bar](static/readme/seach.png) 
+![Search Bar](static/readme/seach.png) 
 #### Search Results 
-- ![Search Results](static/readme/seachresults.png)
+![Search Results](static/readme/seachresults.png)
+
+# Django Admin Interface
+
+The Django Admin interface for our Kanban Board project provides a powerful and user-friendly platform for managing the application's data and user accounts. Below is an overview of the various sections and functionalities available within the admin interface:
+
+![Admin](static/readme/admind.png)
+
+## Accounts
+- **Email addresses**: Manage and update email addresses associated with user accounts.
+
+## Authentication and Authorization
+- **Groups**: Organize users into groups and manage permissions.
+- **Users**: Create, update, and delete user accounts, as well as assign permissions and groups.
+
+## Kanban
+- **Boards**: Manage Kanban boards, including creating new boards and updating existing ones.
+- **Columns**: Organize tasks within boards by managing columns. Add, update, and delete columns as needed.
+- **Kanban tasks**: Create, update, and delete tasks within the Kanban boards. Manage task details, priorities, and deadlines.
+- **Search histories**: Review and manage search histories to monitor user activity and search patterns.
+
+## Sites
+- **Sites**: Manage different sites and domains that are associated with your project.
+
+## Social Accounts
+- **Social accounts**: Manage user accounts authenticated via social platforms.
+- **Social application tokens**: Handle tokens associated with social authentication.
+- **Social applications**: Configure and manage social applications for third-party authentication.
+
+## Recent Actions
+The Recent Actions panel provides a quick overview of the latest actions performed within the admin interface. This helps administrators track changes and monitor user activities effectively.
+
+By leveraging the Django Admin interface, administrators can efficiently manage all aspects of the Kanban Board application, ensuring a smooth and organized workflow.
+
 
 ### Future Features
 
@@ -723,3 +791,135 @@ Other tools and programs that would have been beneficial include:
 
 # Deployment
   
+## Connecting to GitHub  
+
+To begin this project from scratch, you must first create a new GitHub repository using the [Code Institute's Template](https://github.com/Code-Institute-Org/ci-full-template). This template provides the relevant tools to get you started. To use this template:
+
+1. Log in to [GitHub](https://github.com/) or create a new account.
+2. Navigate to the above CI Full Template.
+3. Click '**Use this template**' -> '**Create a new repository**'.
+4. Choose a new repository name and click '**Create repository from template**'.
+5. In your new repository space, click the purple CodeAnywhere (if this is your IDE of choice) button to generate a new workspace.
+
+## Django Project Setup
+
+1. Install Django and supporting libraries: 
+   
+- ```pip3 install 'django<4' gunicorn```
+- ```pip3 install dj_database_url psycopg2```
+- ```pip3 install dj3-cloudinary-storage```  
+  
+2. Once you have installed any relevant dependencies or libraries, such as the ones listed above, it is important to create a **requirements.txt** file and add all installed libraries to it with the ```pip3 freeze --local > requirements.txt``` command in the terminal.  
+3. Create a new Django project in the terminal ```django-admin startproject freefido .```
+4. Create a new app eg. ```python3 mangage.py startapp booking```
+5. Add this to list of **INSTALLED_APPS** in **settings.py** - 'booking',
+6. Create a superuser for the project to allow Admin access and enter credentials: ```python3 manage.py createsuperuser```
+7. Migrate the changes with commands: ```python3 manage.py migrate```
+8. An **env.py** file must be created to store all protected data such as the **DATABASE_URL** and **SECRET_KEY**. These may be called upon in your project's **settings.py** file along with your Database configurations. The **env.py** file must be added to your **gitignore** file so that your important, protected information is not pushed to public viewing on GitHub. For adding to **env.py**:
+
+- ```import os```
+- ```os.environ["DATABASE_URL"]="<copiedURLfromElephantSQL>"```
+- ```os.environ["SECRET_KEY"]="my_super^secret@key"```
+  
+For adding to **settings.py**:
+
+- ```import os```
+- ```import dj_database_url```
+- ```if os.path.exists("env.py"):```
+- ```import env```
+- ```SECRET_KEY = os.environ.get('SECRET_KEY')``` (actual key hidden within env.py)  
+
+9. Replace **DATABASES** with:
+
+```
+DATABASES = {
+    'default': dj_database_url.parse(os.environ.get("DATABASE_URL"))
+  }
+```
+
+10. Set up the templates directory in **settings.py**:
+- Under ``BASE_DIR`` enter ``TEMPLATES_DIR = os.path.join(BASE_DIR, ‘templates’)``
+- Update ``TEMPLATES = 'DIRS': [TEMPLATES_DIR]`` with:
+
+```
+os.path.join(BASE_DIR, 'templates'),
+os.path.join(BASE_DIR, 'templates', 'allauth')
+```
+
+- Create the media, static and templates directories in top level of project file in IDE workspace.
+
+11. A **Procfile** must be created within the project repo for Heroku deployment with the following placed within it: ```web: gunicorn freefido.wsgi```
+12. Make the necessary migrations again.
+
+## Cloudinary API 
+
+Cloudinary provides a cloud hosting solution for media storage. All users uploaded images in the FreeFid project are hosted here.
+
+Set up a new account at [Cloudinary](https://cloudinary.com/) and add your Cloudinary API environment variable to your **env.py** and Heroku Config Vars.
+In your project workspace: 
+
+- Add Cloudinary libraries to INSTALLED_APPS in settings.py 
+- In the order: 
+```
+   'cloudinary_storage',  
+   'django.contrib.staticfiles',  
+   'cloudinary',
+```
+- Add to **env.py** and link up with **settings.py**: ```os.environ["CLOUDINARY_URL"]="cloudinary://...."``` 
+- Set Cloudinary as storage for media and static files in settings.py:
+- ```STATIC_URL = '/static/'```
+```
+  STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'  
+  STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]  
+  STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')‌  
+  MEDIA_URL = '/media/'  
+  DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+```
+
+## Heroku deployment
+
+To start the deployment process , please follow the below steps:
+
+1. Log in to [Heroku](https://id.heroku.com/login) or create an account if you are a new user.
+2. Once logged in, in the Heroku Dashboard, navigate to the '**New**' button in the top, right corner, and select '**Create New App**'.
+3. Enter an app name and choose your region. Click '**Create App**'. 
+4. In the Deploy tab, click on the '**Settings**', reach the '**Config Vars**' section and click on '**Reveal Config Vars**'. Here you will enter KEY:VALUE pairs for the app to run successfully. The KEY:VALUE pairs that you will need are your: 
+   
+   - **CLOUDINARY_URL**: **cloudinary://....** 
+   - **DATABASE_URL**:**postgres://...** 
+   - **DISABLE_COLLECTSTATIC** of value '1' (N.B Remove this Config Var before deployment),
+   -  **SECRET_KEY** and value  
+  
+5. Add the Heroku host name into **ALLOWED_HOSTS** in your projects **settings.py file** -> ```['herokuappname', ‘localhost’, ‘8000 port url’].```
+6. Once you are sure that you have set up the required files including your requirements.txt and Procfile, you have ensured that **DEBUG=False**, save your project, add the files, commit for initial deployment and push the data to GitHub.
+7. Go to the '**Deploy**' tab and choose GitHub as the Deployment method.
+8. Search for the repository name, select the branch that you would like to build from, and connect it via the '**Connect**' button.
+9.  Choose from '**Automatic**' or '**Manual**' deployment options, I chose the 'Manual' deployment method. Click '**Deploy Branch**'.
+10. Once the waiting period for the app to build has finished, click the '**View**' link to bring you to your newly deployed site. If you receive any errors, Heroku will display a reason in the app build log for you to investigate. **DISABLE_COLLECTSTATIC**  may be removed from the Config Vars once you have saved and pushed an image within your project, as can **PORT:8000**.
+
+
+## Clone project
+
+A local clone of this repository can be made on GitHub. Please follow the below steps:
+
+1. Navigate to GitHub and log in.
+2. The [Cando Repository](https://github.com/wgwhitecoding/CanDo-CiFinal) can be found at this location.
+3. Above the repository file section, locate the '**Code**' button.
+4. Click on this button and choose your clone method from HTTPS, SSH or GitHub CLI, copy the URL to your clipboard by clicking the '**Copy**' button.
+5. Open your Git Bash Terminal.
+6. Change the current working directory to the location you want the cloned directory to be made.
+7. Type `git clone` and paste in the copied URL from step 4.
+8. Press '**Enter**' for the local clone to be created.
+9. Using the ``pip3 install -r requirements.txt`` command, the dependencies and libraries needed for Cando will be installed.
+10. Set up your **env.py** file and from the above steps for Cloudinary and dbsqlite3, gather the Cloudinary API key and the database url for additon to your code.
+11. Ensure that your **env.py** file is placed in your **.gitignore** file and follow the remaining steps in the above Django Project Setup section before pushing your code to GitHub.
+
+## Fork Project
+
+A copy of the original repository can be made through GitHub. Please follow the below steps to fork this repository:  
+
+1. Navigate to GitHub and log in.  
+2. Once logged in, navigate to this repository using this link [CanDo Repository](https://github.com/wgwhitecoding/CanDo-CiFinal).
+3. Above the repository file section and to the top, right of the page is the '**Fork**' button, click on this to make a fork of this repository.
+4. You should now have access to a forked copy of this repository in your Github account.
+5. Follow the above Django Project Steps if you wish to work on the project. 
