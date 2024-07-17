@@ -191,6 +191,7 @@ body.dark-mode .move-task-dropdown {
     background-size: 8px 10px;
 }
 
+
 body.dark-mode .move-task-dropdown:focus {
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);

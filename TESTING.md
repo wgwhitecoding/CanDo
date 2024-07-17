@@ -28,11 +28,10 @@ Return back to the [README.md](README.md) file.
 ### HTML Validation
 | File | W3C URL | Screenshot | Notes |
 | --- | --- | --- | --- |
-| index.html | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/darkmodejs.png)  | Pass: No Errors |
-| search.html| [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/kanban_custom.png)  | Pass: No Errors |
-| base.html | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/kanban.png)  | Pass: no Errors |
-| singup.html | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/notificationsjs.png)  | |
-| signin.html | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/modelspy.png)  | Pass: No Errors |
+| search.html| [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/searchhtml.png)  | Pass: one warning for h3 being empty this is for profile name user need to put name is thats why its not showing  |
+| base.html index.html | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/basehtml.png)  | Pass: No Errors |
+| singup.html | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/signuphtml.png)  | Pass: No Errors |
+| signin.html | [W3C](https://validator.w3.org/#validate_by_input) | ![Screenshot of the project](static/validation/signinhtml.png)  | Pass: No Errors |
 
 <hr>  
 
@@ -95,19 +94,19 @@ Lighthouse testing was carried out in Incognito mode to acheive the best result.
 
 **Desktop**  
 
-![Lighthouse scores desktop](documentation/testing/desktop_lh.png)  
-*Desktop Home Page*  
+![Lighthouse scores desktop](static/validation/lhdesklogin.png)  
+*Desktop login Page*  
   
-![Lighthouse scores desktop](documentation/testing/dt_art_lh.png)  
-*Desktop Article Page*
+![Lighthouse scores desktop](static/validation/lhdeskkanban.png)   
+*Desktop kanban Page*
   
 **Mobile**  
 
-![Lighthouse scores mobile](documentation/testing/mobile_lh.png) 
-*Mobile Home Page*  
+![Lighthouse scores mobile](static/validation/lhmobilelogin.png) 
+*Mobile login Page*  
   
-![Lighthouse scores mobile](documentation/testing/mob_art_lh.png) 
-*Mobile Article Page*
+![Lighthouse scores mobile](static/validation/lhmobiledesl.png) 
+*Mobile kanban Page*
   
 <hr>  
 
@@ -212,5 +211,7 @@ As this was my first Django/Database project, most of the bugs that I encountere
 - Attachments show are succefully added but do not appaer till page is refreshed 
 - Notifications for loggin page when sign in / sign up with wrong user are password are not working i am continuning to work on it after submittion to correct this.
 - Sometimes when pressing create task or collum functionality does not work till user refreshs page rarely happens but it does.
-- I have tested it on mobile and it works fine but the css is not as it shows on dev tools... i know how to fix time and i have but when i do it looks bad on dev-tools, not sure how it will be tested s i left it so it look good on dev-tools its a minor css fix . 
+- I have tested it on mobile and it works fine but the css is not as it shows on dev tools... i know how to fix this and i have but when i do it looks bad on dev-tools, not sure how it will be tested so i left it so it look good on dev-tools its a minor css fix . 
 - Able to uploard images and pdfs but no other file types, cloudinary does not allow pdf for free users i installed pdf2image and usered utils to hold and convert pdfs to jpegs before sending them to clodinary 
+
+- Not a bug... i had to create a P.A.T personal access token as i originally didnt hide my env.py file luckily nothing of importance on it during my commits but manged to hide it using a P.A.T

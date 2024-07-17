@@ -67,11 +67,8 @@ For Admin access with relevant sign-in information: [Cando Admin](https://cando-
   - [Heroku deployment](#heroku-deployment)
   - [Clone project](#clone-project)
   - [Fork Project](#fork-project)
-- [Credits](#credits)
-  - [Code](#code)
-  - [Media](#media)
-    - [Additional reading/tutorials/books/blogs](#additional-readingtutorialsbooksblogs)
-  - [Acknowledgements](#acknowledgements)
+- [Media](#media)
+
 
 
 ## Overview
@@ -406,7 +403,7 @@ Several modals are implemented throughout the application to enhance user intera
 - **Profile Modal**: Allows users to view and edit their profile information and has option to delete account.
  
 ![User profile](static/readme/userprofile.png)
--**Edit Profile Modal** : Provides options for user to add name email bio and change password.
+- **Edit Profile Modal** : Provides options for user to add name email bio and change password.
 
 ![Edit User profile](static/readme/edituser.png)
 - **Settings Modal**: Provides options for toggling dark mode and uploading custom background images.
@@ -549,7 +546,9 @@ The Kanban Board Interface allows users to create, manage, and organize tasks wi
 Users can create and manage their profiles, including updating personal information, uploading profile images, and setting custom backgrounds.
 ##### Profile
 ![Profile Page](static/readme/profilepage.png)
+
 ##### Edit Profile
+
 ![Profile Edit](static/readme/editprofile.png)
 
 #### 3. Task Management
@@ -590,9 +589,9 @@ For laptop users, the Kanban Board offers a comprehensive view with multiple col
 A dark mode feature allows users to switch between light and dark themes based on their preferences, enhancing the user experience in different lighting conditions.
 
 ##### Light Mode
-![Light Mode](static/readme/kanbanview.png)
+![light mode](static/readme/lightmode.png)
 ##### Dark Mode
-![Dark Mode](static/readme/darkmode.png)
+![dark mode](static/readme/kanbanview.png)
 
 #### 6. Search Functionality
 
@@ -623,7 +622,7 @@ The Django Admin interface for our Kanban Board project provides a powerful and 
 - **Search histories**: Review and manage search histories to monitor user activity and search patterns.
 
 ## Sites
-- **Sites**: Manage different sites and domains that are associated with your project.
+- **Sites**: Manage different sites and domains that are associated with the project.
 
 ## Social Accounts
 - **Social accounts**: Manage user accounts authenticated via social platforms.
@@ -691,9 +690,8 @@ Providing analytics and reporting features can help users track progress and pro
 
 ### Future Features Showcase
 
-Here are some highlighted future features with suggested images to include:
+Here are some highlighted future features
 
-**Images to include:**
 - **Real-time Collaboration**: Screenshot of multiple users working on the same board.
 - **Task Comments**: Screenshot showing a task with comments from different users.
 - **Assign Tasks to Users**: Screenshot of a task assignment interface.
@@ -923,3 +921,7 @@ A copy of the original repository can be made through GitHub. Please follow the 
 3. Above the repository file section and to the top, right of the page is the '**Fork**' button, click on this to make a fork of this repository.
 4. You should now have access to a forked copy of this repository in your Github account.
 5. Follow the above Django Project Steps if you wish to work on the project. 
+
+# Media
+
+- Credits to Nina Mizrany a Graphic designer who created the sign in and sign up background image and logo. 

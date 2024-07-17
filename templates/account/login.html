@@ -13,6 +13,13 @@
     <link rel="icon" href="{% static 'favicon/favicon.ico' %}">
 </head>
 <body>
+    <div id="messages" style="display:none;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
     <div class="logo-container">
         <img src="{% static 'logo/candologo.png' %}" alt="CanDo Logo">
     </div>
