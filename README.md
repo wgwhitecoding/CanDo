@@ -808,15 +808,15 @@ To begin this project from scratch, you must first create a new GitHub repositor
 - ```pip3 install dj3-cloudinary-storage```  
   
 2. Once you have installed any relevant dependencies or libraries, such as the ones listed above, it is important to create a **requirements.txt** file and add all installed libraries to it with the ```pip3 freeze --local > requirements.txt``` command in the terminal.  
-3. Create a new Django project in the terminal ```django-admin startproject freefido .```
-4. Create a new app eg. ```python3 mangage.py startapp booking```
-5. Add this to list of **INSTALLED_APPS** in **settings.py** - 'booking',
+3. Create a new Django project in the terminal ```django-admin startproject cando .```
+4. Create a new app eg. ```python3 mangage.py startapp kanban```
+5. Add this to list of **INSTALLED_APPS** in **settings.py** - 'kanban',
 6. Create a superuser for the project to allow Admin access and enter credentials: ```python3 manage.py createsuperuser```
 7. Migrate the changes with commands: ```python3 manage.py migrate```
 8. An **env.py** file must be created to store all protected data such as the **DATABASE_URL** and **SECRET_KEY**. These may be called upon in your project's **settings.py** file along with your Database configurations. The **env.py** file must be added to your **gitignore** file so that your important, protected information is not pushed to public viewing on GitHub. For adding to **env.py**:
 
 - ```import os```
-- ```os.environ["DATABASE_URL"]="<copiedURLfromElephantSQL>"```
+- ```os.environ["DATABASE_URL"]="<copiedURL>"```
 - ```os.environ["SECRET_KEY"]="my_super^secret@key"```
   
 For adding to **settings.py**:
