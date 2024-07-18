@@ -4,7 +4,7 @@
 ## Introduction:
 Welcome to the Kanban Board Project, a task management application designed to streamline project workflows and enhance productivity. Developed as part of the Code Institute's Full-Stack Developer course, this project demonstrates the application of Django and Bootstrap frameworks, focusing on database manipulation and CRUD functionality.
 
-This Kanban Board allows users to create, manage, and prioritize tasks within customizable boards and columns, providing a clear visual representation of project progress. Users can  create edit and delete tasks, ensuring effective organization. The project includes features such as user profile management, search functionality, and task notifications to support a comprehensive project management experience.
+This Kanban Board allows users to create, manage, and prioritize tasks within customizable boards and columns, providing a clear visual representation of project progress. Users can  create edit and delete tasks, ensuring effective organization. The project includes features such as user profile management, search functionality,Drag and drop and task notifications to support a comprehensive project management experience.
 
 This project is intended for educational purposes only, showcasing the integration of key web development technologies and best practices.
 
@@ -76,10 +76,10 @@ The Kanban Board Project is a task management application designed to streamline
 
 Users are invited to: 
 
-- Create and manage boards: Organize tasks into different boards tailored to specific projects or workflows.
+- manage board: Organize tasks into different columns tailored to specific projects or workflows.
 - Customize columns: Define and edit columns within each board to represent different stages of task progress.
 - Manage tasks: Add, edit, prioritize, and delete tasks within columns to keep track of work items.
-- Personalize profiles: Update profile information including profile pictures, background images, and bios.
+- Personalize profiles: Update profile information including profile pictures, background images, and bio.
 - Search and track history: Utilize the search functionality to quickly find tasks and maintain a history of recent searches.
 - Receive notifications: Stay informed with task update notifications to keep track of progress and changes.
 - Archive completed tasks: Archive tasks that are completed to maintain a clean and focused board view.
@@ -187,52 +187,52 @@ This visual prioritization system helps maintain clarity and focus, ensuring tha
 
 | Sprint No. | Sprint Content                   | Start/Finish Dates   |
 |------------|----------------------------------|----------------------|
-| #1         | Project Setup                    | 23/06/23 -> 24/06/23 |
-| #2         | User Authentication & Navigation | 25/06/23 -> 27/06/23 |
-| #3         | Board and Column Management      | 28/06/23 -> 30/06/23 |
-| #4         | Task Management Features         | 01/07/23 -> 03/07/23 |
-| #5         | Attachments and Search History   | 04/07/23 -> 06/07/23 |
-| #6         | Profile Management & Notifications | 07/07/23 -> 09/07/23 |
-| #7         | Frontend Development             | 10/07/23 -> 12/07/23 |
-| #8         | Testing & Documentation          | 13/07/23 -> 15/07/23 |
+| #1         | Project Setup                    | 23/06/24 -> 24/06/24 |
+| #2         | User Authentication & Navigation | 25/06/24 -> 27/06/24 |
+| #3         | Board and Column Management      | 28/06/24 -> 30/06/24 |
+| #4         | Task Management Features         | 01/07/24 -> 03/07/24 |
+| #5         | Attachments and Search History   | 04/07/24 -> 06/07/24 |
+| #6         | Profile Management & Notifications | 07/07/24 -> 09/07/24 |
+| #7         | Frontend Development             | 10/07/24 -> 12/07/24 |
+| #8         | Testing & Documentation          | 14/07/24 -> 17/07/24 |
 
 
 - **Sprint #1: Project Setup**
-  - **Dates:** 23/06/23 -> 24/06/23
+  - **Dates:** 23/06/24 -> 24/06/24
   - Initial setup of the development environment, version control, and basic project structure.
 
 - **Sprint #2: User Authentication & Navigation**
-  - **Dates:** 25/06/23 -> 27/06/23
+  - **Dates:** 25/06/24 -> 27/06/24
   - Implemented user registration, login, and logout functionalities.
   - Developed site navigation and basic layout.
 
 - **Sprint #3: Board and Column Management**
-  - **Dates:** 28/06/23 -> 30/06/23
-  - Created functionalities for users to create and manage boards and columns.
+  - **Dates:** 28/06/24 -> 30/06/24
+  - Created functionalities for users to create and manage board and columns.
   - Ensured proper associations and relationships between users, boards, and columns.
 
 - **Sprint #4: Task Management Features**
-  - **Dates:** 01/07/23 -> 03/07/23
+  - **Dates:** 01/07/24 -> 03/07/24
   - Developed features for creating, editing, and deleting tasks.
   - Implemented task prioritization and due date settings.
 
 - **Sprint #5: Attachments and Search History**
-  - **Dates:** 04/07/23 -> 06/07/23
+  - **Dates:** 04/07/24 -> 06/07/24
   - Added functionality for uploading and managing attachments within tasks.
   - Implemented search history tracking for task searches.
 
 - **Sprint #6: Profile Management & Notifications**
-  - **Dates:** 07/07/23 -> 09/07/23
+  - **Dates:** 07/07/24 -> 09/07/24
   - Developed user profile management features.
   - Implemented notification system for task updates and user actions.
 
 - **Sprint #7: Frontend Development**
-  - **Dates:** 10/07/23 -> 12/07/23
+  - **Dates:** 10/07/24 -> 12/07/24
   - Focused on designing and refining the user interface.
   - Ensured responsiveness and cross-browser compatibility.
 
 - **Sprint #8: Testing & Documentation**
-  - **Dates:** 13/07/23 -> 15/07/23
+  - **Dates:** 14/07/24 -> 17/07/24
   - Conducted thorough testing of all features and functionalities.
   - Prepared comprehensive project documentation and user guides.
 
